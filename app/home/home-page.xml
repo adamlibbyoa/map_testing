@@ -1,0 +1,17 @@
+<Page class="page"
+    navigatingTo="onNavigatingTo"  
+    xmlns="http://schemas.nativescript.org/tns.xsd"
+    xmlns:map="nativescript-mapbox"
+    >
+
+    <ActionBar class="action-bar">
+        <Label class="action-bar-title" text="Home"></Label>
+    </ActionBar>
+
+<ContentView height="80%" width="98%">
+    <StackLayout id="myMap">
+        
+    </StackLayout>
+</ContentView>
+
+</Page>
