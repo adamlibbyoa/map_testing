@@ -1,0 +1,20 @@
+<Page class="page"
+    navigatingTo="onNavigatingTo"  
+    xmlns="http://schemas.nativescript.org/tns.xsd"
+    xmlns:map="nativescript-mapbox"
+    >
+
+    <ActionBar class="action-bar">
+        <StackLayout orientation="horizontal" >
+            <Button text="back" tap="onBackPressed" />
+            <Label class="action-bar-title" text="Home" ></Label>
+        </StackLayout>
+    </ActionBar>
+
+<ContentView >    
+    <StackLayout row="2" colSpan="2" height="60%" width="98%" id="myMap">
+        <!-- The map dynamically loads here -->
+    </StackLayout>
+</ContentView>
+
+</Page>

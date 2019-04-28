@@ -8,10 +8,16 @@
         <Label class="action-bar-title" text="Home"></Label>
     </ActionBar>
 
-<ContentView height="80%" width="98%">
-    <StackLayout id="myMap">
-        
+<ContentView >
+<GridLayout rows="60vh 30vh * 60vh" columns="* *" >
+    <Button row="0" col="0" text="start monitoring" tap="buttonStartWatch"/>
+    <Button row="0" col="1" text="stop monitoring" tap="buttonStopWatch"/>
+    <Label row="1" colSpan="2" text="last location" id="lastloc" />
+    <StackLayout row="2" colSpan="2" height="60%" width="98%" id="myMap">
+        <!-- The map dynamically loads here -->
     </StackLayout>
+    <Button row="3" colSpan="2" text="Show last trail" tap="showLastTrailTap" />
+    </GridLayout>
 </ContentView>
 
 </Page>

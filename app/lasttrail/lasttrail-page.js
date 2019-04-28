@@ -4,7 +4,7 @@ a code-behind file. The code-behind is a great place to place your view
 logic, and to set up your page’s data binding.
 */
 
-const HomeViewModel = require("./home-view-model");
+const HomeViewModel = require("./lasttrail-view-model");
 const geolocation = require("nativescript-geolocation");
 const mapbox = require("nativescript-mapbox");
 const filesystemModule = require("tns-core-modules/file-system");
@@ -29,75 +29,26 @@ function onNavigatingTo(args) {
     map.id = "themap";
     map.on("mapReady", (args) => {
         console.log("map is ready");
-        map.addMarkers([
+        file.readText().then(res => {
+            recordedLocations = JSON.parse(res);
+            var coordinates = [];
+            for (var i = 0; i < recordedLocations.length; i++)
             {
-                id: 1,
-                lat: 35.610295,
-                lng: -97.4613617,
-                title: "OC",
-                subtitle: "OC is not home",
-                onTap: function(){console.log("tapped!")}
+                var tempCoord = 
+                {
+                    lat: recordedLocations[i].latitude,
+                    lng: recordedLocations[i].longitude
+                }
+                coordinates = [...coordinates, tempCoord];
             }
-        ]);
-        map.setOnMapClickListener((point) => {
-           // waypoint = JSON.stringify(point);
-            console.log("We clicked: " + JSON.stringify(point));
-            var url = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + point.lng + "," + point.lat + ".json?access_token=" + accessToken;
-            fetch(url).then(response => {
-                return response.json();
-            })
-            .then(data => {
-                waypoint = (data.features[0].center);
-                map.removeMarkers();
-                map.addMarkers([
-                    {
-                        id: curID,
-                        lat: point.lat,
-                        lng: point.lng,
-                        title: data.features[0].text,
-                        subtitle: data.features[0].place_name,
-                        onTap: function(){console.log("Tapped the added marker " + curID)}
-                    }
-                ]);
-                
-
-            })
-            .then(() => {
-                var dirUrl = "https://api.mapbox.com/directions/v5/mapbox/driving/" + location.longitude + "," + location.latitude + ";" + waypoint[0] + "," + waypoint[1] + "?geometries=geojson&access_token=" + accessToken;
-                //console.log(dirUrl);
-                fetch(dirUrl).then(res => {
-                    //var routes = res.json();
-                    return res.json();
-                }).then(routeData => {
-                    var coords = routeData.routes[0].geometry.coordinates;
-                    var coordinates = [];
-                    for (var i = 0; i < coords.length; i++)
-                    {
-                        var tempCoord = 
-                        {
-                            lat: coords[i][1],
-                            lng: coords[i][0]
-                        }
-                        coordinates = [...coordinates, tempCoord];
-                    }
-
-                    console.log(coordinates);
-                    //console.log(routeData);
-                    map.removePolylines();
-                    map.addPolyline({
-                       id: 10,
-                       color: 0xffff0000,
-                       points: coordinates
-                    })
-                }).catch(err => {
-                    console.log(err);
-                })
-            })
-            .catch(err => {
-                console.log(err);
+            
+            map.addPolyline({
+                id: 11,
+                color: 0xffff0000,
+                points: coordinates
             });
-        });
 
+        })
     });
 
     geolocation.getCurrentLocation({desiredAccuracy: 3, updateDistance: 10}).then(loc => {
@@ -115,6 +66,15 @@ function onNavigatingTo(args) {
         
     });
 }
+
+function onBackPressed(args)
+{
+    var btn = args.object;
+    var page = btn.page;
+    page.frame.navigate("home/home-page");
+
+}
+exports.onBackPressed = onBackPressed;
 
 function buttonStartWatch(args)
 {
@@ -167,14 +127,6 @@ function buttonStopWatch()
     }
 }
 
-function showLastTrailTap(args)
-{
-    var btn = args.object;
-    var page = btn.page;
-    page.frame.navigate("lasttrail/lasttrail-page");
-}
-
-exports.showLastTrailTap = showLastTrailTap;
 exports.buttonStartWatch = buttonStartWatch;
 exports.buttonStopWatch = buttonStopWatch;
 exports.onNavigatingTo = onNavigatingTo;
