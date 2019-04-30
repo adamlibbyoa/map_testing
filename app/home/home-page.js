@@ -264,6 +264,7 @@ function buttonStartWatch(args) {
 
             starttime = new Date();
             var map = args.object.page.getViewById("themap");
+
             //recenterTap(args);
             startRecording(map);
         }
@@ -285,15 +286,7 @@ function recenterTap(args) {
             lng: loc.longitude,
             animated: true
         });
-        map.animateCamera({
-            target: {
-                lat: loc.latitude,
-                lng: loc.longitude
-            },
-            tilt: 60,
-            zoomLevel: 20,
-            duration: 2000
-        });
+
 
     });
 }
@@ -310,29 +303,29 @@ function buttonStopWatch() {
         //console.log(res);
         curCoords = []; // reset the coords if it was successfully added
         recordedLocations = [];
-        map.removePolylines();
-        map.removeMarkers();
-        for (var i = 0; i < global.trails.length; i++) {
-            // add trail heads here
-            map.addMarkers([{
-                id: global.trails[i].id,
-                lat: global.trails[i].coordinates[0].lat,
-                lng: global.trails[i].coordinates[0].lng,
-                iconPath: "./icons/trail_head_marker.png",
-                title: "Trail head: " + global.trails[i].name,
-                subtitle: "Trail is: " + global.trails[i].distance + "m",
-                onTap: function () {
-                    // toggle viewing of all trails when clicked on a trail head
-                    console.log("tapped trail head");
-                }
-            }]);
-            // draw the trails here
-            map.addPolyline({
-                id: global.trails[i].id,
-                color: global.trails[i].trailColor,
-                points: global.trails[i].coordinates
-            });
-        }
+        // map.removePolylines();
+        // map.removeMarkers();
+        // for (var i = 0; i < global.trails.length; i++) {
+        //     // add trail heads here
+        //     map.addMarkers([{
+        //         id: global.trails[i].id,
+        //         lat: global.trails[i].coordinates[0].lat,
+        //         lng: global.trails[i].coordinates[0].lng,
+        //         iconPath: "./icons/trail_head_marker.png",
+        //         title: "Trail head: " + global.trails[i].name,
+        //         subtitle: "Trail is: " + global.trails[i].distance + "m",
+        //         onTap: function () {
+        //             // toggle viewing of all trails when clicked on a trail head
+        //             console.log("tapped trail head");
+        //         }
+        //     }]);
+        //     // draw the trails here
+        //     map.addPolyline({
+        //         id: global.trails[i].id,
+        //         color: global.trails[i].trailColor,
+        //         points: global.trails[i].coordinates
+        //     });
+        // }
     }
 }
 
