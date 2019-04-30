@@ -18,3 +18,47 @@ components that have the btn class name.
 .btn {
     font-size: 18;
 }
+
+.navbarIcon {
+    border-right-width: 1px;
+    border-color: rgb(32, 32, 32);
+    height: 32vw;
+}
+
+.create-trail-modal {
+    background-color: rgba(217, 217, 217, 0.863);
+    border-radius: 15%;
+    border-bottom-right-radius: 0;
+}
+
+.create-trail-modal-button {
+    background-color: #FF8C28;
+    color: #FFFFFF;
+    margin-top: 14;
+    border-radius: 10%;
+    width: 80%;
+}
+
+.create-trail-modal-label {
+    text-align: center;
+    font-size: 24;
+
+    margin-top: 8;
+    margin-bottom: 0;
+}
+
+.light {
+    font-size: 18;
+    margin-top: 0;
+    margin-bottom: 4;
+}
+
+.create-trail-popup-toggle {
+    margin-bottom: 54vh;
+    background-color: rgba(217, 217, 217, 0.863);
+    z-index: 10;
+    border-top-left-radius: 5%;
+    border-bottom-left-radius: 5%;
+    width: 52ppi;
+    height: 52ppi;
+}

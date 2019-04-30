@@ -1,23 +1,54 @@
-<Page class="page"
-    navigatingTo="onNavigatingTo"  
-    xmlns="http://schemas.nativescript.org/tns.xsd"
-    xmlns:map="nativescript-mapbox"
-    >
+<Page class="page" navigatingTo="onNavigatingTo" 
+    xmlns="http://schemas.nativescript.org/tns.xsd" 
+    xmlns:map="nativescript-mapbox" 
+    xmlns:FAB="nativescript-floatingactionbutton">
 
-    <ActionBar class="action-bar">
-        <Label class="action-bar-title" text="Home"></Label>
-    </ActionBar>
+    <!-- <ActionBar class="action-bar">
+        <Label class="action-bar-title" text="Map"></Label>
+    </ActionBar> -->
 
-<ContentView >
-<GridLayout rows="60vh 30vh * 60vh" columns="* *" >
-    <Button row="0" col="0" text="start monitoring" tap="buttonStartWatch"/>
-    <Button row="0" col="1" text="stop monitoring" tap="buttonStopWatch"/>
-    <Label row="1" colSpan="2" text="last location" id="lastloc" />
-    <StackLayout row="2" colSpan="2" height="60%" width="98%" id="myMap">
-        <!-- The map dynamically loads here -->
-    </StackLayout>
-    <Button row="3" colSpan="2" text="Show last trail" tap="showLastTrailTap" />
-    </GridLayout>
-</ContentView>
+    <ContentView >
+        <GridLayout rows="* 60vh" columns="* *">
+            <!-- <Label row="1" colSpan="2" text="last location" id="lastloc" /> -->
+            <StackLayout row="0" colSpan="2" height="92%" width="100%" id="myMap" style="z-index: -1; margin-top: 2vh; margin-bottom: 1vh;">
+                <!-- The map dynamically loads here -->
+            </StackLayout>
+
+            <GridLayout id="recordPopup" rows="auto 40vh 30vh 60vh 40vh 30vh" columns="* *" colSpan="2" height="60%" class="create-trail-modal" visibility="visible">
+                <Button class="create-trail-modal-button" verticalAlignment="top" row="0" colSpan="2" text="Record New Trail" height="60vh" tap="buttonStartWatch" />
+                <Label row="1" col="0" verticalAlignment="top" class="create-trail-modal-label" text="00:00" />
+                <Label row="1" col="1" verticalAlignment="top" class="create-trail-modal-label" text="522f" />
+                <Label row="2" col="0" verticalAlignment="top" class="create-trail-modal-label light" text="Recording" />
+                <Label row="2" col="1" verticalAlignment="top" class="create-trail-modal-label light" text="Elevation" />
+
+                <Label row="4" col="0" verticalAlignment="top" class="create-trail-modal-label" text="----" />
+                <Label row="4" col="1" verticalAlignment="top" class="create-trail-modal-label" text="000m" />
+                <Label row="5" col="0" verticalAlignment="top" class="create-trail-modal-label light" text="Pitch" />
+                <Label row="5" col="1" verticalAlignment="top" class="create-trail-modal-label light" text="Distance" />
+
+            </GridLayout>
+
+            <Button row="0" col="1" id="recordbtn" class="create-trail-popup-toggle" verticalAlignment="bottom" horizontalAlignment="right" text="+" tap="createTrailTap"/>
+            <!-- <Button row="0" col="1" id="savebtn" style="margin-bottom: 48; margin-right: 8; background-color: red; z-index: 10; border-radius: 50%; width: 42ppi; height: 42ppi;" verticalAlignment="bottom" horizontalAlignment="right" text="S" tap="buttonStopWatch"/> -->
+
+            <Image src="res://recenter_icon" row="0" col="1" horizontalAlignment="right" verticalAlignment="bottom" style="width: 32ppi; height: 32ppi; padding: 4; margin-right: 12; margin-bottom: 8;" tap="recenterTap" />
+            <!-- <Button row="3" col="0" text="Recenter" tap="recenterTap" /> -->
+
+            <!-- <Button row="0" col="1" horizontalAlignment="right" verticalAlignment="bottom" style="background-color: orange; border-radius: 50%; margin-right: 48vw; margin-bottom: 4; z-index: 10; font-size: 6; height: 42vw; width: 42vw;" text="Show All trails" tap="showLastTrailTap" /> -->
+
+            <GridLayout row="1" colSpan="2" rows="*" columns="* * * * *">
+                <Image class="navbarIcon" src="res://feed_icon" style="margin-left: 2vw;" row="0" col="0" />
+                <!-- <Button row="0" col="0" text="etc" /> -->
+                <Image class="navbarIcon" src="res://discover_icon" row="0" col="1" />
+                <!-- <Button row="0" col="1" text="etc" /> -->
+                <Image class="navbarIcon" src="res://map_icon" row="0" col="2" />
+                <!-- <Button row="0" col="2" text="Home" /> -->
+                <Image class="navbarIcon" src="res://map_icon" row="0" col="3" />
+                <!-- <Button row="0" col="3" text="etc" /> -->
+                <Image class="navbarIcon" src="res://garage_icon" row="0" col="4" style=" margin-right: 2vw;" />
+                <!-- <Button row="0" col="4" text="etc" /> -->
+            </GridLayout>
+        </GridLayout>
+    </ContentView>
 
 </Page>

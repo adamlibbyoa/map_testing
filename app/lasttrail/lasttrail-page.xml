@@ -7,14 +7,18 @@
     <ActionBar class="action-bar">
         <StackLayout orientation="horizontal" >
             <Button text="back" tap="onBackPressed" />
-            <Label class="action-bar-title" text="Home" ></Label>
+            <Label class="action-bar-title" text="Trails" ></Label>
         </StackLayout>
     </ActionBar>
 
 <ContentView >    
-    <StackLayout row="2" colSpan="2" height="60%" width="98%" id="myMap">
+<GridLayout rows= "50vh *" columns="* *" >
+    <Button row="0" col="0" text="Prev" tap="viewPreviousTrail" />
+    <Button row="0" col="1" text="Next" tap="viewNextTrail" />
+    <StackLayout row="1" colSpan="2" height="90%" width="98%" id="myMap">
         <!-- The map dynamically loads here -->
     </StackLayout>
+</GridLayout>
 </ContentView>
 
 </Page>
