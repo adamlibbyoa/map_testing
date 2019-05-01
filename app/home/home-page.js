@@ -247,6 +247,7 @@ function startRecording(map) {
       console.log(err);
     },
     {
+      // possibly set these dynamically based on battery optimization
       desiredAccuracy: 1,
       updateDistance: 2,
       minimumUpdateTime: 1000 * 3
