@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1042023021629",
+    "firebase_url": "https://testing-oa-7294c.firebaseio.com",
+    "project_id": "testing-oa-7294c",
+    "storage_bucket": "testing-oa-7294c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1042023021629:android:c83fbc74839df05c",
+        "android_client_info": {
+          "package_name": "org.nativescript.oa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1042023021629-og7qof4jg03mkhilsdnq2hojq3c8gh81.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTyuFxcpF0NkDQXaA6mA3LopnQqHxRTus"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1042023021629-og7qof4jg03mkhilsdnq2hojq3c8gh81.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1042023021629-8882boendh066arma0nurrnr6eb4et0v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "overlandamerica.trails.oa"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

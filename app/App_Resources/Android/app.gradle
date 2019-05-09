@@ -1,9 +1,9 @@
 // Add your native dependencies here:
-
+apply plugin: 'com.android.application'
 // Uncomment to add recyclerview-v7 dependency
-//dependencies {
-//	implementation 'com.android.support:recyclerview-v7:+'
-//}
+dependencies {
+  implementation 'com.google.android.gms:play-services-location:16.0.0'
+}
 
 // If you want to add something to be applied before applying plugins' include.gradle files 
 // e.g. project.ext.googlePlayServicesVersion = "15.0.1"
@@ -11,9 +11,14 @@
 
 android {  
   defaultConfig {  
+    applicationId = "org.nativescript.oa"
+    multiDexEnabled true
     generatedDensities = []
   }  
   aaptOptions {  
     additionalParameters "--no-version-vectors"  
   }  
+  dexOptions {
+    javaMaxHeapSize "4g"
+  }
 } 

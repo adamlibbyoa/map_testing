@@ -31,6 +31,7 @@ var recordBtn;
 var savebtn;
 var recordPopup;
 var observ;
+var map;
 
 var deviceRotation = {
   x: 0, // roll
@@ -42,32 +43,14 @@ var location;
 var waypoint;
 // 35.610295
 //-97.4613617
-function onNavigatingTo(args) {
-  const page = args.object;
-  observ = new Observable();
-  // hide the status bar if the device is an android
-  if (application.android) {
-    const activity = application.android.startActivity;
-    const win = activity.getWindow();
-    win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
-  }
-  // save the record/save buttons for later use
-  recordBtn = page.getViewById("recordbtn");
-  //savebtn = page.getViewById("savebtn");
-  recordPopup = page.getViewById("recordPopup");
-  recordPopup.visibility = "collapsed";
-  // get rid of the ugly actionbar
-  var topmost = frameModule.topmost();
-  topmost.android.showActionBar = false;
 
-  // set the default visibility of the record/save buttons
-  recordBtn.visibility = "visible";
-  //savebtn.visibility = "collapsed";
-
+exports.onMapLoaded = function (args) {
+  var page = args.object.page;
   // get the map container (not the actual map though). This is where the map is going to be 'spawned' in.
   var m = page.getViewById("myMap");
-  var map = new mapbox.MapboxView();
+  map = new mapbox.MapboxView();
   map.id = "themap";
+
   map.on("mapReady", args => {
     console.log("map is ready");
 
@@ -156,7 +139,7 @@ function onNavigatingTo(args) {
     // });
     //#endregion
   });
-
+  //console.log("navigatedto");
   geolocation
     .getCurrentLocation({
       desiredAccuracy: 1,
@@ -170,14 +153,39 @@ function onNavigatingTo(args) {
       map.latitude = location.latitude;
       map.longitude = location.longitude;
       map.showUserLocation = true;
-      map.zoomLevel = 18;
+      map.zoomLevel = 14;
 
-      map.mapStyle = "mapbox://styles/mapbox/outdoors-v9";
+      map.mapStyle = "mapbox://styles/mapbox/outdoors-v11";
       global.loadTrails();
       m.addChild(map);
 
       page.bindingContext = observ;
     });
+}
+
+function onNavigatingTo(args) {
+  const page = args.object;
+  observ = new Observable();
+  // hide the status bar if the device is an android
+  if (application.android) {
+    const activity = application.android.startActivity;
+    const win = activity.getWindow();
+    win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+  }
+  // save the record/save buttons for later use
+  recordBtn = page.getViewById("recordbtn");
+  //savebtn = page.getViewById("savebtn");
+  recordPopup = page.getViewById("recordPopup");
+  recordPopup.visibility = "collapsed";
+  // get rid of the ugly actionbar
+  var topmost = frameModule.topmost();
+  topmost.android.showActionBar = false;
+
+  // set the default visibility of the record/save buttons
+  recordBtn.visibility = "visible";
+  //savebtn.visibility = "collapsed";
+  page.bindingContext = observ;
+
 }
 var starttime;
 var curCoords = [];
@@ -202,13 +210,15 @@ function createTrailTap(args) {
 }
 exports.createTrailTap = createTrailTap;
 
+var dist;
+
 function startRecording(map) {
   map.trackUser({
     mode: "FOLLOW", // "NONE" | "FOLLOW" | "FOLLOW_WITH_HEADING" | "FOLLOW_WITH_COURSE"
     animated: true
   });
   map.removePolylines();
-  var dist = 0;
+  dist = 0;
   var mtomi = 0.00062137;
   var lastLoc = null;
   watchID = geolocation.watchLocation(
@@ -246,7 +256,7 @@ function startRecording(map) {
     }, {
       // possibly set these dynamically based on battery optimization
       desiredAccuracy: 1,
-      updateDistance: 2,
+      updateDistance: 5,
       minimumUpdateTime: 1000 * 3
     }
   );
@@ -307,7 +317,7 @@ function recenterTap(args) {
       //   });
 
       // this is testing stuff, I just threw it into the recenter so I can activate it on a button click
-      startTrackingAccelerometer();
+      //startTrackingAccelerometer();
       startTimer();
     });
 }
@@ -356,7 +366,8 @@ function buttonStopWatch() {
     recordBtn.text = "+";
     //savebtn.visibility = "collapsed";
     geolocation.clearWatch(watchID);
-    global.addTrail(trailName, curCoords, recordedLocations);
+    global.postTrail(trailName, curCoords, dist);
+    //global.addTrail(trailName, curCoords, recordedLocations);
 
     //console.log(res);
     curCoords = []; // reset the coords if it was successfully added

@@ -9,9 +9,9 @@
 
     <ContentView >
         <GridLayout rows="* 60vh" columns="* *">
-            <!-- <Label row="1" colSpan="2" text="last location" id="lastloc" /> -->
-            <StackLayout row="0" colSpan="2" height="96%" width="100%" id="myMap" style="z-index: -1; margin-top: 2vh; margin-bottom: 1vh;">
+            <StackLayout loaded="onMapLoaded" row="0" colSpan="2" height="96%" width="100%" id="myMap" style="z-index: -1; margin-top: 2vh; margin-bottom: 1vh;">
                 <!-- The map dynamically loads here -->
+
             </StackLayout>
             <Label col="0" style="z-index: 10; background-color: white; color: black; width: 120vw; height: 60vh;text-align: center;" verticalAlignment="top" horizontalAlignment="left" text="{{ pitch }}" />
             <Label col="1" style="z-index: 10; background-color: white; color: black; width: 120vw; height: 60vh;text-align: center;" verticalAlignment="top" horizontalAlignment="left" text="{{ roll }}" />

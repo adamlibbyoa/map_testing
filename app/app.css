@@ -62,3 +62,10 @@ components that have the btn class name.
     width: 52ppi;
     height: 52ppi;
 }
+
+.centerText {
+    background-color: #f2f2f2;
+    opacity: 0.9;
+    text-align: center;
+    font-size: 18;
+}

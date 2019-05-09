@@ -1,0 +1,41 @@
+<Page class="page" navigatingTo="onNavigatingTo" 
+    xmlns="http://schemas.nativescript.org/tns.xsd" 
+    xmlns:map="nativescript-mapbox">
+
+
+    <ContentView >
+        <GridLayout>
+            <GridLayout rows="* *" columns="* *" verticalAlignment="top" style="z-index: 10;">
+                <StackLayout row="0" col="0">
+                    <Label className="centerText" text="Elevation" />
+                    <Label className="centerText" text="{{ elevation }}" />
+                </StackLayout>
+                <StackLayout row="1" col="0">
+                    <Label className="centerText" text="Distance" />
+                    <Label className="centerText" text="{{ distance }}" />
+                </StackLayout>
+                <StackLayout row="0" col="1">
+                    <Label className="centerText" text="Battery %" />
+                    <Label className="centerText" text="{{ battery }}" />
+                </StackLayout>
+                <StackLayout row="1" col="1">
+                    <Label className="centerText" text="Duration" />
+                    <Label className="centerText" text="{{ duration }}" />
+                </StackLayout>
+            </GridLayout>
+
+            <StackLayout height="100%" width="100%" id="myMap" style="margin-bottom: 0;">
+                <!-- The map dynamically loads here -->
+            </StackLayout>
+            <!-- <StackLayout verticalAlignment="bottom" style="z-index: 10; margin-bottom:0;" orientation="horizontal"> -->
+            <Image src="res://navrec_button_background" horizontalAlignment="center" verticalAlignment="bottom" style="height: 90vh;" />
+            <Image src="res://add_button" horizontalAlignment="left" verticalAlignment="bottom" style="height: 90vh;" />
+            <Image src="res://tools_button" horizontalAlignment="right" verticalAlignment="bottom" style="height: 90vh;" />
+            <Image src="res://stop_button" horizontalAlignment="center" verticalAlignment="bottom" style="height: 95vh;" />
+            <!-- </StackLayout> -->
+
+
+        </GridLayout>
+    </ContentView>
+
+</Page>
