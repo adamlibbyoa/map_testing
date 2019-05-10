@@ -1,0 +1,53 @@
+<Page class="page endTrailPage" navigatingTo="onNavigatingTo" 
+    xmlns="http://schemas.nativescript.org/tns.xsd" 
+    xmlns:map="nativescript-mapbox" 
+    xmlns:FAB="nativescript-floatingactionbutton">
+
+
+    <ContentView  >
+        <GridLayout rows="* auto">
+            <StackLayout>
+                <Label text="Trail Description" horizontalAlignment="center" class="titleLabel" />
+
+                <!-- <Label row="0" col="0" text="Trail Name: " horizontalAlignment="center" verticalAlignment="middle" class="" /> -->
+                <TextField row="0" col="1" hint="Trail Name..." returnKeyType="done" blur="saveName" returnPress="saveName" autocorrect="true" class="inputField" />
+                <Label text="Distance: " class="textLbl" />
+                <Label text="{{ distance }}" class="textLblChild" />
+
+                <Label text="Duration: " class="textLbl" />
+                <Label text="{{ duration }}" class="textLblChild" />
+
+            </StackLayout>
+            <Button text="Confirm" verticalAlignment="bottom" horizontalAlignment="right" class="confirmTrailBtn" tap="goToHome" />
+            <Button text="Discard" verticalAlignment="bottom" horizontalAlignment="left" class="discardTrailBtn" tap="discardTrail" />
+        </GridLayout>
+    </ContentView>
+
+</Page>
+
+<!--  code graveyard...... 
+     <ActionBar class="action-bar">
+        <Label class="action-bar-title" text="Map"></Label>
+    </ActionBar> 
+
+<GridLayout id="recordPopup" rows="auto 40vh 30vh 60vh 40vh 30vh" columns="* *" colSpan="2" height="60%" class="create-trail-modal" visibility="visible">
+
+    <Label row="1" col="0" verticalAlignment="top" class="create-trail-modal-label" text="00:00" />
+    <Label row="1" col="1" verticalAlignment="top" class="create-trail-modal-label" text="522f" />
+    <Label row="2" col="0" verticalAlignment="top" class="create-trail-modal-label light" text="Recording" />
+    <Label row="2" col="1" verticalAlignment="top" class="create-trail-modal-label light" text="Elevation" />
+
+    <Label row="4" col="0" verticalAlignment="top" class="create-trail-modal-label" text="----" />
+    <Label row="4" col="1" verticalAlignment="top" class="create-trail-modal-label" text="000m" />
+    <Label row="5" col="0" verticalAlignment="top" class="create-trail-modal-label light" text="Pitch" />
+    <Label row="5" col="1" verticalAlignment="top" class="create-trail-modal-label light" text="Distance" />
+
+</GridLayout>
+
+<!-- <Label col="0" style="z-index: 10; background-color: white; color: black; width: 120vw; height: 60vh;text-align: center;" verticalAlignment="top" horizontalAlignment="left" text="{{ pitch }}" />
+            <Label col="1" style="z-index: 10; background-color: white; color: black; width: 120vw; height: 60vh;text-align: center;" verticalAlignment="top" horizontalAlignment="left" text="{{ roll }}" />
+            <Label col="0" style="z-index: 10; background-color: white; color: black; width: 120vw; height: 60vh;text-align: center; margin-top: 70vw;" verticalAlignment="top" horizontalAlignment="left" text="{{ time }}" />
+            <Label col="1" style="z-index: 10; background-color: white; color: black; width: 120vw; height: 60vh;text-align: center; margin-top: 70vw;" verticalAlignment="top" horizontalAlignment="left" text="{{ dist }}" /> -->
+
+
+ -->

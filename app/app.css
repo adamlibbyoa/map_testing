@@ -34,9 +34,9 @@ components that have the btn class name.
 .create-trail-modal-button {
     background-color: #FF8C28;
     color: #FFFFFF;
-    margin-top: 14;
+    margin-bottom: 20;
     border-radius: 10%;
-    width: 80%;
+    width: 50%;
 }
 
 .create-trail-modal-label {
@@ -68,4 +68,55 @@ components that have the btn class name.
     opacity: 0.9;
     text-align: center;
     font-size: 18;
+}
+
+.endTrailPage {
+    background-color: #f2f2f2;
+}
+
+.titleLabel {
+    font-size: 24;
+    color: black;
+    margin-top: 30vh;
+}
+
+.inputField {
+    width: 80%;
+    border-bottom-width: 0.75;
+    placeholder-color: rgba(0, 0, 0, 0.4);
+}
+
+.textLbl {
+    margin-left: 10%;
+    margin-top: 40vh;
+    font-size: 20;
+    color: black;
+}
+
+.textLblChild {
+    margin-left: 10%;
+    font-size: 18;
+    color: #4281A4;
+}
+
+.confirmTrailBtn {
+    background-color: #4281A4;
+    color: #f2f2f2;
+    width: 180vw;
+    font-size: 16;
+    border-radius: 10%;
+    margin-bottom: 60vh;
+    margin-right: 18vw;
+    font-weight: bold;
+}
+
+.discardTrailBtn {
+    background-color: #db4437;
+    color: #f2f2f2;
+    width: 180vw;
+    font-size: 16;
+    border-radius: 10%;
+    margin-bottom: 60vh;
+    margin-left: 18vw;
+    font-weight: bold;
 }
