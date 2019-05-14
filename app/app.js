@@ -15,16 +15,18 @@ var curID = 0;
 
 var firebase = require("nativescript-plugin-firebase");
 
-firebase.init({
+firebase
+  .init({
     persist: true
-}).then(
-    function () {
-        console.log("firebase.init done");
+  })
+  .then(
+    function() {
+      console.log("firebase.init done");
     },
-    function (error) {
-        console.log("firebase.init error: " + error);
+    function(error) {
+      console.log("firebase.init error: " + error);
     }
-);
+  );
 
 /** trail structure
 {
@@ -46,7 +48,6 @@ firebase.init({
 
  */
 
-
 global.trails = [];
 
 global.currentTrail = {};
@@ -54,106 +55,123 @@ global.currentTrail = {};
 //36.6707
 //-95.82672
 global.addTrail = (name, coords, locations) => {
+  var dist = 0;
+  for (var i = 0; i < locations.length - 1; i += 2) {
+    dist += geolocation.distance(locations[i], locations[i + 1]);
+    console.log(dist);
+  }
+  dist *= mtomi; // convert to mile
 
-    var dist = 0;
-    for (var i = 0; i < locations.length - 1; i += 2) {
-        dist += geolocation.distance(locations[i], locations[i + 1]);
-        console.log(dist);
-
+  trails = [
+    ...trails,
+    {
+      id: curID,
+      name: name,
+      trailColor: 0xffff0000,
+      coordinates: coords,
+      distance: dist
     }
-    dist *= mtomi; // convert to mile
+  ];
 
-    trails = [...trails, {
-        id: curID,
-        name: name,
-        trailColor: 0xffff0000,
-        coordinates: coords,
-        distance: dist
-    }];
-
-    //global.saveTrails();
-    curID++;
-}
+  //global.saveTrails();
+  curID++;
+};
 
 global.getAllTrails = () => {
-    return trails;
-}
+  return trails;
+};
 
 global.setCurrentTrailData = (coords, distance, time) => {
-    global.currentTrail = {
-        name: "",
-        trailColor: 0xffff0000,
-        coordinates: coords,
-        distance: distance,
-        duration: time
-    }
+  global.currentTrail = {
+    name: "",
+    trailColor: 0xffff0000,
+    coordinates: coords,
+    distance: distance,
+    duration: time
+  };
+};
 
-}
-
-global.setCurrentTrailName = (name) => {
-    global.currentTrail.name = name;
-}
+global.setCurrentTrailName = name => {
+  global.currentTrail.name = name;
+};
 
 global.postCurrentTrail = () => {
-    firebase.push('/trails',
-        global.currentTrail).then((result) => {
-        console.log("Created key: " + result.key);
-    });
-}
+  firebase.push("/trails", global.currentTrail).then(result => {
+    console.log("Created key: " + result.key);
+  });
+};
 
 global.postTrail = (name, coords, distance) => {
-
-    firebase.push('/trails', {
-        name: name,
-        trailColor: 0xffff0000,
-        coordinates: coords,
-        distance: distance
-    }).then((result) => {
-        console.log("Created key: " + result.key);
+  firebase
+    .push("/trails", {
+      name: name,
+      trailColor: 0xffff0000,
+      coordinates: coords,
+      distance: distance
+    })
+    .then(result => {
+      console.log("Created key: " + result.key);
     });
-}
+};
 
 global.saveTrails = () => {
-    file.writeText(JSON.stringify(trails)).then((result) => {
-        file.readText().then((res) => {
-            console.log("we wrote: " + res);
-        });
-    }).catch(err => console.log(err));
-
-}
+  file
+    .writeText(JSON.stringify(trails))
+    .then(result => {
+      file.readText().then(res => {
+        console.log("we wrote: " + res);
+      });
+    })
+    .catch(err => console.log(err));
+};
 
 global.loadTrails = () => {
+  firebase
+    .getValue("/trails")
+    .then(result => {
+      //console.log(JSON.stringify(result.value));
+      for (var i in result.value) {
+        var temp = {
+          id: i,
+          coordinates: result.value[i].coordinates,
+          name: result.value[i].name,
+          trailColor: result.value[i].trailColor,
+          distance: result.value[i].distance
+        };
+        trails = [...trails, temp];
+      }
+      //console.log(JSON.stringify(trails));
+    })
+    .catch(error => console.log("error: " + error));
 
-    firebase.getValue('/trails').then((result) => {
-        //console.log(JSON.stringify(result.value));
-        for (var i in result.value) {
-            var temp = {
-                id: i,
-                coordinates: result.value[i].coordinates,
-                name: result.value[i].name,
-                trailColor: result.value[i].trailColor,
-                distance: result.value[i].distance
-            }
-            trails = [...trails, temp];
-        }
-        //console.log(JSON.stringify(trails));
+  // old code, this is saving to a file. dont delete just yet
+  // file.readText().then((res) => {
+  //     trails = JSON.parse(res);
+  //     resolve(trails);
+  // }).catch(err => {
+  //     console.log("error reading file");
+  //     reject("Failed to read file");
+  // });
+};
 
+// application.on(application.suspendEvent, args => {
+//   if (args.android) {
+//     console.log("suspended");
+//   }
+// });
 
-    }).catch(error => console.log("error: " + error));
+// application.on(application.resumeEvent, args => {
+//   if (args.android) {
+//     console.log("resumed");
+//   }
+// });
 
-    // old code, this is saving to a file. dont delete just yet
-    // file.readText().then((res) => {
-    //     trails = JSON.parse(res);
-    //     resolve(trails);
-    // }).catch(err => {
-    //     console.log("error reading file");
-    //     reject("Failed to read file");
-    // });
-}
-
+application.on(application.uncaughtErrorEvent, args => {
+  console.log("Error: " + args.error);
+});
 
 application.run({
-    moduleName: "app-root"
+  moduleName: "app-root"
 });
 
 /*

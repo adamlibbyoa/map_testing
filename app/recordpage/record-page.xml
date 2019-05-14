@@ -27,6 +27,7 @@
             <StackLayout height="100%" width="100%" id="myMap" style="margin-bottom: 0;">
                 <!-- The map dynamically loads here -->
             </StackLayout>
+            <ActivityIndicator row="0" colSpan="2" width="25%" color="#FF8C28" busy="{{ isLoading }}" />
             <!-- <StackLayout verticalAlignment="bottom" style="z-index: 10; margin-bottom:0;" orientation="horizontal"> -->
             <Image src="res://navrec_button_background" horizontalAlignment="center" verticalAlignment="bottom" style="height: 90vh;" />
             <Image src="res://add_button" horizontalAlignment="left" verticalAlignment="bottom" style="height: 90vh;" />

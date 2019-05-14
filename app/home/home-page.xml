@@ -4,15 +4,15 @@
     xmlns:FAB="nativescript-floatingactionbutton">
 
     <!-- <ActionBar class="action-bar">
-        <Label class="action-bar-title" text="Map"></Label>
-    </ActionBar> -->
-
+        <Label class="action-bar-title" text="Map"></Label> 
+    </ActionBar>  
+    -->
     <ContentView >
         <GridLayout rows="* 60vh" columns="* *">
-            <StackLayout loaded="onMapLoaded" row="0" colSpan="2" height="96%" width="100%" id="myMap" style="z-index: -1; margin-top: 2vh; margin-bottom: 1vh;">
+            <StackLayout loaded="onMapLoaded" row="0" colSpan="2" width="100%" id="myMap" style="z-index: -1;">
                 <!-- The map dynamically loads here -->
-
             </StackLayout>
+            <ActivityIndicator row="0" colSpan="2" width="25%" color="#FF8C28" busy="{{ isLoading }}" />
             <!-- <Button row="0" col="1" id="recordbtn" class="create-trail-popup-toggle" verticalAlignment="bottom" horizontalAlignment="right" text="+" /> -->
             <Image src="res://recenter_icon" row="0" col="1" horizontalAlignment="right" verticalAlignment="top" style="width: 32ppi; height: 32ppi; padding: 4; margin-right: 12; margin-top: 58;" tap="recenterTap" />
             <Button class="create-trail-modal-button" verticalAlignment="bottom" row="0" colSpan="2" text="Record New Trail" height="60vh" tap="goToRecording" />

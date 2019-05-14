@@ -11,12 +11,12 @@ const mapbox = require("nativescript-mapbox");
 const application = require("tns-core-modules/application");
 var frameModule = require("ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
-
-
+const Accuracy = require("tns-core-modules/ui/enums").Accuracy;
 const accessToken =
   "pk.eyJ1IjoiYWRhbWxpYmJ5b2EiLCJhIjoiY2p1eGg3bG05MG40bzRjandsNTJnZHY3aiJ9.NkE4Wdj4dy3r_w18obRv8g";
 
 var recordBtn;
+var watchID; // used for background recording
 
 var observ;
 var map;
@@ -32,7 +32,7 @@ var waypoint;
 // 35.610295
 //-97.4613617
 
-exports.onMapLoaded = function (args) {
+function onMapLoaded(args) {
   var page = args.object.page;
   // get the map container (not the actual map though). This is where the map is going to be 'spawned' in.
   var m = page.getViewById("myMap");
@@ -41,23 +41,26 @@ exports.onMapLoaded = function (args) {
 
   map.on("mapReady", args => {
     console.log("map is ready");
+    observ.set("isLoading", false);
 
     if (global.trails.length == 0) {
       console.log("No trails to show");
     } else {
       for (var i = 0; i < global.trails.length; i++) {
         // add trail heads here
-        map.addMarkers([{
-          id: global.trails[i].id,
-          lat: global.trails[i].coordinates[0].lat,
-          lng: global.trails[i].coordinates[0].lng,
-          iconPath: "./icons/trail_head_marker.png",
-          title: "Trail head: " + global.trails[i].name,
-          subtitle: "Trail is: " + global.trails[i].distance + "m",
-          onTap: function () {
-            console.log("tapped trail head");
+        map.addMarkers([
+          {
+            id: global.trails[i].id,
+            lat: global.trails[i].coordinates[0].lat,
+            lng: global.trails[i].coordinates[0].lng,
+            iconPath: "./icons/trail_head_marker.png",
+            title: "Trail head: " + global.trails[i].name,
+            subtitle: "Trail is: " + global.trails[i].distance + "m",
+            onTap: function() {
+              console.log("tapped trail head");
+            }
           }
-        }]);
+        ]);
         // draw the trails here
         map.addPolyline({
           id: global.trails[i].id,
@@ -127,11 +130,11 @@ exports.onMapLoaded = function (args) {
     // });
     //#endregion
   });
+
   //console.log("navigatedto");
   geolocation
     .getCurrentLocation({
-      desiredAccuracy: 1,
-      updateDistance: 1
+      desiredAccuracy: Accuracy.high
     })
     .then(loc => {
       // console.log(loc);
@@ -144,17 +147,17 @@ exports.onMapLoaded = function (args) {
       map.hideCompass = "false";
       map.zoomLevel = 14;
 
-      map.mapStyle = "satellite_streets"; // satellite_streets | mapbox://styles/mapbox/outdoors-v11 
+      map.mapStyle = "satellite_streets"; // satellite_streets | mapbox://styles/mapbox/outdoors-v11
       global.loadTrails();
       m.addChild(map);
 
       page.bindingContext = observ;
     });
 }
+exports.onMapLoaded = onMapLoaded;
 
 function onNavigatingTo(args) {
-  const page = args.object;
-  observ = new Observable();
+  var m = args.object.getViewById("myMap");
   // hide the status bar if the device is an android
   if (application.android) {
     const activity = application.android.startActivity;
@@ -166,8 +169,39 @@ function onNavigatingTo(args) {
   var topmost = frameModule.topmost();
   topmost.android.showActionBar = false;
 
+  // not sure where to put this, so I'll put this here...
+  // this will run when the application is suspended. It basically deletes the map.
+  application.on(application.suspendEvent, args => {
+    if (args.android) {
+      if (map) {
+        m.removeChildren();
+        map.destroy();
+      }
+      // background location does not work here. Maybe I will try something later.
+      // watchID = geolocation.watchLocation(
+      //   function(loc) {
+      //     if (loc) {
+      //       console.log("watching: " + loc.latitude + ", " + loc.longitude);
+      //     }
+      //   },
+      //   function(error) {
+      //     console.log(error);
+      //   }
+      // );
+      console.log("suspended");
+    }
+  });
+  // when the application is resumed, this will be caused. I'm thinking about doing background recording. We will see.
+  application.on(application.resumeEvent, args => {
+    if (args.android) {
+      //geolocation.clearWatch(watchID);
+      console.log("resumed");
+    }
+  });
+  const page = args.object;
+  observ = new Observable();
+  observ.set("isLoading", true);
   page.bindingContext = observ;
-
 }
 
 function recenterTap(args) {
@@ -176,8 +210,7 @@ function recenterTap(args) {
   var map = page.getViewById("themap");
   geolocation
     .getCurrentLocation({
-      desiredAccuracy: 3,
-      updateDistance: 10
+      desiredAccuracy: Accuracy.high
     })
     .then(loc => {
       map.setCenter({
@@ -205,11 +238,10 @@ exports.recenterTap = recenterTap;
 
 exports.onNavigatingTo = onNavigatingTo;
 
-exports.goToRecording = function (args) {
+exports.goToRecording = function(args) {
   frameModule.topmost().navigate({
     moduleName: "recordpage/record-page",
     context: {},
     animated: true
-
   });
-}
+};
