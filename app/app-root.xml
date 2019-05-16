@@ -1,2 +1,3 @@
-<Frame defaultPage="home/home-page"></Frame>
+<!-- <Frame defaultPage="home/home-page"></Frame> -->
+<Frame defaultPage="recordpage/record-page"></Frame>
 <!-- <Frame defaultPage="endrecord/endrecord-page"></Frame> -->

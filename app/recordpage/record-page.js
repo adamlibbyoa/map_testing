@@ -83,7 +83,7 @@ function onNavigatingTo(args) {
       tilt: 60,
       duration: 2000
     });
-    startRecording(map);
+    //startRecording(map);
   });
   geolocation
     .getCurrentLocation({
@@ -148,7 +148,7 @@ function startRecording(map) {
   var mtomi = 0.00062137;
   var lastLoc = null;
   watchID = geolocation.watchLocation(
-    function(loc) {
+    function (loc) {
       if (loc) {
         // console.log(loc);
         recordedLocations = [...recordedLocations, loc]; // save the location data
@@ -184,8 +184,7 @@ function startRecording(map) {
             }
           ];
           // save temp coords to draw
-          var tempcoords = [
-            {
+          var tempcoords = [{
               lat: lastLoc.latitude,
               lng: lastLoc.longitude
             },
@@ -236,10 +235,9 @@ function startRecording(map) {
         //map.page.getViewById("lastloc").text = "Left/right: " + deviceRotation.x + "; Forward/Back: " + deviceRotation.y;
       }
     },
-    function(err) {
+    function (err) {
       console.log(err);
-    },
-    {
+    }, {
       // possibly set these dynamically based on battery optimization
       desiredAccuracy: Accuracy.high,
       updateDistance: 5,
@@ -329,7 +327,7 @@ exports.recenterTap = recenterTap;
 
 function startTrackingAccelerometer() {
   accelerometer.startAccelerometerUpdates(
-    function(data) {
+    function (data) {
       if (initMonitoring) {
         initMonitoring = false;
         deviceRotation.x = data.x;
@@ -341,8 +339,7 @@ function startTrackingAccelerometer() {
 
       // observ.set("roll", "Roll: " + pitch.toFixed(1));
       // observ.set("pitch", "Pitch: " + roll.toFixed(1));
-    },
-    {
+    }, {
       sensorDelay: "ui"
     }
   );

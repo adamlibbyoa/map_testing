@@ -35,6 +35,9 @@
             <Image src="res://stop_button" horizontalAlignment="center" verticalAlignment="bottom" style="height: 95vh;" tap="buttonStopWatch" />
             <!-- </StackLayout> -->
 
+            <GridLayout height="250vh" verticalAlignment="bottom" style="background-color: gray; margin-bottom: 100vh;">
+
+            </GridLayout>
 
         </GridLayout>
     </ContentView>

@@ -20,10 +20,10 @@ firebase
     persist: true
   })
   .then(
-    function() {
+    function () {
       console.log("firebase.init done");
     },
-    function(error) {
+    function (error) {
       console.log("firebase.init error: " + error);
     }
   );

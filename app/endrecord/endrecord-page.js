@@ -37,6 +37,7 @@ function onNavigatingTo(args) {
   const page = args.object;
   observ = new Observable();
 
+
   observ.set("distance", global.currentTrail.distance);
   observ.set("duration", global.currentTrail.duration);
 

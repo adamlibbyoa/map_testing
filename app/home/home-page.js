@@ -40,6 +40,28 @@ function onMapLoaded(args) {
   map.id = "themap";
 
   map.on("mapReady", args => {
+
+    application.on(application.suspendEvent, args => {
+      if (args.android) {
+        if (map != null) {
+          m.removeChildren();
+          map.destroy();
+        }
+        // background location does not work here. Maybe I will try something later.
+        // watchID = geolocation.watchLocation(
+        //   function(loc) {
+        //     if (loc) {
+        //       console.log("watching: " + loc.latitude + ", " + loc.longitude);
+        //     }
+        //   },
+        //   function(error) {
+        //     console.log(error);
+        //   }
+        // );
+        console.log("suspended");
+      }
+    });
+
     console.log("map is ready");
     observ.set("isLoading", false);
 
@@ -48,19 +70,17 @@ function onMapLoaded(args) {
     } else {
       for (var i = 0; i < global.trails.length; i++) {
         // add trail heads here
-        map.addMarkers([
-          {
-            id: global.trails[i].id,
-            lat: global.trails[i].coordinates[0].lat,
-            lng: global.trails[i].coordinates[0].lng,
-            iconPath: "./icons/trail_head_marker.png",
-            title: "Trail head: " + global.trails[i].name,
-            subtitle: "Trail is: " + global.trails[i].distance + "m",
-            onTap: function() {
-              console.log("tapped trail head");
-            }
+        map.addMarkers([{
+          id: global.trails[i].id,
+          lat: global.trails[i].coordinates[0].lat,
+          lng: global.trails[i].coordinates[0].lng,
+          iconPath: "./icons/trail_head_marker.png",
+          title: "Trail head: " + global.trails[i].name,
+          subtitle: "Trail is: " + global.trails[i].distance + "m",
+          onTap: function () {
+            console.log("tapped trail head");
           }
-        ]);
+        }]);
         // draw the trails here
         map.addPolyline({
           id: global.trails[i].id,
@@ -171,26 +191,11 @@ function onNavigatingTo(args) {
 
   // not sure where to put this, so I'll put this here...
   // this will run when the application is suspended. It basically deletes the map.
-  application.on(application.suspendEvent, args => {
-    if (args.android) {
-      if (map) {
-        m.removeChildren();
-        map.destroy();
-      }
-      // background location does not work here. Maybe I will try something later.
-      // watchID = geolocation.watchLocation(
-      //   function(loc) {
-      //     if (loc) {
-      //       console.log("watching: " + loc.latitude + ", " + loc.longitude);
-      //     }
-      //   },
-      //   function(error) {
-      //     console.log(error);
-      //   }
-      // );
-      console.log("suspended");
-    }
+  application.on(application.launchEvent, args => {
+    map = null;
   });
+
+
   // when the application is resumed, this will be caused. I'm thinking about doing background recording. We will see.
   application.on(application.resumeEvent, args => {
     if (args.android) {
@@ -238,7 +243,7 @@ exports.recenterTap = recenterTap;
 
 exports.onNavigatingTo = onNavigatingTo;
 
-exports.goToRecording = function(args) {
+exports.goToRecording = function (args) {
   frameModule.topmost().navigate({
     moduleName: "recordpage/record-page",
     context: {},
