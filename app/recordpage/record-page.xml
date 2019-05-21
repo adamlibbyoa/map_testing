@@ -24,20 +24,34 @@
                 </StackLayout>
             </GridLayout>
 
-            <StackLayout height="100%" width="100%" id="myMap" style="margin-bottom: 0;">
+            <StackLayout height="100%" width="100%" id="myMap" style="margin-bottom: 125vh;">
                 <!-- The map dynamically loads here -->
             </StackLayout>
             <ActivityIndicator row="0" colSpan="2" width="25%" color="#FF8C28" busy="{{ isLoading }}" />
             <!-- <StackLayout verticalAlignment="bottom" style="z-index: 10; margin-bottom:0;" orientation="horizontal"> -->
-            <Image src="res://navrec_button_background" horizontalAlignment="center" verticalAlignment="bottom" style="height: 90vh;" />
-            <Image src="res://add_button" horizontalAlignment="left" verticalAlignment="bottom" style="height: 90vh;" />
-            <Image src="res://tools_button" horizontalAlignment="right" verticalAlignment="bottom" style="height: 90vh;" />
-            <Image src="res://stop_button" horizontalAlignment="center" verticalAlignment="bottom" style="height: 95vh;" tap="buttonStopWatch" />
-            <!-- </StackLayout> -->
 
-            <GridLayout height="250vh" verticalAlignment="bottom" style="background-color: gray; margin-bottom: 100vh;">
+            <!-- Add icon button popup  -->
+            <GridLayout id="trailNotesPopup" rows="50vh *" horizontalAlignment="center" verticalAlignment="bottom" class="addTrailIconPopup" width="100%">
+                <Label row="0" text="Trail Notes" className="trailNotesTitle" />
+                <GridLayout rows="120vw 120vw" columns="120vw 120vw 120vw" row="1" horizontalAlignment="center">
 
+                    <Image src="res://camp_btn" tap="addCampTapped" width="120vw" height="120vw" row="0" col="0" className="trailNotesBtn" />
+                    <Image src="res://obstical_btn" tap="addCampTapped" width="120vw" height="120vw" row="0" col="1" className="trailNotesBtn middleBtn" />
+                    <Image src="res://camera_poi_icon" tap="addCampTapped" width="120vw" height="120vw" row="0" col="2" className="trailNotesBtn" />
+
+                    <Image tap="addCampTapped" width="120vw" height="120vw" row="1" col="0" className="trailNotesBtn bottomRow" />
+                    <Image tap="addCampTapped" width="120vw" height="120vw" row="1" col="1" className="trailNotesBtn bottomRow middleBtn" />
+                    <Image tap="addCampTapped" width="120vw" height="120vw" row="1" col="2" className="trailNotesBtn bottomRow" />
+
+                </GridLayout>
             </GridLayout>
+
+            <Image src="res://navrec_button_background" horizontalAlignment="center" verticalAlignment="bottom" style="height: 91vh; width: 100%; margin: 0;" />
+            <Image src="res://add_button" tap="trailNotesPressed" horizontalAlignment="left" verticalAlignment="bottom" style="height: 90vh;" />
+            <Image src="res://tools_button" horizontalAlignment="right" verticalAlignment="bottom" style="height: 90vh;" />
+
+
+            <Image src="res://stop_button" horizontalAlignment="center" verticalAlignment="bottom" style="height: 95vh;" tap="buttonStopWatch" />
 
         </GridLayout>
     </ContentView>

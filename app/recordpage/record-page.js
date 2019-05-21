@@ -20,6 +20,8 @@ const fname = "gpscoords";
 const folder = documents.getFolder("GPSTESTING" || "GPStesting");
 const file = folder.getFile("data.txt" || "gpsdata.txt");
 const androidApp = require("tns-core-modules/application").android;
+var enums = require("tns-core-modules/ui/enums");
+const campModal = "./Modals/CampModal/camp-modal";
 //const iosUtils = require("utils/utils.ios");
 
 // import {
@@ -42,14 +44,19 @@ var location;
 var currentTrail = 0;
 var waypoint;
 var selectedTrailDistance = 0;
+var markerID = 0;
 var map;
 var timerID;
 var timerStarted = false;
-
+var isShown;
 // 35.610295
 //-97.4613617
 function onNavigatingTo(args) {
   const page = args.object;
+
+  var popup = page.getViewById("trailNotesPopup")
+  popup.translateY = 500;
+  isShown = false;
 
   var topmost = frameModule.topmost();
   topmost.android.showActionBar = false;
@@ -72,6 +79,24 @@ function onNavigatingTo(args) {
   //console.log("going into map ready");
 
   map.on("mapReady", args => {
+    // this will run when the application is suspended. This will (hopefully) pause the recording
+    application.on(application.suspendEvent, args => {
+      if (args.android) {
+        if (map) {
+          m.removeChildren();
+          map.destroy();
+        }
+
+        console.log("suspended");
+      }
+    });
+    // when the application is resumed, this will be caused. I'm thinking about doing background recording. We will see.
+    application.on(application.resumeEvent, args => {
+      if (args.android) {
+        //geolocation.clearWatch(watchID);
+        console.log("resumed");
+      }
+    });
     vm.set("isLoading", false);
     map.animateCamera({
       target: {
@@ -83,7 +108,7 @@ function onNavigatingTo(args) {
       tilt: 60,
       duration: 2000
     });
-    //startRecording(map);
+    startRecording(map);
   });
   geolocation
     .getCurrentLocation({
@@ -107,25 +132,89 @@ function onNavigatingTo(args) {
       page.bindingContext = vm;
     });
 
-  // this will run when the application is suspended. This will (hopefully) pause the recording
-  application.on(application.suspendEvent, args => {
-    if (args.android) {
-      if (map) {
-        m.removeChildren();
-        map.destroy();
-      }
 
-      console.log("suspended");
-    }
-  });
-  // when the application is resumed, this will be caused. I'm thinking about doing background recording. We will see.
-  application.on(application.resumeEvent, args => {
-    if (args.android) {
-      //geolocation.clearWatch(watchID);
-      console.log("resumed");
-    }
-  });
 }
+var curLoc;
+
+function addCampTapped(args) {
+
+  // close the popup
+  var page = args.object.page;
+  var popup = page.getViewById("trailNotesPopup");
+  isShown = false;
+
+  popup.animate({
+    translate: {
+      x: 0,
+      y: 500
+    },
+    duration: 300,
+    curve: enums.AnimationCurve.easeInOut
+  });
+
+  var mainView = args.object;
+  var context = {};
+
+  geolocation
+    .getCurrentLocation({
+      desiredAccuracy: Accuracy.high
+    })
+    .then(loc => {
+      curLoc = loc;
+    });
+
+  mainView.showModal(campModal, context, addCampIcon, false);
+}
+exports.addCampTapped = addCampTapped;
+
+function addCampIcon(didConfirm, data) {
+  if (didConfirm) {
+
+    map.addMarkers([{
+      id: markerID,
+      lat: curLoc.latitude,
+      lng: curLoc.longitude,
+      // icon: "res://campsite_icon"
+      iconPath: "./icons/camp_trail_marker.png"
+    }]);
+    markerID++;
+
+    global.addMarkerData("camp", curLoc, data.rating, data.price, data.info);
+  } else {
+    console.log("closed");
+  }
+}
+
+function trailNotesPressed(args) {
+  var page = args.object.page;
+  var popup = page.getViewById("trailNotesPopup");
+
+  if (isShown) {
+    popup.animate({
+      translate: {
+        x: 0,
+        y: 500
+      },
+      duration: 300,
+      curve: enums.AnimationCurve.easeInOut
+    });
+  } else {
+    popup.animate({
+      translate: {
+        x: 0,
+        y: 0
+      },
+      duration: 650,
+      curve: enums.AnimationCurve.easeInOut
+    });
+  }
+
+
+
+  isShown = !isShown;
+}
+
+exports.trailNotesPressed = trailNotesPressed;
 
 function onBackPressed(args) {
   var btn = args.object;
@@ -137,10 +226,7 @@ exports.onBackPressed = onBackPressed;
 exports.onNavigatingTo = onNavigatingTo;
 
 function startRecording(map) {
-  map.trackUser({
-    mode: "FOLLOW", // "NONE" | "FOLLOW" | "FOLLOW_WITH_HEADING" | "FOLLOW_WITH_COURSE"
-    animated: true
-  });
+
   map.removePolylines();
   map.removeMarkers();
   dist = 0;
@@ -150,6 +236,10 @@ function startRecording(map) {
   watchID = geolocation.watchLocation(
     function (loc) {
       if (loc) {
+        map.trackUser({
+          mode: "FOLLOW", // "NONE" | "FOLLOW" | "FOLLOW_WITH_HEADING" | "FOLLOW_WITH_COURSE"
+          animated: true
+        });
         // console.log(loc);
         recordedLocations = [...recordedLocations, loc]; // save the location data
         vm.set("elevation", loc.altitude.toFixed(2) + " m");

@@ -1,0 +1,24 @@
+<Page xmlns="http://www.nativescript.org/tns.xsd" shownModally="onShownModally">
+    <StackLayout width="320vw">
+        <Image src="res://campsite_icon" width="32vw" height="32vw" style="margin-top: 8; margin-bottom: 8;" />
+        <GridLayout width="300vw" rows="30vh" columns="* * * * *">
+            <Image id="1" row="0" col="0" src="res://star_grey" tap="onStarClicked" />
+            <Image id="2" row="0" col="1" src="res://star_grey" tap="onStarClicked" />
+            <Image id="3" row="0" col="2" src="res://star_grey" tap="onStarClicked" />
+            <Image id="4" row="0" col="3" src="res://star_grey" tap="onStarClicked" />
+            <Image id="5" row="0" col="4" src="res://star_grey" tap="onStarClicked" />
+        </GridLayout>
+        <!-- <StackLayout orientation="horizontal" horizontalAlignment="center" width="300vw"> -->
+        <GridLayout width="280vw" rows="40vh" columns="* * *" style="margin-top: 10vh; margin-bottom: 10vh;">
+            <Label id="paid" tap="onPriceSelected" textAlignment="center" text="Paid" row="0" col="0" class="baseLblDefault paidLblDefault" />
+            <Label id="free" tap="onPriceSelected" textAlignment="center" text="Free" row="0" col="1" class="baseLblDefault freeLblDefault" />
+            <Label id="unknown" tap="onPriceSelected" textAlignment="center" text="Unknown" row="0" col="2" class="baseLblDefault unknownLblDefault" />
+        </GridLayout>
+        <!-- </StackLayout> -->
+        <TextView id="info" hint="Please enter addition or helpful information here..." textWrap="true" height="100vh" width="280vw" style="margin: 6; border-width: 2px; border-color: black; font-size: 12;" />
+        <GridLayout width="280vw" rows="50vw" columns="* *">
+            <Button text="Cancel" tap="onCancel" col="0" style="background-color: #db4437; color: white;" />
+            <Button text="Confirm" tap="onSubmit" col="1" style="background-color: #4281a4; color: white;" />
+        </GridLayout>
+    </StackLayout>
+</Page>

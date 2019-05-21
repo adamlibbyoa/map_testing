@@ -120,3 +120,62 @@ components that have the btn class name.
     margin-left: 18vw;
     font-weight: bold;
 }
+
+.tempIconBtn {
+    border-radius: 100%;
+    background-color: white;
+    width: 64vw;
+    height: 64vw;
+}
+
+.addTrailIconPopup {
+    background-color: rgb(253, 253, 253);
+    margin-bottom: 65vh;
+    height: 300vh;
+}
+
+.trailNotesTitle {
+    text-align: center;
+    color: #FF8C28;
+    font-size: 24;
+    font-weight: bold;
+}
+
+.trailNotesBtn {
+    border-width: 1;
+    border-color: rgba(158, 158, 158, 0.472);
+}
+
+.middleBtn {
+    border-left-width: 0;
+    border-right-width: 0;
+}
+
+.bottomRow {
+    border-top-width: 0;
+}
+
+/* This is probably not the best way to do it, but eh */
+.baseLblDefault {
+    color: white;
+    width: 100vw;
+    height: 50vh;
+    padding-top: 12;
+}
+
+.paidLblDefault {
+    background-color: #58b858;
+}
+
+.freeLblDefault {
+    background-color: #6295b1;
+}
+
+.unknownLblDefault {
+    background-color: #ff8c28;
+}
+
+.lblSelected {
+    border-bottom-width: 4;
+    border-bottom-color: black;
+}
