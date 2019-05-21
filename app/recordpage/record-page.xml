@@ -37,11 +37,11 @@
 
                     <Image src="res://camp_btn" tap="addCampTapped" width="120vw" height="120vw" row="0" col="0" className="trailNotesBtn" />
                     <Image src="res://obstical_btn" tap="addCampTapped" width="120vw" height="120vw" row="0" col="1" className="trailNotesBtn middleBtn" />
-                    <Image src="res://camera_poi_icon" tap="addCampTapped" width="120vw" height="120vw" row="0" col="2" className="trailNotesBtn" />
+                    <Image src="res://poi_button" tap="addCampTapped" width="120vw" height="120vw" row="0" col="2" className="trailNotesBtn" />
 
-                    <Image tap="addCampTapped" width="120vw" height="120vw" row="1" col="0" className="trailNotesBtn bottomRow" />
-                    <Image tap="addCampTapped" width="120vw" height="120vw" row="1" col="1" className="trailNotesBtn bottomRow middleBtn" />
-                    <Image tap="addCampTapped" width="120vw" height="120vw" row="1" col="2" className="trailNotesBtn bottomRow" />
+                    <Image width="120vw" height="120vw" row="1" col="0" className="trailNotesBtn bottomRow" />
+                    <Image width="120vw" height="120vw" row="1" col="1" className="trailNotesBtn bottomRow middleBtn" />
+                    <Image width="120vw" height="120vw" row="1" col="2" className="trailNotesBtn bottomRow" />
 
                 </GridLayout>
             </GridLayout>

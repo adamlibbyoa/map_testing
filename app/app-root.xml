@@ -1,4 +1,6 @@
-<Frame defaultPage="home/home-page"></Frame>
+<!-- <Frame defaultPage="home/home-page"></Frame> -->
 <!-- <Frame defaultPage="recordpage/record-page"></Frame> -->
 <!-- <Frame defaultPage="endrecord/endrecord-page"></Frame> -->
 <!-- <Frame defaultPage="Modals/CampModal/camp-modal"></Frame> -->
+<!-- <Frame defaultPage="Modals/ConfirmModal/confirm-modal"></Frame> -->
+<Frame defaultPage="Modals/ObsticalModal/obstical-modal"></Frame>

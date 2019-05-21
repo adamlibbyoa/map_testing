@@ -22,6 +22,8 @@ const file = folder.getFile("data.txt" || "gpsdata.txt");
 const androidApp = require("tns-core-modules/application").android;
 var enums = require("tns-core-modules/ui/enums");
 const campModal = "./Modals/CampModal/camp-modal";
+const confirmModal = "./Modals/ConfirmModal/confirm-modal";
+
 //const iosUtils = require("utils/utils.ios");
 
 // import {
@@ -459,37 +461,61 @@ function endTimer() {
   timerModule.clearInterval(timerID);
 }
 
-function buttonStopWatch() {
+function buttonStopWatch(args) {
   if (watchID) {
-    dialogs
-      .confirm({
-        title: "Are you sure you are done recording?",
-        okButtonText: "Confirm",
-        cancelButtonText: "Resume"
-      })
+    var mainView = args.object;
+    var context = {
+      confirmText: "Are you sure you are done recording?"
+    }
+    mainView.showModal(confirmModal, context, (result) => {
+      if (result) {
+        // we confirmed, so save trail then navigate to endrecord page
+        geolocation.clearWatch(watchID);
+        timerStarted = false;
+        timerModule.clearInterval(timerID);
+        global.setCurrentTrailData(curCoords, dist, curTime);
+        //global.postTrail(trailName, curCoords, dist);
 
-      .then(res => {
-        if (res) {
-          // the user clicked save
-          //trailName = res.text;
-          geolocation.clearWatch(watchID);
-          timerStarted = false;
-          timerModule.clearInterval(timerID);
-          global.setCurrentTrailData(curCoords, dist, curTime);
-          //global.postTrail(trailName, curCoords, dist);
+        curCoords = []; // reset the coords if it was successfully added
+        recordedLocations = [];
+        map.removePolylines();
+        map.removeMarkers();
+        frameModule.topmost().navigate("endrecord/endrecord-page");
+      } else {
+        // we canceled the end recording, so resume recording
+        console.log("Closed confirm");
+      }
+    }, false);
 
-          curCoords = []; // reset the coords if it was successfully added
-          recordedLocations = [];
-          map.removePolylines();
-          map.removeMarkers();
-          frameModule.topmost().navigate("endrecord/endrecord-page");
-        }
-      });
-    //recordBtn.text = "+";
-    //savebtn.visibility = "collapsed";
-    //global.addTrail(trailName, curCoords, recordedLocations);
+    //   dialogs
+    //     .confirm({
+    //       title: "Are you sure you are done recording?",
+    //       okButtonText: "Confirm",
+    //       cancelButtonText: "Resume"
+    //     })
 
-    //console.log(res);
+    //     .then(res => {
+    //       if (res) {
+    //         // the user clicked save
+    //         //trailName = res.text;
+    //         geolocation.clearWatch(watchID);
+    //         timerStarted = false;
+    //         timerModule.clearInterval(timerID);
+    //         global.setCurrentTrailData(curCoords, dist, curTime);
+    //         //global.postTrail(trailName, curCoords, dist);
+
+    //         curCoords = []; // reset the coords if it was successfully added
+    //         recordedLocations = [];
+    //         map.removePolylines();
+    //         map.removeMarkers();
+    //         frameModule.topmost().navigate("endrecord/endrecord-page");
+    //       }
+    //     });
+    //   //recordBtn.text = "+";
+    //   //savebtn.visibility = "collapsed";
+    //   //global.addTrail(trailName, curCoords, recordedLocations);
+
+    //   //console.log(res);
   }
 }
 

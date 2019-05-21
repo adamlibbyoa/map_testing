@@ -1,0 +1,9 @@
+<Page xmlns="http://www.nativescript.org/tns.xsd" shownModally="onShownModally">
+    <StackLayout width="320vw" height="100vh">
+        <Label horizontalAlignment="center" text="{{ confirmText }}" style="font-size: 16;margin-top: 10; margin-bottom: 12;" />
+        <GridLayout verticalAlignment="bottom" width="280vw" rows="50vw" columns="* *">
+            <Button text="Cancel" tap="onCancel" col="0" style="background-color: #ff8c28; color: white; " />
+            <Button text="Confirm" tap="onSubmit" col="1" style="background-color: #4281a4; color: white; " />
+        </GridLayout>
+    </StackLayout>
+</Page>
