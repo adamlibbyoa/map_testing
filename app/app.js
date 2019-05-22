@@ -69,6 +69,18 @@ global.trails = [];
 global.currentTrail = {};
 global.markers = [];
 
+global.AddMarker = (type, location, data) => {
+  var m = {
+    type: type,
+    location: {
+      lat: location.latitude,
+      lng: location.longitude
+    },
+    data: data
+  }
+  markers = [...markers, m];
+}
+
 global.addMarkerData = (type, location, rating, price, info) => {
   var m = {
     type: type,
@@ -76,9 +88,11 @@ global.addMarkerData = (type, location, rating, price, info) => {
       lat: location.latitude,
       lng: location.longitude
     },
-    rating: rating,
-    price: price,
-    info: info
+    data: {
+      rating: rating,
+      price: price,
+      info: info
+    }
   }
   markers = [...markers, m];
 }
@@ -205,6 +219,19 @@ global.loadTrails = () => {
       //console.log(JSON.stringify(trails));
     })
     .catch(error => console.log("error: " + error));
+
+  firebase.getValue("/markers").then(result => {
+    for (var i in result.value) {
+      var temp = {
+        id: i,
+        location: result.value[i].location,
+        trail_id: result.value[i].trail_id,
+        type: result.value[i].type,
+        data: result.value[i].data
+      }
+      global.markers = [...global.markers, temp];
+    }
+  }).catch(err => console.log("error fetching markers: " + err));
 
   // old code, this is saving to a file. dont delete just yet
   // file.readText().then((res) => {

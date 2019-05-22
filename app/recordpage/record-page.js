@@ -22,6 +22,8 @@ const file = folder.getFile("data.txt" || "gpsdata.txt");
 const androidApp = require("tns-core-modules/application").android;
 var enums = require("tns-core-modules/ui/enums");
 const campModal = "./Modals/CampModal/camp-modal";
+const poiModal = "./Modals/PoiModal/poi-modal";
+const obsticalModal = "./Modals/ObsticalModal/obstical-modal";
 const confirmModal = "./Modals/ConfirmModal/confirm-modal";
 
 //const iosUtils = require("utils/utils.ios");
@@ -180,8 +182,107 @@ function addCampIcon(didConfirm, data) {
       iconPath: "./icons/camp_trail_marker.png"
     }]);
     markerID++;
+    global.AddMarker("camp", curLoc, data);
+    //global.addMarkerData("camp", curLoc, data.rating, data.price, data.info);
+  } else {
+    console.log("closed");
+  }
+}
 
-    global.addMarkerData("camp", curLoc, data.rating, data.price, data.info);
+function addObsticalTapped(args) {
+
+  // close the popup
+  var page = args.object.page;
+  var popup = page.getViewById("trailNotesPopup");
+  isShown = false;
+
+  popup.animate({
+    translate: {
+      x: 0,
+      y: 500
+    },
+    duration: 300,
+    curve: enums.AnimationCurve.easeInOut
+  });
+
+  var mainView = args.object;
+  var context = {};
+
+  geolocation
+    .getCurrentLocation({
+      desiredAccuracy: Accuracy.high
+    })
+    .then(loc => {
+      curLoc = loc;
+    });
+
+  mainView.showModal(obsticalModal, context, addObsticalIcon, false);
+}
+exports.addObsticalTapped = addObsticalTapped;
+
+function addObsticalIcon(didConfirm, data) {
+  if (didConfirm) {
+    map.addMarkers([{
+      id: markerID,
+      lat: curLoc.latitude,
+      lng: curLoc.longitude,
+      //icon: "res://obstical_icon"
+      iconPath: "./icons/obstical_icon_marker.png"
+    }]);
+    markerID++;
+
+    global.AddMarker("obstical", curLoc, data);
+    //    global.addMarkerData("camp", curLoc, data.rating, data.price, data.info);
+  } else {
+    console.log("closed");
+  }
+}
+
+
+function addPoiTapped(args) {
+
+  // close the popup
+  var page = args.object.page;
+  var popup = page.getViewById("trailNotesPopup");
+  isShown = false;
+
+  popup.animate({
+    translate: {
+      x: 0,
+      y: 500
+    },
+    duration: 300,
+    curve: enums.AnimationCurve.easeInOut
+  });
+
+  var mainView = args.object;
+  var context = {};
+
+  geolocation
+    .getCurrentLocation({
+      desiredAccuracy: Accuracy.high
+    })
+    .then(loc => {
+      curLoc = loc;
+    });
+
+  mainView.showModal(poiModal, context, addPoiIcon, false);
+}
+exports.addPoiTapped = addPoiTapped;
+
+function addPoiIcon(didConfirm, data) {
+  if (didConfirm) {
+
+    map.addMarkers([{
+      id: markerID,
+      lat: curLoc.latitude,
+      lng: curLoc.longitude,
+      // icon: "res://campsite_icon"
+      iconPath: "./icons/poi_trail_marker.png"
+    }]);
+    markerID++;
+    global.AddMarker("poi", curLoc, data);
+    //global.addMarkerData("camp", curLoc, data.rating, data.price, data.info);
   } else {
     console.log("closed");
   }

@@ -68,25 +68,50 @@ function onMapLoaded(args) {
     if (global.trails.length == 0) {
       console.log("No trails to show");
     } else {
+      var trailHeads = [];
       for (var i = 0; i < global.trails.length; i++) {
-        // add trail heads here
-        map.addMarkers([{
+        var tMarker = {
           id: global.trails[i].id,
           lat: global.trails[i].coordinates[0].lat,
           lng: global.trails[i].coordinates[0].lng,
-          iconPath: "./icons/trail_head_marker.png",
-          title: "Trail head: " + global.trails[i].name,
-          subtitle: "Trail is: " + global.trails[i].distance + "m",
-          onTap: function () {
-            console.log("tapped trail head");
-          }
-        }]);
+          iconPath: "./icons/trail_start_end.png",
+          //title: "Trail head: " + global.trails[i].name,
+          //subtitle: "Trail is: " + global.trails[i].distance + "m",
+          onTap: (marker) => onTrailHeadTap(marker)
+        };
+        trailHeads = [...trailHeads, tMarker];
+
+        // add trail heads here
         // draw the trails here
         map.addPolyline({
           id: global.trails[i].id,
           color: global.trails[i].trailColor,
           points: global.trails[i].coordinates
         });
+      }
+      map.addMarkers(trailHeads);
+
+      for (var i = 0; i < global.markers.length; i++) {
+        var marker = global.markers[i];
+        var icon;
+        if (marker.type == "obstical") {
+          icon = "./icons/obstical_icon_marker.png";
+        } else if (marker.type == "camp") {
+          icon = "./icons/camp_trail_marker.png";
+        } else if (marker.type == "poi") {
+          icon = "./icons/poi_trail_marker.png";
+        }
+        map.addMarkers([{
+          id: marker.id,
+          lat: marker.location.lat,
+          lng: marker.location.lng,
+          iconPath: icon,
+          title: marker.type,
+          subtitle: JSON.stringify(marker.data),
+          onTap: function () {
+            console.log(marker.data);
+          }
+        }]);
       }
     }
 
@@ -152,6 +177,8 @@ function onMapLoaded(args) {
   });
 
   //console.log("navigatedto");
+  global.loadTrails();
+
   geolocation
     .getCurrentLocation({
       desiredAccuracy: Accuracy.high
@@ -165,16 +192,19 @@ function onMapLoaded(args) {
       map.longitude = location.longitude;
       map.showUserLocation = true;
       map.hideCompass = "false";
-      map.zoomLevel = 14;
+      map.zoomLevel = 19;
 
       map.mapStyle = "satellite_streets"; // satellite_streets | mapbox://styles/mapbox/outdoors-v11
-      global.loadTrails();
       m.addChild(map);
 
       page.bindingContext = observ;
     });
 }
 exports.onMapLoaded = onMapLoaded;
+
+onTrailHeadTap = (data) => {
+  console.log((data.id));
+}
 
 function onNavigatingTo(args) {
   var m = args.object.getViewById("myMap");

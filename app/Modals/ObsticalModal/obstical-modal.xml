@@ -1,10 +1,13 @@
-<Page xmlns="http://www.nativescript.org/tns.xsd" shownModally="onShownModally">
+<Page xmlns="http://www.nativescript.org/tns.xsd" navigatingTo="onNavigating" shownModally="onShownModally">
     <StackLayout width="320vw">
         <Image src="res://obstical_icon" width="32vw" height="32vw" style="margin-top: 8; margin-bottom: 8;" />
         <Label width="280vw" text="Difficulty rating:" />
         <!-- <StackLayout orientation="horizontal" horizontalAlignment="center" width="300vw"> -->
         <GridLayout width="280vw" rows="40vh" columns="* * * *" style="margin-top: 10vh; margin-bottom: 10vh;">
-
+            <Image id="12" tap="onDifficultySelected" src="{{ oneSelected }}" row="0" col="0" />
+            <Image id="35" tap="onDifficultySelected" src="{{ threeSelected }}" row="0" col="1" />
+            <Image id="68" tap="onDifficultySelected" src="{{ sixSelected }}" row="0" col="2" />
+            <Image id="910" tap="onDifficultySelected" src="{{ nineSelected }}" row="0" col="3" />
 
         </GridLayout>
         <!-- </StackLayout> -->
