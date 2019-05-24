@@ -340,7 +340,7 @@ function startRecording(map) {
     function (loc) {
       if (loc) {
         map.trackUser({
-          mode: "FOLLOW", // "NONE" | "FOLLOW" | "FOLLOW_WITH_HEADING" | "FOLLOW_WITH_COURSE"
+          mode: "FOLLOW_WITH_HEADING", // "NONE" | "FOLLOW" | "FOLLOW_WITH_HEADING" | "FOLLOW_WITH_COURSE"
           animated: true
         });
         // console.log(loc);

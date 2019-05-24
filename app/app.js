@@ -67,6 +67,9 @@ firebase
 global.trails = [];
 
 global.currentTrail = {};
+
+var currentTrailMarkers = [];
+
 global.markers = [];
 
 global.AddMarker = (type, location, data) => {
@@ -78,7 +81,7 @@ global.AddMarker = (type, location, data) => {
     },
     data: data
   }
-  markers = [...markers, m];
+  currentTrailMarkers = [...currentTrailMarkers, m];
 }
 
 global.addMarkerData = (type, location, rating, price, info) => {
@@ -94,7 +97,7 @@ global.addMarkerData = (type, location, rating, price, info) => {
       info: info
     }
   }
-  markers = [...markers, m];
+  currentTrailMarkers = [...currentTrailMarkers, m];
 }
 
 //36.6707
@@ -145,10 +148,10 @@ global.setCurrentTrailName = name => {
 global.postCurrentTrail = () => {
   firebase.push("/trails", global.currentTrail).then(result => {
     console.log("Created key: " + result.key);
-    if (global.markers.length > 0) {
+    if (currentTrailMarkers.length > 0) {
       // assign all the markers' trail id with the one that was generated above.
-      for (var i = 0; i < global.markers.length; i++) {
-        global.markers[i].trail_id = result.key;
+      for (var i = 0; i < currentTrailMarkers.length; i++) {
+        currentTrailMarkers[i].trail_id = result.key;
       }
       pushMarkers(0); // start with index 0
     }
@@ -164,11 +167,11 @@ global.postCurrentTrail = () => {
 // type.CAMP 
 
 function pushMarkers(curIndex) {
-  if (curIndex >= global.markers.length) {
+  if (curIndex >= currentTrailMarkers.length) {
     return;
   }
 
-  firebase.push("/markers", global.markers[curIndex]).then(result => {
+  firebase.push("/markers", currentTrailMarkers[curIndex]).then(result => {
     console.log("pushed marker: " + curIndex + ", with key: " + result.key);
     var i = curIndex + 1;
     pushMarkers(i);
@@ -177,29 +180,29 @@ function pushMarkers(curIndex) {
   });
 }
 
-global.postTrail = (name, coords, distance) => {
-  firebase
-    .push("/trails", {
-      name: name,
-      trailColor: 0xffff0000,
-      coordinates: coords,
-      distance: distance
-    })
-    .then(result => {
-      console.log("Created key: " + result.key);
-    });
-};
+// global.postTrail = (name, coords, distance) => {
+//   firebase
+//     .push("/trails", {
+//       name: name,
+//       trailColor: 0xffff0000,
+//       coordinates: coords,
+//       distance: distance
+//     })
+//     .then(result => {
+//       console.log("Created key: " + result.key);
+//     });
+// };
 
-global.saveTrails = () => {
-  file
-    .writeText(JSON.stringify(trails))
-    .then(result => {
-      file.readText().then(res => {
-        console.log("we wrote: " + res);
-      });
-    })
-    .catch(err => console.log(err));
-};
+// global.saveTrails = () => {
+//   file
+//     .writeText(JSON.stringify(trails))
+//     .then(result => {
+//       file.readText().then(res => {
+//         console.log("we wrote: " + res);
+//       });
+//     })
+//     .catch(err => console.log(err));
+// };
 
 global.loadTrails = () => {
   firebase
