@@ -53,6 +53,8 @@ var map;
 var timerID;
 var timerStarted = false;
 var isShown;
+var elevations = [];
+var speeds = [];
 // 35.610295
 //-97.4613617
 function onNavigatingTo(args) {
@@ -339,12 +341,15 @@ function startRecording(map) {
   watchID = geolocation.watchLocation(
     function (loc) {
       if (loc) {
+
         map.trackUser({
           mode: "FOLLOW_WITH_HEADING", // "NONE" | "FOLLOW" | "FOLLOW_WITH_HEADING" | "FOLLOW_WITH_COURSE"
           animated: true
         });
         // console.log(loc);
         recordedLocations = [...recordedLocations, loc]; // save the location data
+        elevations = [...elevations, loc.altitude];
+        speeds = [...speeds, loc.speed];
         vm.set("elevation", loc.altitude.toFixed(2) + " m");
 
         // check and see if last loc is null
@@ -397,35 +402,6 @@ function startRecording(map) {
           lastLoc = loc;
           curLineID++;
         }
-
-        // old way
-        /**
-                 * 
-                 
-                 curCoords = [];
-                 for (var i = 0; i < recordedLocations.length; i++) {
-                     var tempCoord = {
-                         lat: recordedLocations[i].latitude,
-                         lng: recordedLocations[i].longitude
-                        };
-                        curCoords = [...curCoords, tempCoord];
-                    }
-                    if (lastLoc == null) {
-                        lastLoc = loc;
-                    } else {
-                        dist += geolocation.distance(lastLoc, loc) * mtomi;
-                        observ.set("dist", dist.toFixed(2));
-                        lastLoc = loc;
-                    }
-                    map.latitude = loc.latitude;
-                    map.longitude = loc.longitude;
-                    map.addPolyline({
-                        id: 11,
-                        color: 0xffff0000,
-                        points: curCoords
-                    });
-                */
-        //map.page.getViewById("lastloc").text = "Left/right: " + deviceRotation.x + "; Forward/Back: " + deviceRotation.y;
       }
     },
     function (err) {
@@ -433,8 +409,7 @@ function startRecording(map) {
     }, {
       // possibly set these dynamically based on battery optimization
       desiredAccuracy: Accuracy.high,
-      updateDistance: 5,
-      minimumUpdateTime: 1000 * 3
+      updateDistance: 5
     }
   );
 }
@@ -458,37 +433,12 @@ function batteryMonitor() {
 
 var recording = false;
 
-function buttonStartWatch(args) {
-  dialogs
-    .prompt({
-      title: "Name your trail!",
-      okButtonText: "Save",
-      cancelButtonText: "Cancel",
-      inputType: dialogs.inputType.text
-    })
-    .then(res => {
-      if (res.result) {
-        // the user clicked save
-        trailName = res.text;
-        console.log("recording started: " + res.text);
-        recording = true;
-        recordPopup.visibility = "collapsed";
-        recordBtn.text = "End";
-        //savebtn.visibility = "visible";
 
-        starttime = new Date();
-        var map = args.object.page.getViewById("themap");
-        //recenterTap(args);
-        startRecording(map);
-      }
-    });
-}
 var initMonitoring = true;
 
 function recenterTap(args) {
   var btn = args.object;
   var page = btn.page;
-  var map = page.getViewById("themap");
   geolocation
     .getCurrentLocation({
       desiredAccuracy: 3,
@@ -500,20 +450,6 @@ function recenterTap(args) {
         lng: loc.longitude,
         animated: true
       });
-      // this works, just annoying so I commented it out
-      //   map.animateCamera({
-      //     target: {
-      //       lat: loc.latitude,
-      //       lng: loc.longitude
-      //     },
-      //     tilt: 60,
-      //     zoomLevel: 20,
-      //     duration: 2000
-      //   });
-
-      // this is testing stuff, I just threw it into the recenter so I can activate it on a button click
-      //startTrackingAccelerometer();
-      //startTimer();
     });
 }
 exports.recenterTap = recenterTap;
@@ -574,7 +510,14 @@ function buttonStopWatch(args) {
         geolocation.clearWatch(watchID);
         timerStarted = false;
         timerModule.clearInterval(timerID);
-        global.setCurrentTrailData(curCoords, dist, curTime);
+
+        var avgSpeed = 0;
+        for (var i = 0; i < speeds.length; i++) {
+          avgSpeed += speeds[i];
+        }
+        avgSpeed /= speeds.length;
+
+        global.setCurrentTrailData(curCoords, dist, curTime, avgSpeed, elevations);
         //global.postTrail(trailName, curCoords, dist);
 
         curCoords = []; // reset the coords if it was successfully added
@@ -588,7 +531,79 @@ function buttonStopWatch(args) {
       }
     }, false);
 
-    //   dialogs
+  }
+}
+
+exports.buttonStopWatch = buttonStopWatch;
+
+
+
+
+
+
+
+/** =================================================================================== code gravyard 
+ * 
+
+// old recording start method 
+function buttonStartWatch(args) {
+  dialogs
+    .prompt({
+      title: "Name your trail!",
+      okButtonText: "Save",
+      cancelButtonText: "Cancel",
+      inputType: dialogs.inputType.text
+    })
+    .then(res => {
+      if (res.result) {
+        // the user clicked save
+        trailName = res.text;
+        console.log("recording started: " + res.text);
+        recording = true;
+        recordPopup.visibility = "collapsed";
+        recordBtn.text = "End";
+        //savebtn.visibility = "visible";
+
+        starttime = new Date();
+        var map = args.object.page.getViewById("themap");
+        //recenterTap(args);
+        startRecording(map);
+      }
+    });
+}
+
+    // old way or recording
+        
+                 * 
+                 
+                 curCoords = [];
+                 for (var i = 0; i < recordedLocations.length; i++) {
+                     var tempCoord = {
+                         lat: recordedLocations[i].latitude,
+                         lng: recordedLocations[i].longitude
+                        };
+                        curCoords = [...curCoords, tempCoord];
+                    }
+                    if (lastLoc == null) {
+                        lastLoc = loc;
+                    } else {
+                        dist += geolocation.distance(lastLoc, loc) * mtomi;
+                        observ.set("dist", dist.toFixed(2));
+                        lastLoc = loc;
+                    }
+                    map.latitude = loc.latitude;
+                    map.longitude = loc.longitude;
+                    map.addPolyline({
+                        id: 11,
+                        color: 0xffff0000,
+                        points: curCoords
+                    });
+        //map.page.getViewById("lastloc").text = "Left/right: " + deviceRotation.x + "; Forward/Back: " + deviceRotation.y;
+ 
+
+
+        // old dialog system
+        //   dialogs
     //     .confirm({
     //       title: "Are you sure you are done recording?",
     //       okButtonText: "Confirm",
@@ -617,7 +632,7 @@ function buttonStopWatch(args) {
     //   //global.addTrail(trailName, curCoords, recordedLocations);
 
     //   //console.log(res);
-  }
-}
 
-exports.buttonStopWatch = buttonStopWatch;
+
+
+ */

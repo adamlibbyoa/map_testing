@@ -13,6 +13,7 @@ const file = folder.getFile("data.txt" || "gpsdata.txt");
 var mtomi = 0.00062137;
 var curID = 0;
 
+
 var firebase = require("nativescript-plugin-firebase");
 
 firebase
@@ -20,10 +21,10 @@ firebase
     persist: true
   })
   .then(
-    function() {
+    function () {
       console.log("firebase.init done");
     },
-    function(error) {
+    function (error) {
       console.log("firebase.init error: " + error);
     }
   );
@@ -129,13 +130,15 @@ global.getAllTrails = () => {
   return trails;
 };
 
-global.setCurrentTrailData = (coords, distance, time) => {
+global.setCurrentTrailData = (coords, distance, time, avgSpeed, elevations) => {
   global.currentTrail = {
     name: "",
     trailColor: 0xffff0000,
     coordinates: coords,
     distance: distance,
-    duration: time
+    duration: time,
+    averageSpeed: avgSpeed,
+    elevations: elevations
   };
 };
 
@@ -181,6 +184,73 @@ function pushMarkers(curIndex) {
     });
 }
 
+
+
+global.loadAllTrails = () => {
+  return new Promise((resolve, reject) => {
+    firebase
+      .getValue("/trails")
+      .then(result => {
+        //console.log(JSON.stringify(result.value));
+        for (var i in result.value) {
+          var temp = {
+            id: i,
+            coordinates: result.value[i].coordinates,
+            name: result.value[i].name,
+            trailColor: result.value[i].trailColor,
+            distance: result.value[i].distance
+          };
+          global.trails = [...global.trails, temp];
+        }
+        resolve(global.trails)
+        //console.log(JSON.stringify(trails));
+      })
+      .catch(error => reject(error));
+  });
+}
+
+global.loadAllMarkers = () => {
+  return new Promise((resolve, reject) => {
+    firebase
+      .getValue("/markers")
+      .then(result => {
+        global.markers = []; // reset the array
+        for (var i in result.value) {
+          var temp = {
+            id: i,
+            location: result.value[i].location,
+            trail_id: result.value[i].trail_id,
+            type: result.value[i].type,
+            data: result.value[i].data
+          };
+          global.markers = [...global.markers, temp];
+        }
+        resolve(global.markers);
+      })
+      .catch(err => reject(err));
+  });
+}
+
+
+
+application.on(application.uncaughtErrorEvent, args => {
+  console.log("Error: " + args.error);
+});
+
+application.run({
+  moduleName: "app-root"
+});
+
+/*
+Do not place any code after the application has been started as it will not
+be executed on iOS.
+*/
+
+
+
+
+/** code graveyard
+ 
 // global.postTrail = (name, coords, distance) => {
 //   firebase
 //     .push("/trails", {
@@ -205,6 +275,9 @@ function pushMarkers(curIndex) {
 //     .catch(err => console.log(err));
 // };
 
+
+
+
 global.loadTrails = () => {
   firebase
     .getValue("/trails")
@@ -218,7 +291,7 @@ global.loadTrails = () => {
           trailColor: result.value[i].trailColor,
           distance: result.value[i].distance
         };
-        trails = [...trails, temp];
+        global.trails = [...global.trails, temp];
       }
       //console.log(JSON.stringify(trails));
     })
@@ -227,6 +300,7 @@ global.loadTrails = () => {
   firebase
     .getValue("/markers")
     .then(result => {
+      global.markers = []; // reset the array
       for (var i in result.value) {
         var temp = {
           id: i,
@@ -262,15 +336,13 @@ global.loadTrails = () => {
 //   }
 // });
 
-application.on(application.uncaughtErrorEvent, args => {
-  console.log("Error: " + args.error);
-});
 
-application.run({
-  moduleName: "app-root"
-});
 
-/*
-Do not place any code after the application has been started as it will not
-be executed on iOS.
-*/
+
+
+
+
+
+
+
+ */

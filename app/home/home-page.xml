@@ -13,13 +13,28 @@
                 <!-- The map dynamically loads here -->
             </StackLayout>
             <ActivityIndicator row="0" colSpan="2" width="25%" color="#FF8C28" busy="{{ isLoading }}" />
-            <!-- <Button row="0" col="1" id="recordbtn" class="create-trail-popup-toggle" verticalAlignment="bottom" horizontalAlignment="right" text="+" /> -->
-            <!-- <GridLayout horizontalAlignment="center" width="100%" rows="*" columns="* *"> -->
-            <!-- <TextField colSpan="2" row="0" style="background-color: white; color: black; border-width: 1; border-color: gray; height: 48vh; width: 75%; font-size: 12; margin-top: 50;" verticalAlignment="top" autocorrect="false" hint="Search..." text="" returnKeyType="search" /> -->
-            <!-- <Image > -->
-            <!-- </GridLayout> -->
-            <Image src="res://recenter_icon" row="0" col="1" horizontalAlignment="right" verticalAlignment="top" style="width: 32ppi; height: 32ppi; padding: 4; margin-right: 12; margin-top: 58;" tap="recenterTap" />
-            <Button class="create-trail-modal-button" verticalAlignment="bottom" row="0" colSpan="2" text="Record New Trail" height="60vh" tap="goToRecording" />
+
+            <StackLayout colSpan="2" row="0" verticalAlignment="top">
+                <StackLayout orientation="horizontal">
+                    <GridLayout rows="40" columns="* 60" style="margin-left: 10; margin-right: 10; margin-top: 25;">
+                        <TextField row="0" col="0" returnKeyType="search" text="" hint="Search..." class="searchBar" />
+                        <Image row="0" col="0" horizontalAlignment="right" width="26" height="26" src="~/icons/search.png" style="margin-right: 4;" />
+                        <Button row="0" col="1" text="=" class="settingsButton"/>
+                    </GridLayout>
+                </StackLayout>
+                <GridLayout id="trailinfopanel" visibility="visible" rows="* auto auto" columns = "* * *" width="95%" height="110vh" class="trailInfo">
+                    <Label row="0" colSpan="2" text="{{ selectedTrailName }}" verticalAlignment="bottom" class="trailName" />
+                    <StackLayout id="trailinforating" class="trailRating" row="1" col="0" orientation="horizontal">
+                        <Image src="res://star_grey" />
+                        <Image src="res://star_grey" />
+                        <Image src="res://star_grey" />
+                    </StackLayout>
+                    <Label row="2" col="0" horizontalAlignment="left" text="Moderate" class="trailDifficultyLbl" />
+                </GridLayout>
+            </StackLayout>
+
+            <Image src="res://recenter_icon" row="0" col="1" horizontalAlignment="right" verticalAlignment="bottom" style="width: 32ppi; height: 32ppi; padding: 4; margin-right: 12; margin-bottom: 80vh;" tap="recenterTap" />
+            <Button class="create-trail-modal-button" verticalAlignment="bottom" row="0" colSpan="2" text="Record New Trail" tap="goToRecording" />
 
             <GridLayout row="1" colSpan="2" rows="*" columns="* * * * *">
                 <Image class="navbarIcon" src="res://feed_icon" style="margin-left: 2vw;" row="0" col="0" />

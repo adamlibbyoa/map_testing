@@ -35,8 +35,10 @@ components that have the btn class name.
     background-color: #FF8C28;
     color: #FFFFFF;
     margin-bottom: 20;
-    border-radius: 10%;
-    width: 50%;
+    border-radius: 5;
+    width: 95%;
+    height: 50vh;
+    border-width: 0;
 }
 
 .create-trail-modal-label {
@@ -178,4 +180,54 @@ components that have the btn class name.
 .lblSelected {
     border-bottom-width: 4;
     border-bottom-color: black;
+}
+
+.trailInfo {
+    background-image: url('~/images/background_trail.png');
+    background-repeat: no-repeat;
+    background-color: #4281A4;
+    background-size: cover;
+    background-position: center;
+    margin-top: 10;
+}
+
+.trailName {
+    color: white;
+    font-size: 18;
+    font-weight: bold;
+    margin-left: 6;
+}
+
+.trailDifficultyLbl {
+    color: white;
+    font-weight: bold;
+    background-color: #4281A4;
+    margin-bottom: 12;
+    width: 80;
+    text-align: center;
+    margin-left: 6;
+}
+
+.trailRating {
+    margin-left: 6;
+    height: 18;
+    margin-top: 4;
+    margin-bottom: 6;
+}
+
+.searchBar {
+    background-color: #ffffff;
+    color: black;
+    font-size: 12;
+    border-color: rgba(148, 148, 148, 0.534);
+    border-width: 1;
+    border-radius: 5;
+}
+
+.settingsButton {
+    background-color: #FF8C28;
+    color: white;
+    border-radius: 5;
+    border-width: 0;
+    width: 50;
 }

@@ -9,6 +9,7 @@ const geolocation = require("nativescript-geolocation");
 const mapbox = require("nativescript-mapbox");
 
 const application = require("tns-core-modules/application");
+const imageModule = require("tns-core-modules/ui/image");
 var frameModule = require("ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
 const Accuracy = require("tns-core-modules/ui/enums").Accuracy;
@@ -20,6 +21,8 @@ var watchID; // used for background recording
 
 var observ;
 var map;
+var selectedTrail = null;
+var trailInfoPanel;
 
 var deviceRotation = {
   x: 0, // roll
@@ -32,6 +35,41 @@ var waypoint;
 // 35.610295
 //-97.4613617
 
+
+function onNavigatingTo(args) {
+  var m = args.object.getViewById("myMap");
+  // hide the status bar if the device is an android
+  if (application.android) {
+    const activity = application.android.startActivity;
+    const win = activity.getWindow();
+    win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+  }
+
+  // get rid of the ugly actionbar
+  var topmost = frameModule.topmost();
+  topmost.android.showActionBar = false;
+
+  // not sure where to put this, so I'll put this here...
+  // this will run when the application is suspended. It basically deletes the map.
+  application.on(application.launchEvent, args => {
+    map = null;
+  });
+
+  // when the application is resumed, this will be caused. I'm thinking about doing background recording. We will see.
+  application.on(application.resumeEvent, args => {
+    if (args.android) {
+      //geolocation.clearWatch(watchID);
+      console.log("resumed");
+    }
+  });
+  const page = args.object;
+  trailInfoPanel = page.getViewById("trailinfopanel");
+  trailInfoPanel.visibility = "collapsed";
+  observ = new Observable();
+  observ.set("isLoading", true);
+  page.bindingContext = observ;
+}
+
 function onMapLoaded(args) {
   var page = args.object.page;
   // get the map container (not the actual map though). This is where the map is going to be 'spawned' in.
@@ -40,23 +78,19 @@ function onMapLoaded(args) {
   map.id = "themap";
 
   map.on("mapReady", args => {
+
+    map.setOnMapClickListener((point) => {
+      map.removePolylines();
+      selectedTrail = null;
+      trailInfoPanel.visibility = "collapsed";
+    });
+
     application.on(application.suspendEvent, args => {
       if (args.android) {
         if (map != null) {
           m.removeChildren();
           map.destroy();
         }
-        // background location does not work here. Maybe I will try something later.
-        // watchID = geolocation.watchLocation(
-        //   function(loc) {
-        //     if (loc) {
-        //       console.log("watching: " + loc.latitude + ", " + loc.longitude);
-        //     }
-        //   },
-        //   function(error) {
-        //     console.log(error);
-        //   }
-        // );
         console.log("suspended");
       }
     });
@@ -76,20 +110,49 @@ function onMapLoaded(args) {
           iconPath: "./icons/trail_start_end.png",
           //title: "Trail head: " + global.trails[i].name,
           //subtitle: "Trail is: " + global.trails[i].distance + "m",
-          onTap: marker => onTrailHeadTap(marker)
+          onTap: function (marker) {
+            map.removePolylines();
+            var crds = global.trails.find(x => x.id == marker.id);
+            selectedTrail = crds; // save the currently selected trail. 
+            if (crds != null) {
+              map.addPolyline({
+                id: crds.id,
+                color: "#FF8C28",
+                points: crds.coordinates
+              });
+              trailInfoPanel.visibility = "visible";
+              observ.set("selectedTrailName", selectedTrail.name);
+              // var trailinforating = page.getViewById("trailinforating");
+              // if (selectedTrail.rating == null)
+              // {
+
+              // }
+              // for (var i = 0; i < selectedTrail.rating; i++)
+              // {
+              //   var img = new imageModule.Image();
+              //   img.src = "res://star_filled";
+              //   trailinforating.addChild(img);
+              // }
+              // observ.set("selectedTrailDifficulty", selectedTrail.difficulty);
+            }
+
+            map.setCenter({
+              lat: marker.lat,
+              lng: marker.lng,
+              animated: true
+            });
+            map.setZoomLevel({
+              level: 17,
+              animated: true
+            });
+          }
         };
         trailHeads = [...trailHeads, tMarker];
 
-        // add trail heads here
-        // draw the trails here
-        map.addPolyline({
-          id: global.trails[i].id,
-          color: global.trails[i].trailColor,
-          points: global.trails[i].coordinates
-        });
-      }
-      //map.addMarkers(trailHeads);
 
+      }
+      map.addMarkers(trailHeads);
+      var trailMarkers = [];
       for (var i = 0; i < global.markers.length; i++) {
         var marker = global.markers[i];
         var icon;
@@ -100,20 +163,20 @@ function onMapLoaded(args) {
         } else if (marker.type == "poi") {
           icon = "./icons/poi_trail_marker.png";
         }
-        map.addMarkers([
-          {
-            id: marker.id,
-            lat: marker.location.lat,
-            lng: marker.location.lng,
-            iconPath: icon,
-            title: marker.type,
-            subtitle: JSON.stringify(marker.data),
-            onTap: function() {
-              console.log(marker.data);
-            }
+        var temp = {
+          id: marker.id,
+          lat: marker.location.lat,
+          lng: marker.location.lng,
+          iconPath: icon,
+          title: marker.type,
+          subtitle: JSON.stringify(marker.data),
+          onTap: function () {
+            console.log(marker.data);
           }
-        ]);
+        }
+        trailMarkers = [...trailMarkers, temp];
       }
+      map.addMarkers(trailMarkers);
     }
 
     //#region  gps thingy whenever a user clicks, not needed just a learning thing.
@@ -178,66 +241,38 @@ function onMapLoaded(args) {
   });
 
   //console.log("navigatedto");
-  global.loadTrails();
+  //global.loadTrails();
 
-  geolocation
-    .getCurrentLocation({
-      desiredAccuracy: Accuracy.high
-    })
-    .then(loc => {
-      // console.log(loc);
-      location = loc;
-      map.accessToken =
-        "pk.eyJ1IjoiYWRhbWxpYmJ5b2EiLCJhIjoiY2p1eGg3bG05MG40bzRjandsNTJnZHY3aiJ9.NkE4Wdj4dy3r_w18obRv8g";
-      map.latitude = location.latitude;
-      map.longitude = location.longitude;
-      map.showUserLocation = true;
-      map.hideCompass = "false";
-      map.zoomLevel = 19;
+  global.loadAllTrails().then(() => {
+    global.loadAllMarkers().then(() => {
+      geolocation
+        .getCurrentLocation({
+          desiredAccuracy: Accuracy.high
+        })
+        .then(loc => {
+          // console.log(loc);
+          location = loc;
+          map.accessToken =
+            "pk.eyJ1IjoiYWRhbWxpYmJ5b2EiLCJhIjoiY2p1eGg3bG05MG40bzRjandsNTJnZHY3aiJ9.NkE4Wdj4dy3r_w18obRv8g";
+          map.latitude = location.latitude;
+          map.longitude = location.longitude;
+          map.showUserLocation = true;
+          map.hideCompass = "false";
+          map.zoomLevel = 19;
 
-      map.mapStyle = "satellite_streets"; // satellite_streets | mapbox://styles/mapbox/outdoors-v11
-      m.addChild(map);
+          map.mapStyle = "satellite_streets"; // satellite_streets | mapbox://styles/mapbox/outdoors-v11
+          m.addChild(map);
 
-      page.bindingContext = observ;
-    });
+          page.bindingContext = observ;
+        });
+    }).catch(err => console.log(err));
+  }).catch(err => console.log(err));
+
 }
 exports.onMapLoaded = onMapLoaded;
 
-onTrailHeadTap = data => {
-  console.log(data.id);
-};
 
-function onNavigatingTo(args) {
-  var m = args.object.getViewById("myMap");
-  // hide the status bar if the device is an android
-  if (application.android) {
-    const activity = application.android.startActivity;
-    const win = activity.getWindow();
-    win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
-  }
 
-  // get rid of the ugly actionbar
-  var topmost = frameModule.topmost();
-  topmost.android.showActionBar = false;
-
-  // not sure where to put this, so I'll put this here...
-  // this will run when the application is suspended. It basically deletes the map.
-  application.on(application.launchEvent, args => {
-    map = null;
-  });
-
-  // when the application is resumed, this will be caused. I'm thinking about doing background recording. We will see.
-  application.on(application.resumeEvent, args => {
-    if (args.android) {
-      //geolocation.clearWatch(watchID);
-      console.log("resumed");
-    }
-  });
-  const page = args.object;
-  observ = new Observable();
-  observ.set("isLoading", true);
-  page.bindingContext = observ;
-}
 
 function recenterTap(args) {
   var btn = args.object;
@@ -273,7 +308,7 @@ exports.recenterTap = recenterTap;
 
 exports.onNavigatingTo = onNavigatingTo;
 
-exports.goToRecording = function(args) {
+exports.goToRecording = function (args) {
   frameModule.topmost().navigate({
     moduleName: "recordpage/record-page",
     context: {},
