@@ -40,7 +40,6 @@ function onMapLoaded(args) {
   map.id = "themap";
 
   map.on("mapReady", args => {
-
     application.on(application.suspendEvent, args => {
       if (args.android) {
         if (map != null) {
@@ -77,7 +76,7 @@ function onMapLoaded(args) {
           iconPath: "./icons/trail_start_end.png",
           //title: "Trail head: " + global.trails[i].name,
           //subtitle: "Trail is: " + global.trails[i].distance + "m",
-          onTap: (marker) => onTrailHeadTap(marker)
+          onTap: marker => onTrailHeadTap(marker)
         };
         trailHeads = [...trailHeads, tMarker];
 
@@ -89,7 +88,7 @@ function onMapLoaded(args) {
           points: global.trails[i].coordinates
         });
       }
-      map.addMarkers(trailHeads);
+      //map.addMarkers(trailHeads);
 
       for (var i = 0; i < global.markers.length; i++) {
         var marker = global.markers[i];
@@ -101,17 +100,19 @@ function onMapLoaded(args) {
         } else if (marker.type == "poi") {
           icon = "./icons/poi_trail_marker.png";
         }
-        map.addMarkers([{
-          id: marker.id,
-          lat: marker.location.lat,
-          lng: marker.location.lng,
-          iconPath: icon,
-          title: marker.type,
-          subtitle: JSON.stringify(marker.data),
-          onTap: function () {
-            console.log(marker.data);
+        map.addMarkers([
+          {
+            id: marker.id,
+            lat: marker.location.lat,
+            lng: marker.location.lng,
+            iconPath: icon,
+            title: marker.type,
+            subtitle: JSON.stringify(marker.data),
+            onTap: function() {
+              console.log(marker.data);
+            }
           }
-        }]);
+        ]);
       }
     }
 
@@ -202,9 +203,9 @@ function onMapLoaded(args) {
 }
 exports.onMapLoaded = onMapLoaded;
 
-onTrailHeadTap = (data) => {
-  console.log((data.id));
-}
+onTrailHeadTap = data => {
+  console.log(data.id);
+};
 
 function onNavigatingTo(args) {
   var m = args.object.getViewById("myMap");
@@ -224,7 +225,6 @@ function onNavigatingTo(args) {
   application.on(application.launchEvent, args => {
     map = null;
   });
-
 
   // when the application is resumed, this will be caused. I'm thinking about doing background recording. We will see.
   application.on(application.resumeEvent, args => {
@@ -273,7 +273,7 @@ exports.recenterTap = recenterTap;
 
 exports.onNavigatingTo = onNavigatingTo;
 
-exports.goToRecording = function (args) {
+exports.goToRecording = function(args) {
   frameModule.topmost().navigate({
     moduleName: "recordpage/record-page",
     context: {},

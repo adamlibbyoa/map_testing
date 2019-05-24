@@ -20,10 +20,10 @@ firebase
     persist: true
   })
   .then(
-    function () {
+    function() {
       console.log("firebase.init done");
     },
-    function (error) {
+    function(error) {
       console.log("firebase.init error: " + error);
     }
   );
@@ -80,9 +80,9 @@ global.AddMarker = (type, location, data) => {
       lng: location.longitude
     },
     data: data
-  }
+  };
   currentTrailMarkers = [...currentTrailMarkers, m];
-}
+};
 
 global.addMarkerData = (type, location, rating, price, info) => {
   var m = {
@@ -96,9 +96,9 @@ global.addMarkerData = (type, location, rating, price, info) => {
       price: price,
       info: info
     }
-  }
+  };
   currentTrailMarkers = [...currentTrailMarkers, m];
-}
+};
 
 //36.6707
 //-95.82672
@@ -143,8 +143,6 @@ global.setCurrentTrailName = name => {
   global.currentTrail.name = name;
 };
 
-
-
 global.postCurrentTrail = () => {
   firebase.push("/trails", global.currentTrail).then(result => {
     console.log("Created key: " + result.key);
@@ -164,20 +162,23 @@ global.postCurrentTrail = () => {
 //   POI: 2
 // }
 
-// type.CAMP 
+// type.CAMP
 
 function pushMarkers(curIndex) {
   if (curIndex >= currentTrailMarkers.length) {
     return;
   }
 
-  firebase.push("/markers", currentTrailMarkers[curIndex]).then(result => {
-    console.log("pushed marker: " + curIndex + ", with key: " + result.key);
-    var i = curIndex + 1;
-    pushMarkers(i);
-  }).catch(err => {
-    console.log("Failed to push " + curIndex + " marker. Error: " + err);
-  });
+  firebase
+    .push("/markers", currentTrailMarkers[curIndex])
+    .then(result => {
+      console.log("pushed marker: " + curIndex + ", with key: " + result.key);
+      var i = curIndex + 1;
+      pushMarkers(i);
+    })
+    .catch(err => {
+      console.log("Failed to push " + curIndex + " marker. Error: " + err);
+    });
 }
 
 // global.postTrail = (name, coords, distance) => {
@@ -223,18 +224,21 @@ global.loadTrails = () => {
     })
     .catch(error => console.log("error: " + error));
 
-  firebase.getValue("/markers").then(result => {
-    for (var i in result.value) {
-      var temp = {
-        id: i,
-        location: result.value[i].location,
-        trail_id: result.value[i].trail_id,
-        type: result.value[i].type,
-        data: result.value[i].data
+  firebase
+    .getValue("/markers")
+    .then(result => {
+      for (var i in result.value) {
+        var temp = {
+          id: i,
+          location: result.value[i].location,
+          trail_id: result.value[i].trail_id,
+          type: result.value[i].type,
+          data: result.value[i].data
+        };
+        global.markers = [...global.markers, temp];
       }
-      global.markers = [...global.markers, temp];
-    }
-  }).catch(err => console.log("error fetching markers: " + err));
+    })
+    .catch(err => console.log("error fetching markers: " + err));
 
   // old code, this is saving to a file. dont delete just yet
   // file.readText().then((res) => {
