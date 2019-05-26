@@ -1,10 +1,7 @@
 const observableModule = require("tns-core-modules/data/observable");
 let closeCallback;
 
-var data = {
-    difficulty: 0,
-    info: ""
-}
+var difficulty = 0;
 var oneSelected = true;
 var oneOff = "res://off_12";
 var oneOn = "res://on_12";
@@ -55,7 +52,10 @@ exports.onCancel = onCancel;
 function onSubmit(args) {
     var page = args.object.page;
     var textField = page.getViewById("info");
-    data.info = textField.text;
+    var data = {
+        difficulty: difficulty,
+        info: textField.text
+    }
     closeCallback(true, data);
 }
 exports.onSubmit = onSubmit;
@@ -69,28 +69,28 @@ function onDifficultySelected(args) {
             threeSelected = false;
             sixSelected = false;
             nineSelected = false;
-            data.difficulty = 1;
+            difficulty = 1;
             break;
         case "35":
             oneSelected = false;
             threeSelected = true;
             sixSelected = false;
             nineSelected = false;
-            data.difficulty = 3;
+            difficulty = 3;
             break;
         case "68":
             oneSelected = false;
             threeSelected = false;
             sixSelected = true;
             nineSelected = false;
-            data.difficulty = 6;
+            difficulty = 6;
             break;
         case "910":
             oneSelected = false;
             threeSelected = false;
             sixSelected = false;
             nineSelected = true;
-            data.difficulty = 9;
+            difficulty = 9;
             break;
     }
     vm.set("oneSelected", oneSelected ? oneOn : oneOff);

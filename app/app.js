@@ -69,7 +69,7 @@ global.trails = [];
 
 global.currentTrail = {};
 
-var currentTrailMarkers = [];
+global.currentTrailMarkers = [];
 
 global.markers = [];
 
@@ -82,7 +82,9 @@ global.AddMarker = (type, location, data) => {
     },
     data: data
   };
-  currentTrailMarkers = [...currentTrailMarkers, m];
+  global.currentTrailMarkers.push(m);
+  console.log(JSON.stringify(global.currentTrailMarkers));
+  //currentTrailMarkers = [...currentTrailMarkers, m];
 };
 
 global.addMarkerData = (type, location, rating, price, info) => {
@@ -96,7 +98,8 @@ global.addMarkerData = (type, location, rating, price, info) => {
       rating: rating,
       price: price,
       info: info
-    }
+    },
+    trail_id: ""
   };
   currentTrailMarkers = [...currentTrailMarkers, m];
 };
@@ -146,13 +149,14 @@ global.setCurrentTrailName = name => {
   global.currentTrail.name = name;
 };
 
+
 global.postCurrentTrail = () => {
   firebase.push("/trails", global.currentTrail).then(result => {
     console.log("Created key: " + result.key);
-    if (currentTrailMarkers.length > 0) {
+    if (global.currentTrailMarkers.length > 0) {
       // assign all the markers' trail id with the one that was generated above.
-      for (var i = 0; i < currentTrailMarkers.length; i++) {
-        currentTrailMarkers[i].trail_id = result.key;
+      for (var i = 0; i < global.currentTrailMarkers.length; i++) {
+        global.currentTrailMarkers[i].trail_id = result.key;
       }
       pushMarkers(0); // start with index 0
     }
@@ -168,15 +172,16 @@ global.postCurrentTrail = () => {
 // type.CAMP
 
 function pushMarkers(curIndex) {
-  if (curIndex >= currentTrailMarkers.length) {
+  if (curIndex >= global.currentTrailMarkers.length) {
     return;
   }
 
   firebase
-    .push("/markers", currentTrailMarkers[curIndex])
+    .push("/markers", global.currentTrailMarkers[curIndex])
     .then(result => {
-      console.log("pushed marker: " + curIndex + ", with key: " + result.key);
+      console.log("pushed marker: " + JSON.stringify(global.currentTrailMarkers[curIndex]) + ", with key: " + result.key);
       var i = curIndex + 1;
+
       pushMarkers(i);
     })
     .catch(err => {

@@ -122,6 +122,32 @@ function onMapLoaded(args) {
               });
               trailInfoPanel.visibility = "visible";
               observ.set("selectedTrailName", selectedTrail.name);
+              // var trailnotes = global.markers.filter(x => x.trail_id == selectedTrail.id);
+              // var tempMarkers = [];
+              // for (var marker in trailnotes) {
+              //   var icon;
+              //   if (marker.type == "obstical") {
+              //     icon = "./icons/obstical_icon_marker.png";
+              //   } else if (marker.type == "camp") {
+              //     icon = "./icons/camp_trail_marker.png";
+              //   } else if (marker.type == "poi") { 
+              //     icon = "./icons/poi_trail_marker.png";
+              //   }
+              //   var temp = {
+              //     id: marker.id,
+              //     lat: marker.location.lat,
+              //     lng: marker.location.lng, 
+              //     iconPath: icon,
+              //     title: marker.type,
+              //     subtitle: JSON.stringify(marker.data), 
+              //     onTap: function (marker) {
+              //       //console.log(global.markers.find(x => x.id == marker.id));
+              //     }
+              //   }
+              //   tempMarkers = [...tempMarkers, temp]
+              // }
+
+              // console.log(JSON.stringify(trailnotes));
               // var trailinforating = page.getViewById("trailinforating");
               // if (selectedTrail.rating == null)
               // {
@@ -135,16 +161,16 @@ function onMapLoaded(args) {
               // }
               // observ.set("selectedTrailDifficulty", selectedTrail.difficulty);
             }
-
+            map.setZoomLevel({
+              level: 17,
+              animated: true
+            });
             map.setCenter({
               lat: marker.lat,
               lng: marker.lng,
               animated: true
             });
-            map.setZoomLevel({
-              level: 17,
-              animated: true
-            });
+
           }
         };
         trailHeads = [...trailHeads, tMarker];
@@ -152,96 +178,35 @@ function onMapLoaded(args) {
 
       }
       map.addMarkers(trailHeads);
-      var trailMarkers = [];
-      for (var i = 0; i < global.markers.length; i++) {
-        var marker = global.markers[i];
-        var icon;
-        if (marker.type == "obstical") {
-          icon = "./icons/obstical_icon_marker.png";
-        } else if (marker.type == "camp") {
-          icon = "./icons/camp_trail_marker.png";
-        } else if (marker.type == "poi") {
-          icon = "./icons/poi_trail_marker.png";
-        }
-        var temp = {
-          id: marker.id,
-          lat: marker.location.lat,
-          lng: marker.location.lng,
-          iconPath: icon,
-          title: marker.type,
-          subtitle: JSON.stringify(marker.data),
-          onTap: function () {
-            console.log(marker.data);
-          }
-        }
-        trailMarkers = [...trailMarkers, temp];
-      }
-      map.addMarkers(trailMarkers);
+      // var trailMarkers = [];
+      // for (var i = 0; i < global.markers.length; i++) {
+      //   var marker = global.markers[i];
+      //   var icon;
+      //   if (marker.type == "obstical") {
+      //     icon = "./icons/obstical_icon_marker.png";
+      //   } else if (marker.type == "camp") {
+      //     icon = "./icons/camp_trail_marker.png";
+      //   } else if (marker.type == "poi") {
+      //     icon = "./icons/poi_trail_marker.png";
+      //   }
+      //   var temp = {
+      //     id: marker.id,
+      //     lat: marker.location.lat,
+      //     lng: marker.location.lng,
+      //     iconPath: icon,
+      //     title: marker.type,
+      //     subtitle: JSON.stringify(marker.data),
+      //     onTap: function () {
+      //       console.log(marker.data);
+      //     }
+      //   }
+      //   trailMarkers = [...trailMarkers, temp];
+      // }
+      // map.addMarkers(trailMarkers);
     }
 
-    //#region  gps thingy whenever a user clicks, not needed just a learning thing.
-    // map.setOnMapClickListener((point) => {
-    //     // waypoint = JSON.stringify(point);
-    //     console.log("We clicked: " + JSON.stringify(point));
-    //     var url = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + point.lng + "," + point.lat + ".json?access_token=" + accessToken;
-    //     fetch(url).then(response => {
-    //             return response.json();
-    //         })
-    //         .then(data => {
-    //             waypoint = (data.features[0].center);
-    //             map.removeMarkers();
-    //             map.addMarkers([{
-    //                 id: curID,
-    //                 lat: point.lat,
-    //                 lng: point.lng,
-    //                 iconPath: "./icons/trail_head_marker.png",
-    //                 title: data.features[0].text,
-    //                 subtitle: data.features[0].place_name,
-    //                 onTap: function () {
-    //                     console.log("Tapped the added marker " + curID)
-    //                 }
-    //             }]);
-    //
-    //
-    //         })
-    //         .then(() => {
-    //             var dirUrl = "https://api.mapbox.com/directions/v5/mapbox/driving/" + location.longitude + "," + location.latitude + ";" + waypoint[0] + "," + waypoint[1] + "?geometries=geojson&access_token=" + accessToken;
-    //             //console.log(dirUrl);
-    //             fetch(dirUrl).then(res => {
-    //                 //var routes = res.json();
-    //                 return res.json();
-    //             }).then(routeData => {
-    //                 var coords = routeData.routes[0].geometry.coordinates;
-    //                 var coordinates = [];
-    //                 for (var i = 0; i < coords.length; i++) {
-    //                     var tempCoord = {
-    //                         lat: coords[i][1],
-    //                         lng: coords[i][0]
-    //                     }
-    //                     coordinates = [...coordinates, tempCoord];
-    //                 }
-    //
-    //                 console.log(coordinates);
-    //                 //console.log(routeData);
-    //                 map.removePolylines();
-    //                 map.addPolyline({
-    //                     id: 10,
-    //                     color: 0xffff0000,
-    //                     points: coordinates
-    //                 })
-    //             }).catch(err => {
-    //                 console.log(err);
-    //             })
-    //         })
-    //         .catch(err => {
-    //             console.log(err);
-    //         });
-    // });
-    //#endregion
-  });
 
-  //console.log("navigatedto");
-  //global.loadTrails();
+  });
 
   global.loadAllTrails().then(() => {
     global.loadAllMarkers().then(() => {
@@ -315,3 +280,65 @@ exports.goToRecording = function (args) {
     animated: true
   });
 };
+
+
+
+//#region  gps thingy whenever a user clicks, not needed just a learning thing.
+// map.setOnMapClickListener((point) => {
+//     // waypoint = JSON.stringify(point);
+//     console.log("We clicked: " + JSON.stringify(point));
+//     var url = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + point.lng + "," + point.lat + ".json?access_token=" + accessToken;
+//     fetch(url).then(response => {
+//             return response.json();
+//         })
+//         .then(data => {
+//             waypoint = (data.features[0].center);
+//             map.removeMarkers();
+//             map.addMarkers([{
+//                 id: curID,
+//                 lat: point.lat,
+//                 lng: point.lng,
+//                 iconPath: "./icons/trail_head_marker.png",
+//                 title: data.features[0].text,
+//                 subtitle: data.features[0].place_name,
+//                 onTap: function () {
+//                     console.log("Tapped the added marker " + curID)
+//                 }
+//             }]);
+//
+//
+//         })
+//         .then(() => {
+//             var dirUrl = "https://api.mapbox.com/directions/v5/mapbox/driving/" + location.longitude + "," + location.latitude + ";" + waypoint[0] + "," + waypoint[1] + "?geometries=geojson&access_token=" + accessToken;
+//             //console.log(dirUrl);
+//             fetch(dirUrl).then(res => {
+//                 //var routes = res.json();
+//                 return res.json();
+//             }).then(routeData => {
+//                 var coords = routeData.routes[0].geometry.coordinates;
+//                 var coordinates = [];
+//                 for (var i = 0; i < coords.length; i++) {
+//                     var tempCoord = {
+//                         lat: coords[i][1],
+//                         lng: coords[i][0]
+//                     }
+//                     coordinates = [...coordinates, tempCoord];
+//                 }
+//
+//                 console.log(coordinates);
+//                 //console.log(routeData);
+//                 map.removePolylines();
+//                 map.addPolyline({
+//                     id: 10,
+//                     color: 0xffff0000,
+//                     points: coordinates
+//                 })
+//             }).catch(err => {
+//                 console.log(err);
+//             })
+//         })
+//         .catch(err => {
+//             console.log(err);
+//         });
+// });
+//#endregion

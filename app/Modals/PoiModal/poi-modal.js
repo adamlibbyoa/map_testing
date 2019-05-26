@@ -1,10 +1,11 @@
 const observableModule = require("tns-core-modules/data/observable");
 let closeCallback;
 
-var data = {
-    rating: 0,
-    info: ""
-}
+// var data = {
+//     rating: 0,
+//     info: ""
+// }
+var rating = 0;
 var stars = [];
 
 function onShownModally(args) {
@@ -30,7 +31,10 @@ exports.onCancel = onCancel;
 function onSubmit(args) {
     var page = args.object.page;
     var textField = page.getViewById("info");
-    data.info = textField.text;
+    var data = {
+        rating: rating,
+        info: textField.text
+    };
     closeCallback(true, data);
 }
 exports.onSubmit = onSubmit;
@@ -49,6 +53,6 @@ function onStarClicked(args) {
     }
 
     console.log(id);
-    data.rating = id;
+    rating = id;
 }
 exports.onStarClicked = onStarClicked;

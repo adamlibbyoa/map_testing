@@ -55,6 +55,7 @@ var timerStarted = false;
 var isShown;
 var elevations = [];
 var speeds = [];
+var markers = [];
 // 35.610295
 //-97.4613617
 function onNavigatingTo(args) {
@@ -175,7 +176,6 @@ exports.addCampTapped = addCampTapped;
 
 function addCampIcon(didConfirm, data) {
   if (didConfirm) {
-
     map.addMarkers([{
       id: markerID,
       lat: curLoc.latitude,
@@ -274,7 +274,6 @@ exports.addPoiTapped = addPoiTapped;
 
 function addPoiIcon(didConfirm, data) {
   if (didConfirm) {
-
     map.addMarkers([{
       id: markerID,
       lat: curLoc.latitude,
@@ -518,6 +517,8 @@ function buttonStopWatch(args) {
         avgSpeed /= speeds.length;
 
         global.setCurrentTrailData(curCoords, dist, curTime, avgSpeed, elevations);
+        //global.currentTrailMarkers = markers;
+        //console.log(JSON.stringify(markers));
         //global.postTrail(trailName, curCoords, dist);
 
         curCoords = []; // reset the coords if it was successfully added

@@ -1,11 +1,15 @@
 const observableModule = require("tns-core-modules/data/observable");
 let closeCallback;
 
-var data = {
-    rating: 0,
-    price: "",
-    info: ""
-}
+// var data = {
+//     rating: 0,
+//     price: "",
+//     info: ""
+// }
+var rating = 0;
+var price = "";
+var info = "";
+
 var stars = [];
 var prices = [];
 
@@ -36,7 +40,12 @@ exports.onCancel = onCancel;
 function onSubmit(args) {
     var page = args.object.page;
     var textField = page.getViewById("info");
-    data.info = textField.text;
+    var data = {
+        rating: rating,
+        price: price,
+        info: textField.text
+    };
+
     closeCallback(true, data);
 }
 exports.onSubmit = onSubmit;
@@ -55,7 +64,7 @@ function onStarClicked(args) {
     }
 
     console.log(id);
-    data.rating = id;
+    rating = id;
 }
 exports.onStarClicked = onStarClicked;
 
@@ -68,19 +77,19 @@ function onPriceSelected(args) {
 
     switch (selectedID) {
         case "paid":
-            data.price = "paid";
+            price = "paid";
             prices[0].class = "baseLblDefault paidLblDefault lblSelected";
             prices[1].class = "baseLblDefault freeLblDefault";
             prices[2].class = "baseLblDefault unknownLblDefault";
             break;
         case "free":
-            data.price = "free";
+            price = "free";
             prices[0].class = "baseLblDefault paidLblDefault";
             prices[1].class = "baseLblDefault freeLblDefault lblSelected";
             prices[2].class = "baseLblDefault unknownLblDefault";
             break;
         case "unknown":
-            data.price = "unknown";
+            price = "unknown";
             prices[0].class = "baseLblDefault paidLblDefault";
             prices[1].class = "baseLblDefault freeLblDefault";
             prices[2].class = "baseLblDefault unknownLblDefault lblSelected";
