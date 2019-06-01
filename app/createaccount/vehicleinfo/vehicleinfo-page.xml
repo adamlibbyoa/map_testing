@@ -1,0 +1,22 @@
+<Page class="page loginPage" navigatingTo="onNavigatingTo" 
+    xmlns="http://schemas.nativescript.org/tns.xsd" 
+    xmlns:map="nativescript-mapbox" 
+    xmlns:dd="nativescript-drop-down">
+
+
+    <GridLayout rows="* auto">
+        <StackLayout row="0">
+            <Image src="res://oa_logo_createaccount" class="headerLogoCreateAccount" />
+            <Label text="What's in your garage? " horizontalAlignment="center" class="normalTextLogin" marginTop="60" marginBottom="2" />
+            <Label text="Make:" horizontalAlignment="center" class="normalTextLogin" marginTop="10" marginBottom="2" />
+            <dd:DropDown items="{{ makes }}" hint="Select Make" selectedIndex="{{ makeSelectedIndex }}" horizontalAlignment="center" class="dropdownVehicle" />
+            <Label text="Model:" horizontalAlignment="center" class="normalTextLogin" marginTop="10" marginBottom="2" />
+            <dd:DropDown items="{{ models }}" hint="Select Model" selectedIndex="{{ modelSelectedIndex }}" horizontalAlignment="center" class="dropdownVehicle" />
+            <Label text="Year:" horizontalAlignment="center" class="normalTextLogin" marginTop="10" marginBottom="2" />
+            <dd:DropDown items="{{ years }}" selectedIndex="0" horizontalAlignment="center" class="dropdownVehicle" />
+
+        </StackLayout>
+        <Button row="1" verticalAlignment="bottom" text="Next" class="loginBtn" tap="onNextPressed" />
+    </GridLayout>
+
+</Page>

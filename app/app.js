@@ -18,7 +18,7 @@ var firebase = require("nativescript-plugin-firebase");
 
 firebase
   .init({
-    persist: true
+    //    persist: true
   })
   .then(
     function () {
@@ -66,6 +66,7 @@ firebase
  */
 
 global.trails = [];
+global.trailHeads = [];
 
 global.currentTrail = {};
 
@@ -189,7 +190,27 @@ function pushMarkers(curIndex) {
     });
 }
 
-
+global.loadTrailHeads = (curLat, curLng) => {
+  return new Promise((resolve, reject) => {
+    firebase
+      .getValue("/trails")
+      .then(result => {
+        //console.log(JSON.stringify(result.value));
+        for (var i in result.value) {
+          var temp = {
+            id: i,
+            name: result.value[i].name,
+            trailColor: result.value[i].trailColor,
+            distance: result.value[i].distance
+          };
+          global.trailHeads = [...global.trailHeads, temp];
+        }
+        resolve(global.trails)
+        //console.log(JSON.stringify(trails));
+      })
+      .catch(error => reject(error));
+  });
+}
 
 global.loadAllTrails = () => {
   return new Promise((resolve, reject) => {

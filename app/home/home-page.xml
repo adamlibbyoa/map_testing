@@ -8,7 +8,7 @@
     </ActionBar>  
     -->
     <ContentView >
-        <GridLayout rows="* 60vh" columns="* *">
+        <GridLayout rows="*, 60vh" columns="* *">
             <StackLayout loaded="onMapLoaded" row="0" colSpan="2" width="100%" id="myMap" style="z-index: -1;">
                 <!-- The map dynamically loads here -->
             </StackLayout>
@@ -16,10 +16,11 @@
 
             <StackLayout colSpan="2" row="0" verticalAlignment="top">
                 <StackLayout orientation="horizontal">
-                    <GridLayout rows="40" columns="* 60" style="margin-left: 10; margin-right: 10; margin-top: 25;">
+                    <GridLayout rows="40 auto" columns="* 60" style="margin-left: 10; margin-right: 10; margin-top: 25;">
                         <TextField row="0" col="0" returnKeyType="search" text="" hint="Search..." class="searchBar" />
                         <Image row="0" col="0" horizontalAlignment="right" width="26" height="26" src="~/icons/search.png" style="margin-right: 4;" />
                         <Button row="0" col="1" text="=" class="settingsButton"/>
+                        <Button row="1" colSpan="2" tap="onSearchAreaPressed" visibility="{{ justScrolled }}" text="Search This Area" wordWrap="true" width="150" />
                     </GridLayout>
                 </StackLayout>
                 <GridLayout id="trailinfopanel" visibility="visible" rows="* auto auto" columns = "* * *" width="95%" height="110vh" class="trailInfo">
@@ -36,17 +37,13 @@
             <Image src="res://recenter_icon" row="0" col="1" horizontalAlignment="right" verticalAlignment="bottom" style="width: 32ppi; height: 32ppi; padding: 4; margin-right: 12; margin-bottom: 80vh;" tap="recenterTap" />
             <Button class="create-trail-modal-button" verticalAlignment="bottom" row="0" colSpan="2" text="Record New Trail" tap="goToRecording" />
 
-            <GridLayout row="1" colSpan="2" rows="*" columns="* * * * *">
-                <Image class="navbarIcon" src="res://feed_icon" style="margin-left: 2vw;" row="0" col="0" />
-                <!-- <Button row="0" col="0" text="etc" /> -->
-                <Image class="navbarIcon" src="res://discover_icon" row="0" col="1" />
-                <!-- <Button row="0" col="1" text="etc" /> -->
-                <Image class="navbarIcon" src="res://map_icon" row="0" col="2" />
-                <!-- <Button row="0" col="2" text="Home" /> -->
-                <Image class="navbarIcon" src="res://map_icon" row="0" col="3" />
-                <!-- <Button row="0" col="3" text="etc" /> -->
-                <Image class="navbarIcon" src="res://garage_icon" row="0" col="4" style=" margin-right: 2vw;" />
-                <!-- <Button row="0" col="4" text="etc" /> -->
+
+            <GridLayout row="1" verticalAlignment="bottom" colSpan="2" columns="* * 90 * *">
+                <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_feed" row="0" col="0" />
+                <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_discover" row="0" col="1" />
+                <Image verticalAlignment="bottom" src="res://play_button" row="0" col="2" />
+                <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_blog" row="0" col="3" style="border-left-width:1px;" />
+                <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_profile" row="0" col="4" />
             </GridLayout>
         </GridLayout>
     </ContentView>
@@ -54,6 +51,49 @@
 </Page>
 
 <!--  code graveyard...... 
+
+<GridLayout row="1" colSpan="2" rows="*" columns="* * * * *">
+                <Image class="navbarIcon" src="res://navbar_feed" row="0" col="0" />
+                <Image class="navbarIcon" src="res://navbar_discover" row="0" col="1" />
+                <Image class="navbarIcon" src="res://navbar_map" style="height: 70vh;" row="0" col="2" />
+                <Image class="navbarIcon" src="res://navbar_blog" row="0" col="3" />
+                <Image class="navbarIcon" src="res://navbar_profile" row="0" col="4" />
+</GridLayout>
+
+<TabView row="1" colSpan="2">
+                <TabViewItem iconSource="res://navbar_feed">
+                    <StackLayout>
+                        <Label text="feed page" />
+                    </StackLayout>
+                </TabViewItem>
+                <TabViewItem iconSource="res://navbar_discover">
+                    <StackLayout>
+                        <Label text="discover page" />
+                    </StackLayout>
+                </TabViewItem>
+                <TabViewItem iconSource="res://navbar_map">
+                    <Frame defaultPage="home/home-page" />
+                </TabViewItem>
+                <TabViewItem iconSource="res://navbar_blog">
+                    <StackLayout>
+                        <Label text="blog page" />
+                    </StackLayout>
+                </TabViewItem>
+                <TabViewItem iconSource="res://navbar_profile">
+                    <StackLayout>
+                        <Label text="profile page" />
+                    </StackLayout>
+                </TabViewItem>
+            </TabView>
+
+
+
+
+
+
+
+
+
 
 <GridLayout id="recordPopup" rows="auto 40vh 30vh 60vh 40vh 30vh" columns="* *" colSpan="2" height="60%" class="create-trail-modal" visibility="visible">
                 

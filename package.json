@@ -13,6 +13,7 @@
   "repository": "<fill-your-repository-here>",
   "dependencies": {
     "nativescript-accelerometer": "^2.0.1",
+    "nativescript-drop-down": "^5.0.0",
     "nativescript-floatingactionbutton": "^5.0.3",
     "nativescript-geolocation": "^5.0.0",
     "nativescript-mapbox": "^4.4.1",

@@ -7,7 +7,7 @@ logic, and to set up your page’s data binding.
 const HomeViewModel = require("./home-view-model");
 const geolocation = require("nativescript-geolocation");
 const mapbox = require("nativescript-mapbox");
-
+var firebase = require("nativescript-plugin-firebase");
 const application = require("tns-core-modules/application");
 const imageModule = require("tns-core-modules/ui/image");
 var frameModule = require("ui/frame");
@@ -18,11 +18,13 @@ const accessToken =
 
 var recordBtn;
 var watchID; // used for background recording
-
+var justScrolled = false;
 var observ;
 var map;
 var selectedTrail = null;
 var trailInfoPanel;
+var trailHeads = [];
+var trailHeadMarkers = [];
 
 var deviceRotation = {
   x: 0, // roll
@@ -67,8 +69,12 @@ function onNavigatingTo(args) {
   trailInfoPanel.visibility = "collapsed";
   observ = new Observable();
   observ.set("isLoading", true);
+
+  observ.set("justScrolled", "collapsed");
   page.bindingContext = observ;
 }
+exports.onNavigatingTo = onNavigatingTo;
+
 
 function onMapLoaded(args) {
   var page = args.object.page;
@@ -95,14 +101,265 @@ function onMapLoaded(args) {
       }
     });
 
+    map.setOnScrollListener((point) => {
+      if (selectedTrail == null) {
+        justScrolled = true;
+        observ.set("justScrolled", "visible");
+      }
+    });
+
+
     console.log("map is ready");
+
+    loadTrailHeads(location.latitude, location.longitude).then(() => {
+      drawTrailHeads();
+    }).catch(err => console.log(err));
     observ.set("isLoading", false);
 
-    if (global.trails.length == 0) {
-      console.log("No trails to show");
-    } else {
-      var trailHeads = [];
-      for (var i = 0; i < global.trails.length; i++) {
+
+  });
+
+  // global.loadAllTrails().then(() => {
+  //   global.loadAllMarkers().then(() => {
+  geolocation
+    .getCurrentLocation({
+      desiredAccuracy: Accuracy.high
+    })
+    .then(loc => {
+      // console.log(loc);
+      location = loc;
+      map.accessToken =
+        "pk.eyJ1IjoiYWRhbWxpYmJ5b2EiLCJhIjoiY2p1eGg3bG05MG40bzRjandsNTJnZHY3aiJ9.NkE4Wdj4dy3r_w18obRv8g";
+      map.latitude = location.latitude;
+      map.longitude = location.longitude;
+      map.showUserLocation = true;
+      map.hideCompass = "false";
+      map.zoomLevel = 19;
+
+      map.mapStyle = "satellite_streets"; // satellite_streets | mapbox://styles/mapbox/outdoors-v11
+      m.addChild(map);
+
+      page.bindingContext = observ;
+    });
+  //   }).catch(err => console.log(err));
+  // }).catch(err => console.log(err));
+
+}
+exports.onMapLoaded = onMapLoaded;
+
+exports.onSearchAreaPressed = function (args) {
+  map.getCenter().then(
+    function (result) {
+      justScrolled = false;
+      map.removeMarkers();
+      observ.set("justScrolled", "collapsed");
+      observ.set("isLoading", true);
+      console.log("map is at: " + JSON.stringify(result));
+      loadTrailHeads(result.lat, result.lng).then(() => {
+        drawTrailHeads();
+        observ.set("isLoading", false);
+      }).catch(err => console.log(err));
+    },
+    function (error) {
+      console.log(error);
+    }
+  );
+
+}
+
+
+function drawTrailHeads() {
+  trailHeadMarkers = []; // set it to null
+  for (var i = 0; i < trailHeads.length; i++) {
+    //console.log("adding marker: " + JSON.stringify(trailHeads[i]));
+    var tempMarker = {
+      id: trailHeads[i].id,
+      lat: trailHeads[i].location.lat,
+      lng: trailHeads[i].location.lng,
+      iconPath: "./icons/trail_start_end.png",
+      //title: "Trail head: " + trailHeads[i].name,
+      //subtitle: "Trail is: " + global.trails[i].distance + "m",
+      onTap: function (marker) {
+        observ.set("justScrolled", "collapsed");
+        map.setZoomLevel({
+          level: 17,
+          animated: true
+        });
+        map.setCenter({
+          lat: marker.lat,
+          lng: marker.lng,
+          animated: true
+        });
+        firebase.getValue("/trails/" + marker.id).then(res => {
+          //console.log(JSON.stringify(res.value));
+          map.removePolylines();
+
+          selectedTrail = res.value; // save the currently selected trail. 
+          if (selectedTrail != null) {
+            map.addPolyline({
+              id: selectedTrail.id,
+              color: "#FF8C28",
+              points: selectedTrail.coordinates
+            });
+            trailInfoPanel.visibility = "visible";
+            observ.set("selectedTrailName", selectedTrail.name);
+          }
+
+        });
+      } // end onTap function
+    } // end tempMarker def
+    trailHeadMarkers = [...trailHeadMarkers, tempMarker];
+  }
+  //console.log("Loaded" + JSON.stringify(trailHeadMarkers));
+  map.removeMarkers();
+  map.addMarkers(trailHeadMarkers);
+}
+
+// load only the trail heads into memory that are with in 25 miles from the center of the map
+function loadTrailHeads(curLat, curLng) {
+  return new Promise((resolve, reject) => {
+    firebase.getValue("/trails").then(result => {
+      trailHeads = [];
+      for (var i in result.value) {
+        var curLoc = new geolocation.Location();
+        curLoc.latitude = curLat;
+        curLoc.longitude = curLng;
+        var tempLoc = new geolocation.Location();
+        tempLoc.latitude = result.value[i].coordinates[0].lat;
+        tempLoc.longitude = result.value[i].coordinates[0].lng;
+        var mtomi = 0.00062137;
+        var dist = geolocation.distance(curLoc, tempLoc);
+        dist *= mtomi; // convert meters to miles;
+        if (dist <= 25.0) {
+          console.log(dist);
+          trailHeads = [...trailHeads, {
+            id: i,
+            name: result.value[i].name,
+            location: {
+              lat: result.value[i].coordinates[0].lat,
+              lng: result.value[i].coordinates[0].lng
+            }
+          }];
+        }
+      }
+      resolve(trailHeads);
+    }).catch(err => reject(err));
+  })
+}
+
+
+function recenterTap(args) {
+  var btn = args.object;
+  var page = btn.page;
+  var map = page.getViewById("themap");
+  geolocation
+    .getCurrentLocation({
+      desiredAccuracy: Accuracy.high
+    })
+    .then(loc => {
+      map.setCenter({
+        lat: loc.latitude,
+        lng: loc.longitude,
+        animated: true
+      });
+      // this works, just annoying so I commented it out
+      //   map.animateCamera({
+      //     target: {
+      //       lat: loc.latitude,
+      //       lng: loc.longitude
+      //     },
+      //     tilt: 60,
+      //     zoomLevel: 20,
+      //     duration: 2000
+      //   });
+
+      // this is testing stuff, I just threw it into the recenter so I can activate it on a button click
+      //startTrackingAccelerometer();
+      //startTimer();
+    });
+}
+exports.recenterTap = recenterTap;
+
+
+exports.goToRecording = function (args) {
+  // clear up memory
+  trailHeads = [];
+  trailHeadMarkers = [];
+  map.destroy();
+
+  // navigate to the recording page. 
+  frameModule.topmost().navigate({
+    moduleName: "recordpage/record-page",
+    context: {},
+    animated: true
+  });
+};
+
+
+
+//#region  gps thingy whenever a user clicks, not needed just a learning thing.
+// map.setOnMapClickListener((point) => {
+//     // waypoint = JSON.stringify(point);
+//     console.log("We clicked: " + JSON.stringify(point));
+//     var url = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + point.lng + "," + point.lat + ".json?access_token=" + accessToken;
+//     fetch(url).then(response => {
+//             return response.json();
+//         })
+//         .then(data => {
+//             waypoint = (data.features[0].center);
+//             map.removeMarkers();
+//             map.addMarkers([{
+//                 id: curID,
+//                 lat: point.lat,
+//                 lng: point.lng,
+//                 iconPath: "./icons/trail_head_marker.png",
+//                 title: data.features[0].text,
+//                 subtitle: data.features[0].place_name,
+//                 onTap: function () {
+//                     console.log("Tapped the added marker " + curID)
+//                 }
+//             }]);
+//
+//
+//         })
+//         .then(() => {
+//             var dirUrl = "https://api.mapbox.com/directions/v5/mapbox/driving/" + location.longitude + "," + location.latitude + ";" + waypoint[0] + "," + waypoint[1] + "?geometries=geojson&access_token=" + accessToken;
+//             //console.log(dirUrl);
+//             fetch(dirUrl).then(res => {
+//                 //var routes = res.json();
+//                 return res.json();
+//             }).then(routeData => {
+//                 var coords = routeData.routes[0].geometry.coordinates;
+//                 var coordinates = [];
+//                 for (var i = 0; i < coords.length; i++) {
+//                     var tempCoord = {
+//                         lat: coords[i][1],
+//                         lng: coords[i][0]
+//                     }
+//                     coordinates = [...coordinates, tempCoord];
+//                 }
+//
+//                 console.log(coordinates);
+//                 //console.log(routeData);
+//                 map.removePolylines();
+//                 map.addPolyline({
+//                     id: 10,
+//                     color: 0xffff0000,
+//                     points: coordinates
+//                 })
+//             }).catch(err => {
+//                 console.log(err);
+//             })
+//         })
+//         .catch(err => {
+//             console.log(err);
+//         });
+// });
+//#endregion
+
+// graveyard
+/**
+for (var i = 0; i < global.trails.length; i++) {
         var tMarker = {
           id: global.trails[i].id,
           lat: global.trails[i].coordinates[0].lat,
@@ -177,6 +434,8 @@ function onMapLoaded(args) {
 
 
       }
+ var trailHeads = [];
+      
       map.addMarkers(trailHeads);
       // var trailMarkers = [];
       // for (var i = 0; i < global.markers.length; i++) {
@@ -203,142 +462,7 @@ function onMapLoaded(args) {
       //   trailMarkers = [...trailMarkers, temp];
       // }
       // map.addMarkers(trailMarkers);
-    }
-
-
-  });
-
-  global.loadAllTrails().then(() => {
-    global.loadAllMarkers().then(() => {
-      geolocation
-        .getCurrentLocation({
-          desiredAccuracy: Accuracy.high
-        })
-        .then(loc => {
-          // console.log(loc);
-          location = loc;
-          map.accessToken =
-            "pk.eyJ1IjoiYWRhbWxpYmJ5b2EiLCJhIjoiY2p1eGg3bG05MG40bzRjandsNTJnZHY3aiJ9.NkE4Wdj4dy3r_w18obRv8g";
-          map.latitude = location.latitude;
-          map.longitude = location.longitude;
-          map.showUserLocation = true;
-          map.hideCompass = "false";
-          map.zoomLevel = 19;
-
-          map.mapStyle = "satellite_streets"; // satellite_streets | mapbox://styles/mapbox/outdoors-v11
-          m.addChild(map);
-
-          page.bindingContext = observ;
-        });
-    }).catch(err => console.log(err));
-  }).catch(err => console.log(err));
-
-}
-exports.onMapLoaded = onMapLoaded;
 
 
 
-
-function recenterTap(args) {
-  var btn = args.object;
-  var page = btn.page;
-  var map = page.getViewById("themap");
-  geolocation
-    .getCurrentLocation({
-      desiredAccuracy: Accuracy.high
-    })
-    .then(loc => {
-      map.setCenter({
-        lat: loc.latitude,
-        lng: loc.longitude,
-        animated: true
-      });
-      // this works, just annoying so I commented it out
-      //   map.animateCamera({
-      //     target: {
-      //       lat: loc.latitude,
-      //       lng: loc.longitude
-      //     },
-      //     tilt: 60,
-      //     zoomLevel: 20,
-      //     duration: 2000
-      //   });
-
-      // this is testing stuff, I just threw it into the recenter so I can activate it on a button click
-      //startTrackingAccelerometer();
-      //startTimer();
-    });
-}
-exports.recenterTap = recenterTap;
-
-exports.onNavigatingTo = onNavigatingTo;
-
-exports.goToRecording = function (args) {
-  frameModule.topmost().navigate({
-    moduleName: "recordpage/record-page",
-    context: {},
-    animated: true
-  });
-};
-
-
-
-//#region  gps thingy whenever a user clicks, not needed just a learning thing.
-// map.setOnMapClickListener((point) => {
-//     // waypoint = JSON.stringify(point);
-//     console.log("We clicked: " + JSON.stringify(point));
-//     var url = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + point.lng + "," + point.lat + ".json?access_token=" + accessToken;
-//     fetch(url).then(response => {
-//             return response.json();
-//         })
-//         .then(data => {
-//             waypoint = (data.features[0].center);
-//             map.removeMarkers();
-//             map.addMarkers([{
-//                 id: curID,
-//                 lat: point.lat,
-//                 lng: point.lng,
-//                 iconPath: "./icons/trail_head_marker.png",
-//                 title: data.features[0].text,
-//                 subtitle: data.features[0].place_name,
-//                 onTap: function () {
-//                     console.log("Tapped the added marker " + curID)
-//                 }
-//             }]);
-//
-//
-//         })
-//         .then(() => {
-//             var dirUrl = "https://api.mapbox.com/directions/v5/mapbox/driving/" + location.longitude + "," + location.latitude + ";" + waypoint[0] + "," + waypoint[1] + "?geometries=geojson&access_token=" + accessToken;
-//             //console.log(dirUrl);
-//             fetch(dirUrl).then(res => {
-//                 //var routes = res.json();
-//                 return res.json();
-//             }).then(routeData => {
-//                 var coords = routeData.routes[0].geometry.coordinates;
-//                 var coordinates = [];
-//                 for (var i = 0; i < coords.length; i++) {
-//                     var tempCoord = {
-//                         lat: coords[i][1],
-//                         lng: coords[i][0]
-//                     }
-//                     coordinates = [...coordinates, tempCoord];
-//                 }
-//
-//                 console.log(coordinates);
-//                 //console.log(routeData);
-//                 map.removePolylines();
-//                 map.addPolyline({
-//                     id: 10,
-//                     color: 0xffff0000,
-//                     points: coordinates
-//                 })
-//             }).catch(err => {
-//                 console.log(err);
-//             })
-//         })
-//         .catch(err => {
-//             console.log(err);
-//         });
-// });
-//#endregion
+ */

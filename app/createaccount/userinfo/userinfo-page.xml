@@ -1,0 +1,26 @@
+<Page class="page loginPage" navigatingTo="onNavigatingTo" 
+    xmlns="http://schemas.nativescript.org/tns.xsd" 
+    xmlns:map="nativescript-mapbox">
+
+
+    <GridLayout rows="* auto">
+        <StackLayout row="0">
+            <Image src="res://oa_logo_createaccount" class="headerLogoCreateAccount" />
+            <Label text="Gender: " horizontalAlignment="center" class="normalTextLogin" marginTop="100" marginBottom="2" />
+            <GridLayout rows="auto" horizontalAlignment="center" columns="125 125">
+                <Label id="male" horizontalAlignment="center" text="Male" row="0" col="0" class="genderOption maleOption" tap="genderSelected" />
+                <Label id="female" horizontalAlignment="center" text="Female" row="0" col="1" class="genderOption femaleOption" tap="genderSelected" />
+            </GridLayout>
+            <!-- <Label row="0" col="0" text="Trail Name: " horizontalAlignment="center" verticalAlignment="middle" class="" /> -->
+            <TextField id="fnameField" hint="First Name" returnKeyType="next" autocorrect="false" class="loginInputField" />
+            <TextField id="lnameField" hint="Last Name" returnKeyType="next" autocorrect="false" class="loginInputField" />
+            <TextField id="emailField" hint="Email" returnKeyType="next" keyboardType="email" autocorrect="false" class="loginInputField" />
+            <TextField id="passField" hint="Password" returnKeyType="next" secure="true" autocorrect="false" class="loginInputField" />
+            <TextField id="confirmPassField" hint="Confirm Password" returnKeyType="next" secure="true" autocorrect="false" class="loginInputField" />
+            <TextField id="zipField" hint="Zip" returnKeyType="done" keyboardType="number" autocorrect="false" class="loginInputField" />
+
+        </StackLayout>
+        <Button row="1" verticalAlignment="bottom" text="Next" class="loginBtn" tap="onNextPressed" />
+    </GridLayout>
+
+</Page>
