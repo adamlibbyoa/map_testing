@@ -4,14 +4,11 @@ a code-behind file. The code-behind is a great place to place your view
 logic, and to set up your page’s data binding.
 */
 
-const HomeViewModel = require("./login-view-model");
-const geolocation = require("nativescript-geolocation");
-const mapbox = require("nativescript-mapbox");
-const dialogs = require("tns-core-modules/ui/dialogs");
 const application = require("tns-core-modules/application");
 var frameModule = require("ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
-
+const firebase = require("nativescript-plugin-firebase");
+const appSettings = require("tns-core-modules/application-settings");
 
 const accessToken =
   "pk.eyJ1IjoiYWRhbWxpYmJ5b2EiLCJhIjoiY2p1eGg3bG05MG40bzRjandsNTJnZHY3aiJ9.NkE4Wdj4dy3r_w18obRv8g";
@@ -36,8 +33,29 @@ var waypoint;
 function onNavigatingTo(args) {
   const page = args.object;
   observ = new Observable();
+  observ.set("errorMsg", "");
+  observ.set("isLoading", false);
+  if (appSettings.hasKey("userInfo")) {
+    var user = JSON.parse(appSettings.getString("userInfo"));
+    page.getViewById("emailField").text = user.email;
+    page.getViewById("passField").text = user.password;
 
-
+    // dont delete yet. This is "auto logging in"
+    // observ.set("isLoading", true);
+    // firebase.login({
+    //   type: firebase.LoginType.PASSWORD,
+    //   passwordOptions: {
+    //     email: user.email,
+    //     password: user.password
+    //   }
+    // }).then(result => {
+    //   observ.set("isLoading", false);
+    //   frameModule.topmost().navigate("./home/home-page");
+    // }).catch(error => {
+    //   observ.set("isLoading", false);
+    //   observ.set("errorMsg", "Failed to auto-signin");
+    // });
+  }
 
   // hide the status bar if the device is an android
   if (application.android) {
@@ -59,5 +77,28 @@ exports.emailLoginPressed = function (args) {
   var page = args.object.page;
   var email = page.getViewById("emailField");
   var pass = page.getViewById("passField");
-  console.log("E: " + email.text + ", P: " + pass.text);
+  // console.log("E: " + email.text + ", P: " + pass.text);
+  observ.set("isLoading", true);
+  firebase.login({
+    type: firebase.LoginType.PASSWORD,
+    passwordOptions: {
+      email: email.text,
+      password: pass.text
+    }
+  }).then(result => {
+    observ.set("isLoading", false);
+
+    appSettings.setString("userInfo", JSON.stringify({
+      email: email.text,
+      password: pass.text
+    }));
+    frameModule.topmost().navigate("./home/home-page");
+  }).catch(error => {
+    observ.set("isLoading", false);
+    observ.set("errorMsg", "Invalid Email or Password");
+  });
+}
+
+exports.signUpPressed = function (args) {
+  frameModule.topmost().navigate("./createaccount/userinfo/userinfo-page");
 }

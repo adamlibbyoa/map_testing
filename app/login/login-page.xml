@@ -8,17 +8,20 @@
             <Image src="res://oa_logo_login" class="headerLogo" />
             <Label text="Welcome" horizontalAlignment="center" class="titleLogin" />
             <Label text="Sign in to get the best of Overland America" horizontalAlignment="center" class="normalTextLogin" />
+            <ActivityIndicator width="25%" horizontalAlignment="center" verticalAlignment="middle" color="#FF8C28" busy="{{ isLoading }}" />
 
             <!-- <Label row="0" col="0" text="Trail Name: " horizontalAlignment="center" verticalAlignment="middle" class="" /> -->
+            <Label text="{{ errorMsg }}" horizontalAlignment="center" />
             <TextField id="emailField" hint="Email" returnKeyType="next" keyboardType="email" autocorrect="false" class="loginInputField" />
             <TextField id="passField" hint="Password" returnKeyType="done" secure="true" autocorrect="false" class="loginInputField" />
             <Button text="Login" class="loginBtn" tap="emailLoginPressed" />
-            <GridLayout rows="100vh" columns="* *">
+            <!-- Dont delete below, that will be used for the google/fb login later -->
+            <!-- <GridLayout rows="100vh" columns="* *">
                 <Button row="0" col="0" text="Facebook" class="altLoginBtn" tap="goToHome" />
                 <Button row="0" col="1" text="Google" class="altLoginBtn" tap="discardTrail" />
-            </GridLayout>
+            </GridLayout> -->
         </StackLayout>
-        <Image src="res://sign_up_button" row="1" verticalAlignment="bottom" />
+        <Image src="res://sign_up_button" row="1" verticalAlignment="bottom" tap="signUpPressed" />
     </GridLayout>
 
 </Page>

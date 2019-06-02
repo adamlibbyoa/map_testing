@@ -4,9 +4,9 @@
 <!-- These are just for testing/designing -->
 
 <!-- <Frame defaultPage="recordpage/record-page"></Frame> -->
-<Frame defaultPage="createaccount/vehicleinfo/vehicleinfo-page"></Frame>
+<!-- <Frame defaultPage="createaccount/vehicleinfo/vehicleinfo-page"></Frame> -->
 <!-- <Frame defaultPage="createaccount/userinfo/userinfo-page"></Frame> -->
-<!-- <Frame defaultPage="login/login-page"></Frame> -->
+<Frame defaultPage="login/login-page"></Frame>
 <!-- <Frame defaultPage="endrecord/endrecord-page"></Frame> -->
 <!-- <Frame defaultPage="Modals/CampModal/camp-modal"></Frame> -->
 <!-- <Frame defaultPage="Modals/PoiModal/poi-modal"></Frame> -->

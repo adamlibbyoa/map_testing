@@ -6,7 +6,7 @@ logic, and to set up your page’s data binding.
 const application = require("tns-core-modules/application");
 var frameModule = require("ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
-
+const firebase = require("nativescript-plugin-firebase");
 
 var observ;
 var userData = {
@@ -78,4 +78,31 @@ exports.onNextPressed = function (args) {
   } else {
     console.log("Passwords match!");
   }
+
+  firebase.createUser({
+    email: email.text,
+    password: pass.text,
+    displayName: fname.text + " " + lname.text
+  }).then(userRecord => {
+    console.log("Successfully created a new user! " + userRecord.uid);
+    firebase.push("/userdata/", {
+      uid: userRecord.uid,
+      email: email.text,
+      first_name: fname.text,
+      last_name: lname.text,
+      gender: userData.gender,
+      zip: zip.text
+    }).then(res => {
+      userData = null;
+      frameModule.topmost().navigate({
+        moduleName: "./createaccount/vehicleinfo/vehicleinfo-page",
+        context: {
+          uid: userRecord.uid
+        },
+        backstackVisible: false
+      });
+    }).catch(err => console.log("error pushing data: " + err));
+  }).catch(error => {
+    console.log("Error creating account: " + error);
+  });
 }
