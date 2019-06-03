@@ -34,6 +34,7 @@
                 <Label id="tirebiggest" text='38"+' row="0" col="3" tap="onTireSelected" style="border-right-width: 0;" class="loginSelectList" />
             </GridLayout>
         </StackLayout>
+        <ActivityIndicator width="40%" height="40%" row="0" horizontalAlignment="center" verticalAlignment="middle" color="#FF8C28" busy="{{ isLoading }}" />
         <Button row="1" verticalAlignment="bottom" text="Next" class="loginBtn" tap="onNextPressed" />
     </GridLayout>
 

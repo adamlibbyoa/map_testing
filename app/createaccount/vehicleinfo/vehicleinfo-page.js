@@ -7,13 +7,42 @@ const application = require("tns-core-modules/application");
 var frameModule = require("ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
 const firebase = require("nativescript-plugin-firebase");
+const dropdown = require("nativescript-drop-down");
 
 var observ;
+
+var v = [{
+    make: "Jeep",
+    models: [{
+        model_name: "name"
+      },
+      {
+        model_name: "name"
+      }
+    ]
+  },
+  {
+    make: "Chevrolet",
+    models: [{
+        model_name: "name"
+      },
+      {
+        model_name: "name"
+      }
+    ]
+  }
+]
+
 
 var makes = [
   "Jeep",
   "Ford",
-  "Chevy"
+  "Chevrolet",
+  "Toyota",
+  "Nissan",
+  "BMW",
+  "Land Rover",
+
 ];
 
 var jeepModels = [
@@ -34,6 +63,8 @@ var chevyModels = [
 ]
 var years = []
 
+var dbmakes = [];
+var dbmodels = [];
 
 var vehicle = {
   make: "",
@@ -54,8 +85,9 @@ function onNavigatingTo(args) {
   }
 
   observ = new Observable();
+  observ.set("isLoading", true);
 
-  for (var i = 2019; i > 1950; i--) {
+  for (var i = 2019; i > 1900; i--) {
     years.push(i.toString());
   }
 
@@ -70,7 +102,14 @@ function onNavigatingTo(args) {
   var topmost = frameModule.topmost();
   topmost.android.showActionBar = false;
 
-  observ.set("makes", makes);
+  firebase.getValue("/vehiclelist/-LgPi5NaAey9wS7GUdvT").then(result => {
+    for (var i in result.value) {
+      dbmakes.push(result.value[i].make);
+    }
+    observ.set("isLoading", false);
+    observ.set("makes", dbmakes);
+  });
+
   observ.set("years", years);
 
   page.bindingContext = observ;
@@ -79,25 +118,35 @@ function onNavigatingTo(args) {
 exports.onNavigatingTo = onNavigatingTo;
 
 exports.onMakeChanged = function (args) {
-  var temp = makes[args.newIndex];
-  switch (temp) {
-    case "Jeep":
-      observ.set("models", jeepModels);
-      observ.set("modelSelectedIndex", 0);
-      break;
-    case "Ford":
-      observ.set("models", fordModels);
-      observ.set("modelSelectedIndex", 0);
-      break;
-    case "Chevy":
-      observ.set("models", chevyModels);
-      observ.set("modelSelectedIndex", 0);
-      break;
-  }
-  vehicle.make = temp;
-  var modes = observ.get("models");
-  vehicle.model = modes[0];
-  vehicle.year = years[0];
+  observ.set("isLoading", true);
+  vehicle.make = dbmakes[args.newIndex];
+
+  firebase.getValue("/vehiclelist/-LgPi5NaAey9wS7GUdvT/" + args.newIndex).then(result => {
+    // console.log(JSON.stringify(result.value));
+    dbmodels = result.value.models.map(x => {
+      return x.model_name;
+    });
+    observ.set("isLoading", false);
+    observ.set("models", dbmodels);
+  });
+
+  // var temp = makes[args.newIndex];
+  // switch (temp) {
+  //   case "Jeep":
+  //     observ.set("models", jeepModels);
+  //     observ.set("modelSelectedIndex", 0);
+  //     break;
+  //   case "Ford":
+  //     observ.set("models", fordModels);
+  //     observ.set("modelSelectedIndex", 0);
+  //     break;
+  //   case "Chevy":
+  //     observ.set("models", chevyModels);
+  //     observ.set("modelSelectedIndex", 0);
+  //     break;
+  // }
+
+  // vehicle.year = years[0];
 }
 
 exports.onModelChanged = function (args) {

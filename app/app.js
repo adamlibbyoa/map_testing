@@ -23,6 +23,7 @@ firebase
   .then(
     function () {
       console.log("firebase.init done");
+
     },
     function (error) {
       console.log("firebase.init error: " + error);
@@ -256,8 +257,6 @@ global.loadAllMarkers = () => {
       .catch(err => reject(err));
   });
 }
-
-
 
 application.on(application.uncaughtErrorEvent, args => {
   console.log("Error: " + args.error);

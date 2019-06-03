@@ -52,6 +52,10 @@ components that have the btn class name.
     color: #f2f2f2;
     font-size: 24;
     height: 64;
+    margin-top: 25vh;
+    width: 100%;
+    border-width: 1;
+    border-color: #FF8C28;
 }
 
 .altLoginBtn {
@@ -105,6 +109,7 @@ components that have the btn class name.
     border-color: white;
     color: white;
     text-align: center;
+    padding-left: 24;
     width: 100%;
     font-size: 24;
 }

@@ -35,13 +35,16 @@
             </StackLayout>
 
             <Image src="res://recenter_icon" row="0" col="1" horizontalAlignment="right" verticalAlignment="bottom" style="width: 32ppi; height: 32ppi; padding: 4; margin-right: 12; margin-bottom: 80vh;" tap="recenterTap" />
-            <Button class="create-trail-modal-button" verticalAlignment="bottom" row="0" colSpan="2" text="Record New Trail" tap="goToRecording" />
+            <!-- <Button class="create-trail-modal-button" verticalAlignment="bottom" row="0" colSpan="2" text="Record New Trail" tap="goToRecording" /> -->
 
 
             <GridLayout row="1" verticalAlignment="bottom" colSpan="2" columns="* * 90 * *">
                 <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_feed" row="0" col="0" />
                 <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_discover" row="0" col="1" />
-                <Image verticalAlignment="bottom" src="res://play_button" row="0" col="2" />
+                <StackLayout row="0" col="2" backgroundColor="#FBFBFB" tap="goToRecording">
+                    <Image src="res://play_button" width="30" height="30" marginTop="10" />
+                    <Label text="Record" horizontalAlignment="center" />
+                </StackLayout>
                 <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_blog" row="0" col="3" style="border-left-width:1px;" />
                 <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_profile" row="0" col="4" />
             </GridLayout>
