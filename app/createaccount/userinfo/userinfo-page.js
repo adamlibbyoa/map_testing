@@ -4,7 +4,7 @@ a code-behind file. The code-behind is a great place to place your view
 logic, and to set up your page’s data binding.
 */
 const application = require("tns-core-modules/application");
-var frameModule = require("ui/frame");
+var frameModule = require("tns-core-modules/ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
 const firebase = require("nativescript-plugin-firebase");
 
@@ -95,7 +95,7 @@ exports.onNextPressed = function (args) {
     }).then(res => {
       userData = null;
       frameModule.topmost().navigate({
-        moduleName: "./createaccount/vehicleinfo/vehicleinfo-page",
+        moduleName: "createaccount/vehicleinfo/vehicleinfo-page",
         context: {
           uid: userRecord.uid
         },

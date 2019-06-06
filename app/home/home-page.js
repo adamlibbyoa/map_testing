@@ -10,7 +10,7 @@ const mapbox = require("nativescript-mapbox");
 var firebase = require("nativescript-plugin-firebase");
 const application = require("tns-core-modules/application");
 const imageModule = require("tns-core-modules/ui/image");
-var frameModule = require("ui/frame");
+var frameModule = require("tns-core-modules/ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
 const Accuracy = require("tns-core-modules/ui/enums").Accuracy;
 const accessToken =
@@ -51,7 +51,7 @@ function onNavigatingTo(args) {
   var topmost = frameModule.topmost();
   topmost.android.showActionBar = false;
 
-  // not sure where to put this, so I'll put this here...
+  // not sure where to put this, so I'll p ut this here...
   // this will run when the application is suspended. It basically deletes the map.
   application.on(application.launchEvent, args => {
     map = null;

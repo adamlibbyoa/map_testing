@@ -5,7 +5,7 @@ logic, and to set up your page’s data binding.
 */
 
 const application = require("tns-core-modules/application");
-var frameModule = require("ui/frame");
+var frameModule = require("tns-core-modules/ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
 const firebase = require("nativescript-plugin-firebase");
 const appSettings = require("tns-core-modules/application-settings");
@@ -92,7 +92,7 @@ exports.emailLoginPressed = function (args) {
       email: email.text,
       password: pass.text
     }));
-    frameModule.topmost().navigate("./home/home-page");
+    frameModule.topmost().navigate("home/home-page");
   }).catch(error => {
     observ.set("isLoading", false);
     observ.set("errorMsg", "Invalid Email or Password");
@@ -100,5 +100,5 @@ exports.emailLoginPressed = function (args) {
 }
 
 exports.signUpPressed = function (args) {
-  frameModule.topmost().navigate("./createaccount/userinfo/userinfo-page");
+  frameModule.topmost().navigate("createaccount/userinfo/userinfo-page");
 }

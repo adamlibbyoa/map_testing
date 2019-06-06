@@ -1,5 +1,5 @@
-<!-- <Frame defaultPage="home/home-page"></Frame> -->
-<Frame defaultPage="login/login-page"></Frame>
+<Frame defaultPage="home/home-page"></Frame>
+<!-- <Frame defaultPage="login/login-page"></Frame> -->
 
 
 <!-- These are just for testing/designing -->

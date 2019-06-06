@@ -9,7 +9,7 @@ const geolocation = require("nativescript-geolocation");
 const mapbox = require("nativescript-mapbox");
 const dialogs = require("tns-core-modules/ui/dialogs");
 const application = require("tns-core-modules/application");
-var frameModule = require("ui/frame");
+var frameModule = require("tns-core-modules/ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
 
 
