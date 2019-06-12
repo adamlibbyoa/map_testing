@@ -15,6 +15,11 @@ refer to http://docs.nativescript.org/ui/theme.
 For example, the following CSS rule changes the font size of all UI
 components that have the btn class name.
 */
+frame,
+page {
+    font-family: "weblysleekuil", "weblysleekuili", "weblysleekuisb", "weblysleekuisbi", "weblysleekuisl", "weblysleekuisli";
+}
+
 .btn {
     font-size: 18;
 }
@@ -133,9 +138,9 @@ rgba(255, 140, 40, 0.5)
 /* Not labeled yet */
 
 .navbarIcon {
-    border-right-width: 1px;
+    /* border-width: 1px; */
     border-color: rgb(32, 32, 32);
-    height: 60vh;
+    height: 68vh;
 }
 
 .create-trail-modal {
@@ -343,4 +348,44 @@ rgba(255, 140, 40, 0.5)
     border-radius: 5;
     border-width: 0;
     width: 50;
+}
+
+/* trail details page  */
+
+.topBackBar {
+    background-color: #4281A4;
+}
+
+.backButton {
+    margin-left: 8;
+    width: 40;
+}
+
+.trailNameRatingPanel {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 80;
+    margin-bottom: 0;
+
+}
+
+.trailNameLabel {
+    color: white;
+    font-size: 24;
+    margin-left: 6;
+    margin-top: 6;
+}
+
+.trailRatingLayout {
+    margin-left: 6;
+    margin-bottom: 6;
+}
+
+.trailRatingNumber {
+    color: white;
+}
+
+.trailDetailsDistance {
+    text-align: center;
+    color: #FF8C28;
+    padding-top: 4;
 }

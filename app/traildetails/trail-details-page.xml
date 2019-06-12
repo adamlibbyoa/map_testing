@@ -1,0 +1,77 @@
+<Page class="page endTrailPage" navigatingTo="onNavigatingTo" 
+    xmlns="http://schemas.nativescript.org/tns.xsd" 
+    xmlns:map="nativescript-mapbox" 
+    xmlns:FAB="nativescript-floatingactionbutton">
+
+    <StackLayout>
+        <GridLayout rows="auto">
+            <!-- Background image, replace src string with a dynamic url -->
+            <Image row="0" src="~/images/tempbackground.png" width="100%" />
+            <!-- The action bar thing.  -->
+            <GridLayout class="topBackBar" row="0" verticalAlignment="top" rows="60" marginLeft="0">
+                <Image class="backButton" src="res://backbutton" horizontalAlignment="left" tap="onBackPressed" />
+                <!-- <Button text="<" marginLeft="8" style="width: 40vw; height: 40vw; border-radius: 50%; border-color: white; border-width: 2; background-color: #4281A4; color: white;" horizontalAlignment="left" /> -->
+            </GridLayout>
+
+            <!-- Trail name and rating -->
+            <GridLayout class="trailNameRatingPanel" verticalAlignment="bottom" rows="* *" columns="auto auto" row="0">
+                <Label row="0" colSpan="2" text="{{ trailName }}" horizontalAlignment="left" verticalAlignment="top" class="trailNameLabel" />
+                <GridLayout id="starRating" row="2" col="0" rows="24vh" columns="* * * * *" verticalAlignment="middle" class="trailRatingLayout">
+                    <!-- <Image id="1" row="0" col="0" src="res://star_grey" />
+                    <Image id="2" row="0" col="1" src="res://star_grey" />
+                    <Image id="3" row="0" col="2" src="res://star_grey" />
+                    <Image id="4" row="0" col="3" src="res://star_grey" />
+                    <Image id="5" row="0" col="4" src="res://star_grey" /> -->
+                </GridLayout>
+                <!-- number format of rating -->
+                <Label row="1" col="1" text="{{ ratingNumber }}" verticalAlignment="middle" class="trailRatingNumber" />
+            </GridLayout>
+        </GridLayout>
+        <GridLayout rows="auto" height="50" columns="* *">
+            <StackLayout row="0" col="0">
+                <Label text="{{ distance }}" class="trailDetailsDistance" />
+                <Label text="Distance" textAlignment="center" />
+            </StackLayout>
+            <StackLayout row="0" col="1">
+                <Label text="{{ difficulty }}" class="trailDetailsDistance" />
+                <Label text="Difficulty" textAlignment="center" />
+            </StackLayout>
+        </GridLayout>
+        <TabView androidSelectedTabHighlightColor="#FF8C28" tabBackgroundColor="#D9D9D9">
+            <TabViewItem title="Overview">
+                <ScrollView>
+                    <StackLayout backgroundColor="#4281A4" padding="12">
+                        <Label text="Description:" style="color: white; font-size: 18;" />
+                        <TextView editable="false" wordWrap="true" style="color: white; font-size: 12; border-width: 0; border-bottom-width: 1; border-color: rgba(0,0,0,0);" text="{{ description }}" />
+                        <!-- text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nisi lectus, ornare eget maximus eget, pellentesque vel leo. Donec vitae ornare est. Vivamus cursus tortor sit amet est aliquam, quis maximus nisl molestie. Integer suscipit enim vitae tempor pharetra. Aenean id luctus felis, ut hendrerit odio. Nam venenatis viverra quam non cursus..." /> -->
+
+                        <Label text="Tral Notes: " marginTop="24" style="color: white; font-size: 18;" />
+                        <StackLayout orientation="horizontal" height="42" marginTop="8">
+                            <Image src="res://campsite_icon" marginRight="6" />
+                            <Image src="res://camera_poi_icon" marginRight="6" />
+                            <Image src="res://obstical_icon" marginRight="6" />
+                        </StackLayout>
+
+                        <Label text="{{ 'Difficulty: ' + difficulty }}" marginTop="24" style="color: white; font-size: 18;" />
+                        <TextView editable="false" wordWrap="true" style="color: white; font-size: 12; border-width: 0; border-bottom-width: 1; border-color: rgba(0,0,0,0);" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nisi lectus, ornare eget maximus eget, pellentesque vel leo. Donec vitae ornare est. Vivamus cursus tortor sit amet est aliquam, quis maximus nisl molestie. Integer suscipit enim vitae tempor pharetra. Aenean id luctus felis, ut hendrerit odio. Nam venenatis viverra quam non cursus..." />
+
+                    </StackLayout>
+                </ScrollView>
+            </TabViewItem>
+            <TabViewItem title="Visuals">
+                <!-- <StackLayout> -->
+                <ScrollView>
+                    <GridLayout loaded="onVisualsLoaded" rows="* * * * * * * * * * * * * * *" columns="140 140 140">
+
+                    </GridLayout>
+                </ScrollView>
+                <!-- </StackLayout> -->
+            </TabViewItem>
+            <TabViewItem title="Reviews">
+                <StackLayout>
+                    <TextView wordWrap="true" style="bottom-border-width: 1; border-radius: 5%; bottom-border-color: rgba(0,0,0,0);" text="Reviews Coming Soon..." />
+                </StackLayout>
+            </TabViewItem>
+        </TabView>
+    </StackLayout>
+</Page>

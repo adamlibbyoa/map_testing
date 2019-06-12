@@ -30,6 +30,18 @@ firebase
     }
   );
 
+application.on(application.uncaughtErrorEvent, (args) => {
+
+  if (args.android) {
+    console.log("Nativescript Error: " + args.android);
+  } else {
+    console.log("Nativscript error: " + args.ios);
+  }
+});
+application.on(application.exitEvent, (args) => {
+  console.log("closed" + args);
+})
+
 /** trail structure
 {
 
@@ -143,7 +155,9 @@ global.setCurrentTrailData = (coords, distance, time, avgSpeed, elevations) => {
     distance: distance,
     duration: time,
     averageSpeed: avgSpeed,
-    elevations: elevations
+    elevations: elevations,
+    difficulty: null,
+    rating: 0
   };
 };
 

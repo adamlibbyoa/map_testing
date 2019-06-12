@@ -249,6 +249,6 @@ exports.onNextPressed = function (args) {
   firebase.push("/vehicles", vehicle).then(res => {
     console.log("Success!");
     vehicle = null;
-    frameModule.topmost().navigate("./login/login-page");
+    frameModule.topmost().navigate("login/login-page");
   }).catch(err => console.log("Error pushing vehicle: " + err));
 }

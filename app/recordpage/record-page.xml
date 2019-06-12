@@ -1,4 +1,4 @@
-<Page class="page" navigatingTo="onNavigatingTo" 
+<Page class="page" navigatingTo="onNavigatingTo" navigatingFrom="onNavigatingFrom" 
     xmlns="http://schemas.nativescript.org/tns.xsd" 
     xmlns:map="nativescript-mapbox">
 
@@ -24,7 +24,7 @@
                 </StackLayout>
             </GridLayout>
 
-            <StackLayout height="100%" width="100%" id="myMap" style="margin-bottom: 125vh;">
+            <StackLayout loaded="onMapLoaded" height="100%" width="100%" id="myMap" style="margin-bottom: 125vh;">
                 <!-- The map dynamically loads here -->
             </StackLayout>
             <ActivityIndicator row="0" colSpan="2" width="25%" color="#FF8C28" busy="{{ isLoading }}" />

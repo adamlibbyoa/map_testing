@@ -1,0 +1,28 @@
+<Page class="page endTrailPage" navigatingTo="onNavigatingTo" 
+    xmlns="http://schemas.nativescript.org/tns.xsd" 
+    xmlns:map="nativescript-mapbox" 
+    xmlns:FAB="nativescript-floatingactionbutton">
+
+    <GridLayout rows="*" columns="*">
+
+
+        <!-- +++++++++ NAVBAR +++++++++++++ -->
+        <Image src="res://navrec_button_background" row="0" colSpan="2" horizontalAlignment="center" verticalAlignment="bottom" width="100%" />
+        <StackLayout row="0" colSpan="2" horizontalAlignment="center" orientation="horizontal" width="100%">
+            <!-- <GridLayout row="0" verticalAlignment="bottom" colSpan="2" columns="* * 90 * *"> -->
+            <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_feed"/>
+            <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_discover" />
+            <!-- <StackLayout backgroundColor="#FBFBFB" tap="goToRecording"> -->
+            <Image src="res://navbar_map" width="90" height="90" verticalAlignment="bottom" />
+            <!-- <Label text="Record" horizontalAlignment="center" /> -->
+            <!-- </StackLayout> -->
+            <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_blog" />
+            <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_profile" />
+            <!-- </GridLayout> -->
+        </StackLayout>
+
+    </GridLayout>
+
+
+
+</Page>

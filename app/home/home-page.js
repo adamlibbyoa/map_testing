@@ -38,6 +38,16 @@ var waypoint;
 //-97.4613617
 
 
+exports.onNavigatingFrom = function (args) {
+  console.log("removing home page suspendEvent Listener");
+  application.off(application.suspendEvent);
+  console.log("removing home page resumeEvent Listener");
+  application.off(application.resumeEvent);
+  if (map != null) {
+    map.destroy();
+  }
+}
+
 function onNavigatingTo(args) {
   var m = args.object.getViewById("myMap");
   // hide the status bar if the device is an android
@@ -75,6 +85,63 @@ function onNavigatingTo(args) {
 }
 exports.onNavigatingTo = onNavigatingTo;
 
+exports.goToFeed = function (args) {
+  map.destroy();
+  var navigationEntry = {
+    moduleName: "feedpage/feed-page",
+    animated: true,
+    // transition: {
+    //   name: "slideRight",
+    //   duration: 60,
+    //   curve: "easeIn"
+    // }
+  }
+
+  frameModule.topmost().navigate(navigationEntry);
+}
+
+
+exports.goToDiscover = function (args) {
+  map.destroy();
+  var navigationEntry = {
+    moduleName: "discoverpage/discover-page",
+    animated: true,
+    // transition: {
+    //   name: "fade",
+    //   duration: 60,
+    //   curve: "easeIn"
+    // }
+  }
+
+  frameModule.topmost().navigate(navigationEntry);
+}
+exports.goToBlog = function (args) {
+  var navigationEntry = {
+    moduleName: "blogpage/blog-page",
+    animated: true,
+    // transition: {
+    //   name: "fade",
+    //   duration: 60,
+    //   curve: "easeIn"
+    // }
+  }
+
+  frameModule.topmost().navigate(navigationEntry);
+}
+
+exports.goToProfile = function (args) {
+  var navigationEntry = {
+    moduleName: "profilepage/profile-page",
+    animated: true,
+    // transition: {
+    //   name: "fade",
+    //   duration: 60,
+    //   curve: "easeIn"
+    // }
+  }
+
+  frameModule.topmost().navigate(navigationEntry);
+}
 
 function onMapLoaded(args) {
   var page = args.object.page;
@@ -215,6 +282,26 @@ function drawTrailHeads() {
   map.addMarkers(trailHeadMarkers);
 }
 
+exports.onTrailInfoTapped = function (args) {
+  var trailDetails = {
+    name: selectedTrail.name,
+    duration: selectedTrail.duration,
+    distance: selectedTrail.distance,
+    //elevations: selectedTrail.elevations,
+    description: selectedTrail.description != null || selectedTrail.description != undefined ? selectedTrail.description : "No description added!",
+    // we need to also get the trail notes
+    rating: selectedTrail.rating != null || selectedTrail.rating != undefined ? selectedTrail.rating : 3,
+    difficulty: selectedTrail.difficulty != null || selectedTrail.difficulty != undefined ? selectedTrail.difficulty : "3-4"
+  }
+  var navigationEntry = {
+    moduleName: "traildetails/trail-details-page",
+    context: trailDetails,
+    animated: true
+  }
+  frameModule.topmost().navigate(navigationEntry);
+  //console.log(JSON.stringify(trailDetails));
+}
+
 // load only the trail heads into memory that are with in 25 miles from the center of the map
 function loadTrailHeads(curLat, curLng) {
   return new Promise((resolve, reject) => {
@@ -231,7 +318,7 @@ function loadTrailHeads(curLat, curLng) {
         var dist = geolocation.distance(curLoc, tempLoc);
         dist *= mtomi; // convert meters to miles;
         if (dist <= 25.0) {
-          console.log(dist);
+          //console.log(dist);
           trailHeads = [...trailHeads, {
             id: i,
             name: result.value[i].name,

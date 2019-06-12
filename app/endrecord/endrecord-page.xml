@@ -4,22 +4,48 @@
     xmlns:FAB="nativescript-floatingactionbutton">
 
 
+    <!-- have name description difficulty and rating. then swipe to next page for trail analytics -->
+
     <ContentView  >
         <GridLayout rows="* auto">
-            <StackLayout>
-                <Label text="Trail Description" horizontalAlignment="center" class="titleLabel" />
+            <ScrollView row="0">
+                <StackLayout>
+                    <Label text="Trail Description" horizontalAlignment="center" class="titleLabel" />
 
-                <!-- <Label row="0" col="0" text="Trail Name: " horizontalAlignment="center" verticalAlignment="middle" class="" /> -->
-                <TextField row="0" col="1" hint="Trail Name..." returnKeyType="done" blur="saveName" returnPress="saveName" autocorrect="true" class="inputField" />
-                <Label text="Distance: " class="textLbl" />
-                <Label text="{{ distance }}" class="textLblChild" />
+                    <!-- <Label row="0" col="0" text="Trail Name: " horizontalAlignment="center" verticalAlignment="middle" class="" /> -->
+                    <TextField id="trailname" row="0" col="1" hint="Trail Name..." returnKeyType="done" blur="saveName" returnPress="saveName" autocorrect="true" class="inputField" />
 
-                <Label text="Duration: " class="textLbl" />
-                <Label text="{{ duration }}" class="textLblChild" />
+                    <TextView id="traildesc" hint="Trail Description..." autocorrect="true" class="inputField" wordWrap="true" />
 
-            </StackLayout>
-            <Button text="Confirm" verticalAlignment="bottom" horizontalAlignment="right" class="confirmTrailBtn" tap="goToHome" />
-            <Button text="Discard" verticalAlignment="bottom" horizontalAlignment="left" class="discardTrailBtn" tap="discardTrail" />
+
+
+                    <Label text="How hard was the trail?" class="textLbl" marginTop="16" />
+                    <GridLayout width="320vw" rows="60vh" columns="* * * *" style="margin-top: 10vh; margin-bottom: 10vh;">
+                        <Image id="12" tap="onDifficultySelected" src="{{ oneSelected }}" row="0" col="0" />
+                        <Image id="35" tap="onDifficultySelected" src="{{ threeSelected }}" row="0" col="1" />
+                        <Image id="68" tap="onDifficultySelected" src="{{ sixSelected }}" row="0" col="2" />
+                        <Image id="910" tap="onDifficultySelected" src="{{ nineSelected }}" row="0" col="3" />
+                    </GridLayout>
+
+                    <Label text="Trail rating?" class="textLbl" marginTop="16" />
+                    <GridLayout width="220vw" rows="40vh" columns="* * * * *" horizontalAlignment="left" marginLeft="10%" marginTop="10">
+                        <Image id="1" row="0" col="0" src="res://star_grey" tap="onStarClicked" />
+                        <Image id="2" row="0" col="1" src="res://star_grey" tap="onStarClicked" />
+                        <Image id="3" row="0" col="2" src="res://star_grey" tap="onStarClicked" />
+                        <Image id="4" row="0" col="3" src="res://star_grey" tap="onStarClicked" />
+                        <Image id="5" row="0" col="4" src="res://star_grey" tap="onStarClicked" />
+                    </GridLayout>
+
+                    <Label text="Distance: " class="textLbl" />
+                    <Label text="{{ distance }}" class="textLblChild" />
+
+                    <Label text="Duration: " class="textLbl" />
+                    <Label text="{{ duration }}" class="textLblChild" />
+
+                </StackLayout>
+            </ScrollView>
+            <Button row="1" text="Confirm" verticalAlignment="bottom" horizontalAlignment="right" class="confirmTrailBtn" tap="goToHome" />
+            <Button row="1" text="Discard" verticalAlignment="bottom" horizontalAlignment="left" class="discardTrailBtn" tap="discardTrail" />
         </GridLayout>
     </ContentView>
 

@@ -1,4 +1,4 @@
-<Page class="page" navigatingTo="onNavigatingTo" 
+<Page class="page" navigatingTo="onNavigatingTo" navigatingFrom="onNavigatingFrom" 
     xmlns="http://schemas.nativescript.org/tns.xsd" 
     xmlns:map="nativescript-mapbox" 
     xmlns:FAB="nativescript-floatingactionbutton">
@@ -8,7 +8,7 @@
     </ActionBar>  
     -->
     <ContentView >
-        <GridLayout rows="*, 60vh" columns="* *">
+        <GridLayout rows="*" columns="* *">
             <StackLayout loaded="onMapLoaded" row="0" colSpan="2" width="100%" id="myMap" style="z-index: -1;">
                 <!-- The map dynamically loads here -->
             </StackLayout>
@@ -23,7 +23,7 @@
                         <Button row="1" colSpan="2" tap="onSearchAreaPressed" visibility="{{ justScrolled }}" text="Search This Area" wordWrap="true" width="150" />
                     </GridLayout>
                 </StackLayout>
-                <GridLayout id="trailinfopanel" visibility="visible" rows="* auto auto" columns = "* * *" width="95%" height="110vh" class="trailInfo">
+                <GridLayout id="trailinfopanel" visibility="visible" rows="* auto auto" columns = "* * *" width="95%" height="110vh" class="trailInfo" tap="onTrailInfoTapped">
                     <Label row="0" colSpan="2" text="{{ selectedTrailName }}" verticalAlignment="bottom" class="trailName" />
                     <StackLayout id="trailinforating" class="trailRating" row="1" col="0" orientation="horizontal">
                         <Image src="res://star_grey" />
@@ -37,17 +37,20 @@
             <Image src="res://recenter_icon" row="0" col="1" horizontalAlignment="right" verticalAlignment="bottom" style="width: 32ppi; height: 32ppi; padding: 4; margin-right: 12; margin-bottom: 80vh;" tap="recenterTap" />
             <!-- <Button class="create-trail-modal-button" verticalAlignment="bottom" row="0" colSpan="2" text="Record New Trail" tap="goToRecording" /> -->
 
-
-            <GridLayout row="1" verticalAlignment="bottom" colSpan="2" columns="* * 90 * *">
-                <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_feed" row="0" col="0" />
-                <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_discover" row="0" col="1" />
-                <StackLayout row="0" col="2" backgroundColor="#FBFBFB" tap="goToRecording">
-                    <Image src="res://play_button" width="30" height="30" marginTop="10" />
-                    <Label text="Record" horizontalAlignment="center" />
-                </StackLayout>
-                <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_blog" row="0" col="3" style="border-left-width:1px;" />
-                <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_profile" row="0" col="4" />
-            </GridLayout>
+            <!-- +++++++++ NAVBAR +++++++++++++ -->
+            <Image src="res://navrec_button_background" row="0" colSpan="2" horizontalAlignment="center" verticalAlignment="bottom" width="100%" />
+            <StackLayout row="0" colSpan="2" horizontalAlignment="center" orientation="horizontal" width="100%">
+                <!-- <GridLayout row="0" verticalAlignment="bottom" colSpan="2" columns="* * 90 * *"> -->
+                <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_feed" tap="goToFeed" />
+                <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_discover" tap="goToDiscover" />
+                <!-- <StackLayout backgroundColor="#FBFBFB" tap="goToRecording"> -->
+                <Image src="res://navbar_map_record" width="90" height="90" verticalAlignment="bottom" tap="goToRecording" />
+                <!-- <Label text="Record" horizontalAlignment="center" /> -->
+                <!-- </StackLayout> -->
+                <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_blog" tap="goToBlog" />
+                <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_profile" tap="goToProfile" />
+                <!-- </GridLayout> -->
+            </StackLayout>
         </GridLayout>
     </ContentView>
 

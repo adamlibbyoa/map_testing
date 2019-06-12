@@ -21,10 +21,10 @@ const folder = documents.getFolder("GPSTESTING" || "GPStesting");
 const file = folder.getFile("data.txt" || "gpsdata.txt");
 const androidApp = require("tns-core-modules/application").android;
 var enums = require("tns-core-modules/ui/enums");
-const campModal = "./Modals/CampModal/camp-modal";
-const poiModal = "./Modals/PoiModal/poi-modal";
-const obsticalModal = "./Modals/ObsticalModal/obstical-modal";
-const confirmModal = "./Modals/ConfirmModal/confirm-modal";
+const campModal = "Modals/CampModal/camp-modal";
+const poiModal = "Modals/PoiModal/poi-modal";
+const obsticalModal = "Modals/ObsticalModal/obstical-modal";
+const confirmModal = "Modals/ConfirmModal/confirm-modal";
 
 //const iosUtils = require("utils/utils.ios");
 
@@ -56,8 +56,26 @@ var isShown;
 var elevations = [];
 var speeds = [];
 var markers = [];
+var resumed = false;
+var curLoc;
+var dist = 0;
+
 // 35.610295
 //-97.4613617
+
+
+
+exports.onNavigatingFrom = function (args) {
+  console.log("removing home page suspendEvent Listener");
+  application.off(application.suspendEvent);
+  console.log("removing home page resumeEvent Listener");
+  application.off(application.resumeEvent);
+  if (map != null) {
+    map.destroy();
+  }
+}
+
+
 function onNavigatingTo(args) {
   const page = args.object;
 
@@ -73,19 +91,28 @@ function onNavigatingTo(args) {
   //vm.set("duration", "0s");
   vm.set("distance", "0.00mi");
   // vm.set("battery", "100");
-  var m = page.getViewById("myMap");
 
-  map = new mapbox.MapboxView();
 
   if (application.android) {
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
   }
+}
+exports.onNavigatingTo = onNavigatingTo;
+
+
+exports.onMapLoaded = function (args) {
+  var page = args.object.page;
+  var m = page.getViewById("myMap");
+
+  map = new mapbox.MapboxView();
   map.id = "themap";
   //console.log("going into map ready");
 
   map.on("mapReady", args => {
+
+
     // this will run when the application is suspended. This will (hopefully) pause the recording
     application.on(application.suspendEvent, args => {
       if (args.android) {
@@ -94,14 +121,15 @@ function onNavigatingTo(args) {
           map.destroy();
         }
 
-        console.log("suspended");
+        console.log("suspended from record page");
       }
     });
     // when the application is resumed, this will be caused. I'm thinking about doing background recording. We will see.
     application.on(application.resumeEvent, args => {
       if (args.android) {
         //geolocation.clearWatch(watchID);
-        console.log("resumed");
+        console.log("resumed record page");
+        resumed = true;
       }
     });
     vm.set("isLoading", false);
@@ -139,204 +167,33 @@ function onNavigatingTo(args) {
       page.bindingContext = vm;
     });
 
-
 }
-var curLoc;
-
-function addCampTapped(args) {
-
-  // close the popup
-  var page = args.object.page;
-  var popup = page.getViewById("trailNotesPopup");
-  isShown = false;
-
-  popup.animate({
-    translate: {
-      x: 0,
-      y: 500
-    },
-    duration: 300,
-    curve: enums.AnimationCurve.easeInOut
-  });
-
-  var mainView = args.object;
-  var context = {};
-
-  geolocation
-    .getCurrentLocation({
-      desiredAccuracy: Accuracy.high
-    })
-    .then(loc => {
-      curLoc = loc;
-    });
-
-  mainView.showModal(campModal, context, addCampIcon, false);
-}
-exports.addCampTapped = addCampTapped;
-
-function addCampIcon(didConfirm, data) {
-  if (didConfirm) {
-    map.addMarkers([{
-      id: markerID,
-      lat: curLoc.latitude,
-      lng: curLoc.longitude,
-      // icon: "res://campsite_icon"
-      iconPath: "./icons/camp_trail_marker.png"
-    }]);
-    markerID++;
-    global.AddMarker("camp", curLoc, data);
-    //global.addMarkerData("camp", curLoc, data.rating, data.price, data.info);
-  } else {
-    console.log("closed");
-  }
-}
-
-function addObsticalTapped(args) {
-
-  // close the popup
-  var page = args.object.page;
-  var popup = page.getViewById("trailNotesPopup");
-  isShown = false;
-
-  popup.animate({
-    translate: {
-      x: 0,
-      y: 500
-    },
-    duration: 300,
-    curve: enums.AnimationCurve.easeInOut
-  });
-
-  var mainView = args.object;
-  var context = {};
-
-  geolocation
-    .getCurrentLocation({
-      desiredAccuracy: Accuracy.high
-    })
-    .then(loc => {
-      curLoc = loc;
-    });
-
-  mainView.showModal(obsticalModal, context, addObsticalIcon, false);
-}
-exports.addObsticalTapped = addObsticalTapped;
-
-function addObsticalIcon(didConfirm, data) {
-  if (didConfirm) {
-    map.addMarkers([{
-      id: markerID,
-      lat: curLoc.latitude,
-      lng: curLoc.longitude,
-      //icon: "res://obstical_icon"
-      iconPath: "./icons/obstical_icon_marker.png"
-    }]);
-    markerID++;
-
-    global.AddMarker("obstical", curLoc, data);
-    //    global.addMarkerData("camp", curLoc, data.rating, data.price, data.info);
-  } else {
-    console.log("closed");
-  }
-}
-
-
-function addPoiTapped(args) {
-
-  // close the popup
-  var page = args.object.page;
-  var popup = page.getViewById("trailNotesPopup");
-  isShown = false;
-
-  popup.animate({
-    translate: {
-      x: 0,
-      y: 500
-    },
-    duration: 300,
-    curve: enums.AnimationCurve.easeInOut
-  });
-
-  var mainView = args.object;
-  var context = {};
-
-  geolocation
-    .getCurrentLocation({
-      desiredAccuracy: Accuracy.high
-    })
-    .then(loc => {
-      curLoc = loc;
-    });
-
-  mainView.showModal(poiModal, context, addPoiIcon, false);
-}
-exports.addPoiTapped = addPoiTapped;
-
-function addPoiIcon(didConfirm, data) {
-  if (didConfirm) {
-    map.addMarkers([{
-      id: markerID,
-      lat: curLoc.latitude,
-      lng: curLoc.longitude,
-      // icon: "res://campsite_icon"
-      iconPath: "./icons/poi_trail_marker.png"
-    }]);
-    markerID++;
-    global.AddMarker("poi", curLoc, data);
-    //global.addMarkerData("camp", curLoc, data.rating, data.price, data.info);
-  } else {
-    console.log("closed");
-  }
-}
-
-function trailNotesPressed(args) {
-  var page = args.object.page;
-  var popup = page.getViewById("trailNotesPopup");
-
-  if (isShown) {
-    popup.animate({
-      translate: {
-        x: 0,
-        y: 500
-      },
-      duration: 300,
-      curve: enums.AnimationCurve.easeInOut
-    });
-  } else {
-    popup.animate({
-      translate: {
-        x: 0,
-        y: 0
-      },
-      duration: 650,
-      curve: enums.AnimationCurve.easeInOut
-    });
-  }
-
-
-
-  isShown = !isShown;
-}
-
-exports.trailNotesPressed = trailNotesPressed;
-
-function onBackPressed(args) {
-  var btn = args.object;
-  var page = btn.page;
-  page.frame.navigate("home/home-page");
-}
-exports.onBackPressed = onBackPressed;
-
-exports.onNavigatingTo = onNavigatingTo;
 
 function startRecording(map) {
-
   map.removePolylines();
   map.removeMarkers();
-  dist = 0;
-  var curLineID = 0;
+
+
+  var curLineID = 1; // start at one just in case the app gets suspended
+
   var mtomi = 0.00062137;
   var lastLoc = null;
+  if (resumed) {
+    // redraw the previous recorded locations
+    lastLoc = recordedLocations[recordedLocations.length - 1];
+    resumed = false;
+    map.addPolyline({
+      id: 0,
+      color: 0xffff0000,
+      points: curCoords
+    });
+
+    // redraw the markers
+    if (markers.length > 0)
+      map.addMarkers(markers);
+    else
+      console.log("no markers to add.");
+  }
   watchID = geolocation.watchLocation(
     function (loc) {
       if (loc) {
@@ -363,11 +220,12 @@ function startRecording(map) {
               lng: loc.longitude
             }
           ];
-        } else if (geolocation.distance(lastLoc, loc) <= 0.1) {
+        } else if (geolocation.distance(lastLoc, loc) <= 1) {
           console.log("We havent moved, so we are not going to save it");
         }
         // else we want to calculate the distance and draw a polyline
         else {
+
           // calc distance in miles
           dist += geolocation.distance(lastLoc, loc) * mtomi;
           vm.set("distance", dist.toFixed(2) + " mi");
@@ -411,6 +269,7 @@ function startRecording(map) {
       updateDistance: 5
     }
   );
+
 }
 
 function batteryMonitor() {
@@ -510,12 +369,14 @@ function buttonStopWatch(args) {
         timerStarted = false;
         timerModule.clearInterval(timerID);
 
+        // calculate average speed 
         var avgSpeed = 0;
         for (var i = 0; i < speeds.length; i++) {
           avgSpeed += speeds[i];
         }
         avgSpeed /= speeds.length;
 
+        // set the trail's data. 
         global.setCurrentTrailData(curCoords, dist, curTime, avgSpeed, elevations);
         //global.currentTrailMarkers = markers;
         //console.log(JSON.stringify(markers));
@@ -537,6 +398,216 @@ function buttonStopWatch(args) {
 
 exports.buttonStopWatch = buttonStopWatch;
 
+
+
+function addCampTapped(args) {
+
+  // close the popup
+  var page = args.object.page;
+  var popup = page.getViewById("trailNotesPopup");
+  isShown = false;
+
+  popup.animate({
+    translate: {
+      x: 0,
+      y: 500
+    },
+    duration: 300,
+    curve: enums.AnimationCurve.easeInOut
+  });
+
+  var mainView = args.object;
+  var context = {};
+
+  geolocation
+    .getCurrentLocation({
+      desiredAccuracy: Accuracy.high
+    })
+    .then(loc => {
+      curLoc = loc;
+    });
+
+  mainView.showModal(campModal, context, addCampIcon, false);
+}
+exports.addCampTapped = addCampTapped;
+
+function addCampIcon(didConfirm, data) {
+  if (didConfirm) {
+
+    markers = [...markers, {
+      id: markerID,
+      lat: curLoc.latitude,
+      lng: curLoc.longitude,
+      iconPath: "./icons/camp_trail_marker.png"
+    }];
+
+
+    map.addMarkers([{
+      id: markerID,
+      lat: curLoc.latitude,
+      lng: curLoc.longitude,
+      // icon: "res://campsite_icon"
+      iconPath: "./icons/camp_trail_marker.png"
+    }]);
+    markerID++;
+    global.AddMarker("camp", curLoc, data);
+    //global.addMarkerData("camp", curLoc, data.rating, data.price, data.info);
+  } else {
+    console.log("closed");
+  }
+}
+
+function addObsticalTapped(args) {
+
+  // close the popup
+  var page = args.object.page;
+  var popup = page.getViewById("trailNotesPopup");
+  isShown = false;
+
+  popup.animate({
+    translate: {
+      x: 0,
+      y: 500
+    },
+    duration: 300,
+    curve: enums.AnimationCurve.easeInOut
+  });
+
+  var mainView = args.object;
+  var context = {};
+
+  geolocation
+    .getCurrentLocation({
+      desiredAccuracy: Accuracy.high
+    })
+    .then(loc => {
+      curLoc = loc;
+    });
+
+  mainView.showModal(obsticalModal, context, addObsticalIcon, false);
+}
+exports.addObsticalTapped = addObsticalTapped;
+
+function addObsticalIcon(didConfirm, data) {
+  if (didConfirm) {
+
+    markers = [...markers, {
+      id: markerID,
+      lat: curLoc.latitude,
+      lng: curLoc.longitude,
+      iconPath: "./icons/obstical_icon_marker.png"
+    }];
+
+    map.addMarkers([{
+      id: markerID,
+      lat: curLoc.latitude,
+      lng: curLoc.longitude,
+      //icon: "res://obstical_icon"
+      iconPath: "./icons/obstical_icon_marker.png"
+    }]);
+    markerID++;
+
+    global.AddMarker("obstical", curLoc, data);
+    //    global.addMarkerData("camp", curLoc, data.rating, data.price, data.info);
+  } else {
+    console.log("closed");
+  }
+}
+
+
+function addPoiTapped(args) {
+
+  // close the popup
+  var page = args.object.page;
+  var popup = page.getViewById("trailNotesPopup");
+  isShown = false;
+
+  popup.animate({
+    translate: {
+      x: 0,
+      y: 500
+    },
+    duration: 300,
+    curve: enums.AnimationCurve.easeInOut
+  });
+
+  var mainView = args.object;
+  var context = {};
+
+  geolocation
+    .getCurrentLocation({
+      desiredAccuracy: Accuracy.high
+    })
+    .then(loc => {
+      curLoc = loc;
+    });
+
+  mainView.showModal(poiModal, context, addPoiIcon, false);
+}
+exports.addPoiTapped = addPoiTapped;
+
+function addPoiIcon(didConfirm, data) {
+  if (didConfirm) {
+
+    markers = [...markers, {
+      id: markerID,
+      lat: curLoc.latitude,
+      lng: curLoc.longitude,
+      iconPath: "./icons/poi_trail_marker.png"
+    }];
+
+    map.addMarkers([{
+      id: markerID,
+      lat: curLoc.latitude,
+      lng: curLoc.longitude,
+      // icon: "res://campsite_icon"
+      iconPath: "./icons/poi_trail_marker.png"
+    }]);
+    markerID++;
+    global.AddMarker("poi", curLoc, data);
+    //global.addMarkerData("camp", curLoc, data.rating, data.price, data.info);
+  } else {
+    console.log("closed");
+  }
+}
+
+function trailNotesPressed(args) {
+  var page = args.object.page;
+  var popup = page.getViewById("trailNotesPopup");
+
+  if (isShown) {
+    popup.animate({
+      translate: {
+        x: 0,
+        y: 500
+      },
+      duration: 300,
+      curve: enums.AnimationCurve.easeInOut
+    });
+  } else {
+    popup.animate({
+      translate: {
+        x: 0,
+        y: 0
+      },
+      duration: 650,
+      curve: enums.AnimationCurve.easeInOut
+    });
+  }
+
+
+
+  isShown = !isShown;
+}
+
+exports.trailNotesPressed = trailNotesPressed;
+
+function onBackPressed(args) {
+  var btn = args.object;
+  var page = btn.page;
+  page.frame.navigate("home/home-page");
+}
+exports.onBackPressed = onBackPressed;
 
 
 

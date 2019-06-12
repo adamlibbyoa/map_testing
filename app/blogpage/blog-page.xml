@@ -1,0 +1,29 @@
+<Page class="page endTrailPage" navigatingTo="onNavigatingTo" 
+    xmlns="http://schemas.nativescript.org/tns.xsd" 
+    xmlns:map="nativescript-mapbox" 
+    xmlns:FAB="nativescript-floatingactionbutton">
+
+    <GridLayout rows="*" columns="*">
+        <ContentView row="0">
+            <Label text="blog page coming soon..." horizontalAlignment="center" verticalAlignment="middle" style="font-size: 24;" />
+        </ContentView>
+
+        <!-- +++++++++ NAVBAR +++++++++++++ -->
+        <Image src="res://navrec_button_background" row="0" colSpan="2" horizontalAlignment="center" verticalAlignment="bottom" width="100%" />
+        <StackLayout row="0" colSpan="2" horizontalAlignment="center" orientation="horizontal" width="100%">
+            <!-- <GridLayout row="0" verticalAlignment="bottom" colSpan="2" columns="* * 90 * *"> -->
+            <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_feed" tap="goToFeed" />
+            <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_discover" tap="goToDiscover" />
+            <!-- <StackLayout backgroundColor="#FBFBFB" tap="goToRecording"> -->
+            <Image src="res://navbar_map" width="90" height="90" verticalAlignment="bottom" tap="goToMap" />
+            <!-- <Label text="Record" horizontalAlignment="center" /> -->
+            <!-- </StackLayout> -->
+            <GridLayout width="80">
+                <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_blog" />
+                <Image verticalAlignment="bottom" src="~/icons/indicator.png" style="margin-bottom: 60;" />
+            </GridLayout>
+            <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_profile" tap="goToProfile" />
+            <!-- </GridLayout> -->
+        </StackLayout>
+    </GridLayout>
+</Page>
