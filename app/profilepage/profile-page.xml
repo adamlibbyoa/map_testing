@@ -4,9 +4,29 @@
     xmlns:FAB="nativescript-floatingactionbutton">
 
     <GridLayout rows="*" columns="*">
-        <ContentView row="0">
-            <Label text="Profile page coming soon..." horizontalAlignment="center" verticalAlignment="middle" style="font-size: 24;" />
-        </ContentView>
+        <Label text="Profile page coming soon!" style="font-size: 24;" horizontalAlignment="center" verticalAlignment="middle" />
+        <!-- <ContentView row="0">
+            <StackLayout>
+                <GridLayout rows="auto" columns="* *" backgroundColor="#4B87A8" verticalAlignment="top">
+                    <StackLayout row="0" colSpan="2" height="200">
+                        <Image src="{{ profileImageSrc }}" style="border-radius: 100%; background-color: gray; height: 125; width: 125; margin-top: 20;" horizontalAlignment="center" />
+                        <Label text="User Name Here" style="color: white; font-size: 20; font-weight: bold; margin-top: 20;" horizontalAlignment="center" />
+                    </StackLayout>
+                    <Image src="~/icons/writing.png" tap="onImageUploadSelected" width="32" height="32" style="transform: scaleX(-1);" row="0" col="1" horizontalAlignment="left" verticalAlignment="top" marginTop="20" marginLeft="30" />
+                    <Image src="res://settings" row="0" col="1" horizontalAlignment="right" verticalAlignment="top" width="25.2" height="25.2" style="margin-right: 20; margin-top: 20;" />
+                </GridLayout>
+                <GridLayout rows="42" columns="* *">
+                    <Label text="Coming Soon" row="0" col="0" style="color: white; font-size: 15; text-align: center; background-color: #9E9E9E; padding-top: 10; border-right-width: 1; border-right-color: gray;" />
+                    <Label text="Coming Soon" row="0" col="1" style="color: white; font-size: 15; text-align: center; background-color: #9E9E9E; padding-top: 10" />
+                </GridLayout>
+                <GridLayout rows="18 170 170" columns="* *" backgroundColor="#595959" height="100%">
+                    <Image src="res://my_messages" row="1" col="0" horizontalAlignment="center" verticalAlignment="middle" style="margin-left: 30;" />
+                    <Image src="res://analytics" row="1" col="1" horizontalAlignment="center" verticalAlignment="middle" style="margin-right: 30;"/>
+                    <Image src="res://my_garage" row="2" col="0" horizontalAlignment="center" verticalAlignment="middle" style="margin-left: 30;" />
+                    <Image src="res://my_trails" row="2" col="1" horizontalAlignment="center" verticalAlignment="middle" style="margin-right: 30;"/>
+                </GridLayout>
+            </StackLayout>
+        </ContentView> -->
 
         <!-- +++++++++ NAVBAR +++++++++++++ -->
         <Image src="res://navrec_button_background" row="0" colSpan="2" horizontalAlignment="center" verticalAlignment="bottom" width="100%" />

@@ -11,11 +11,25 @@ const dialogs = require("tns-core-modules/ui/dialogs");
 const application = require("tns-core-modules/application");
 var frameModule = require("tns-core-modules/ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
+var mPicker = require("nativescript-mediafilepicker");
+const firebase = require("nativescript-plugin-firebase");
 
 
 function onNavigatingTo(args) {
   const page = args.object;
   observ = new Observable();
+
+  firebase.storage.getDownloadUrl({
+    remoteFullPath: "uploads/images/profiles/testing"
+  }).then(
+    function (url) {
+      observ.set("profileImageSrc", url);
+    },
+    function (err) {
+      observ.set("profileImageSrc", "res://oa_logo_createaccount"); // default image
+      console.log("error fetching url: " + err);
+    }
+  );
 
   // hide the status bar if the device is an android
   if (application.android) {
@@ -32,6 +46,60 @@ function onNavigatingTo(args) {
 
 }
 exports.onNavigatingTo = onNavigatingTo;
+
+exports.onImageUploadSelected = function (args) {
+  var imageOptions = {
+    android: {
+      isCaptureMood: false,
+      isNeedCamera: true,
+      maxNumberFiles: 1,
+      isNeedFolderList: true
+    },
+    ios: {
+      isCaptureMood: false,
+      maxNumberFiles: 1
+    }
+  }
+
+  var mediaPicker = new mPicker.Mediafilepicker();
+  mediaPicker.openImagePicker(imageOptions);
+  mediaPicker.on("getFiles", function (res) {
+    var results = res.object.get("results");
+    console.dir(results);
+    firebase.storage.uploadFile({
+      remoteFullPath: "uploads/images/profiles/testing/one",
+      localFullPath: results[0].file,
+      onProgress: function (status) {
+        console.log("Uploaded Fraction: " + status.fractionCompleted);
+      }
+    }).then(
+      function (uploadedFile) {
+        console.log("File uploaded: " + JSON.stringify(uploadedFile));
+        // after upload, then set the change the profile image 
+        firebase.storage.getDownloadUrl({
+          remoteFullPath: "uploads/images/profiles/testing/one"
+        }).then(
+          function (url) {
+            observ.set("profileImageSrc", url);
+          },
+          function (err) {
+            observ.set("profileImageSrc", "res://oa_logo_createaccount"); // default image
+            console.log("error fetching url: " + err);
+          }
+        );
+      },
+      function (error) {
+        console.log("File upload error! ---- " + error);
+      }
+    );
+  });
+  mediaPicker.on("error", function (err) {
+    console.log(err.object.get("msg"));
+  });
+  mediaPicker.on("cancel", function (res) {
+    console.log(res.object.get("msg"));
+  });
+}
 
 exports.goToMap = function (args) {
   var navigationEntry = {
