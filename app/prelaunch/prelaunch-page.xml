@@ -1,0 +1,7 @@
+<Page class="page" backgroundColor="#4281A4" navigatingTo="onNavigatingTo" 
+    xmlns="http://schemas.nativescript.org/tns.xsd" 
+    xmlns:map="nativescript-mapbox">
+
+    <ActivityIndicator loaded="onLoaded" row="0" colSpan="2" width="25%" color="#FF8C28" busy="true" />
+
+</Page>

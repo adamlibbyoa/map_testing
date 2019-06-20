@@ -137,6 +137,24 @@ rgba(255, 140, 40, 0.5)
 
 /* Not labeled yet */
 
+.checkbox {
+    width: 30;
+    height: 30;
+    border-width: 2;
+    border-radius: 5%;
+    background-color: rgb(83, 170, 216);
+    border-color: rgb(75, 148, 187);
+    font-size: 18;
+    text-align: center;
+    margin-right: 10;
+}
+
+.checkbox_label {
+    font-size: 18;
+    font-weight: bold;
+    color: white;
+}
+
 .navbarIcon {
     /* border-width: 1px; */
     border-color: rgb(32, 32, 32);
@@ -269,6 +287,7 @@ rgba(255, 140, 40, 0.5)
 .middleBtn {
     border-left-width: 0;
     border-right-width: 0;
+    margin-bottom: 4;
 }
 
 .bottomRow {

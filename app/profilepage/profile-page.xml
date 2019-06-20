@@ -4,8 +4,8 @@
     xmlns:FAB="nativescript-floatingactionbutton">
 
     <GridLayout rows="*" columns="*">
-        <Label text="Profile page coming soon!" style="font-size: 24;" horizontalAlignment="center" verticalAlignment="middle" />
-        <!-- <ContentView row="0">
+        <!-- <Label text="Profile page coming soon!" style="font-size: 24;" horizontalAlignment="center" verticalAlignment="middle" /> -->
+        <ContentView row="0">
             <StackLayout>
                 <GridLayout rows="auto" columns="* *" backgroundColor="#4B87A8" verticalAlignment="top">
                     <StackLayout row="0" colSpan="2" height="200">
@@ -26,7 +26,7 @@
                     <Image src="res://my_trails" row="2" col="1" horizontalAlignment="center" verticalAlignment="middle" style="margin-right: 30;"/>
                 </GridLayout>
             </StackLayout>
-        </ContentView> -->
+        </ContentView>
 
         <!-- +++++++++ NAVBAR +++++++++++++ -->
         <Image src="res://navrec_button_background" row="0" colSpan="2" horizontalAlignment="center" verticalAlignment="bottom" width="100%" />

@@ -10,11 +10,13 @@ const documents = filesystemModule.knownFolders.documents();
 const fname = "gpscoords";
 const folder = documents.getFolder("GPSTESTING" || "GPStesting");
 const file = folder.getFile("data.txt" || "gpsdata.txt");
+var firebase = require("nativescript-plugin-firebase");
 var mtomi = 0.00062137;
 var curID = 0;
+const appSettings = require("tns-core-modules/application-settings");
 
+global.backgroundLocations = [];
 
-var firebase = require("nativescript-plugin-firebase");
 
 firebase
   .init({
@@ -272,13 +274,38 @@ global.loadAllMarkers = () => {
   });
 }
 
-application.on(application.uncaughtErrorEvent, args => {
-  console.log("Error: " + args.error);
-});
+// if (application.android) {
+//   android.app.job.JobService.extend("com.oa.location.BackgroundService26", {
+//     onStartJob() {
+//       console.log("service started");
+//       return true;
+//     },
+//     onStopJob(jobParameters) {
+//       this.jobFinished(jobParameters, false);
+//       return false;
+//     },
+//   });
+// }
+
+//appSettings.remove("userID");
 
 application.run({
   moduleName: "app-root"
 });
+// if its true, navigate to home page
+// var uid = appSettings.getString("userID", "");
+// application.run({
+//   moduleName: (uid.length > 0) ? "home/home-page" : "app-root"
+// });
+
+// if (uid.length > 0) {
+//   console.log(uid);
+//   application.start({
+//     moduleName: "home/home-page"
+//   });
+// } else {
+//   console.log("no user id found");
+// }
 
 /*
 Do not place any code after the application has been started as it will not

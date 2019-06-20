@@ -19,7 +19,7 @@
                     <GridLayout rows="40 auto" columns="* 60" style="margin-left: 10; margin-right: 10; margin-top: 25;">
                         <TextField row="0" col="0" returnKeyType="search" text="" hint="Search..." class="searchBar" />
                         <Image row="0" col="0" horizontalAlignment="right" width="26" height="26" src="~/icons/search.png" style="margin-right: 4;" />
-                        <Button row="0" col="1" text="=" class="settingsButton"/>
+                        <Button row="0" col="1" text="=" class="settingsButton" tap="startBackground" />
                         <Button row="1" colSpan="2" tap="onSearchAreaPressed" visibility="{{ justScrolled }}" text="Search This Area" wordWrap="true" width="150" />
                     </GridLayout>
                 </StackLayout>

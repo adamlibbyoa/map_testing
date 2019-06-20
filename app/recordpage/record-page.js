@@ -25,6 +25,9 @@ const campModal = "Modals/CampModal/camp-modal";
 const poiModal = "Modals/PoiModal/poi-modal";
 const obsticalModal = "Modals/ObsticalModal/obstical-modal";
 const confirmModal = "Modals/ConfirmModal/confirm-modal";
+const utils = require("tns-core-modules/utils/utils");
+const device = require("tns-core-modules/platform").device;
+var backgroundService = require("../background-service");
 
 //const iosUtils = require("utils/utils.ios");
 
@@ -59,7 +62,8 @@ var markers = [];
 var resumed = false;
 var curLoc;
 var dist = 0;
-
+var service;
+var jobId = 321;
 // 35.610295
 //-97.4613617
 
@@ -92,6 +96,29 @@ function onNavigatingTo(args) {
   vm.set("distance", "0.00mi");
   // vm.set("battery", "100");
 
+  // when the application is resumed, this will be caused. I'm thinking about doing background recording. We will see.
+  application.on(application.resumeEvent, args => {
+    if (args.android) {
+      // cancel the background recording service
+      stopBackgroundRecording();
+
+      // load in the background recorded data so they can be drawn onto the map. 
+
+      //recordedLocations = [...recordedLocations, global.backgroundLocations];
+      for (var i = 0; i < global.backgroundLocations.length; i++) {
+        var loc = global.backgroundLocations[i];
+        console.dir(loc);
+
+        curCoords = [...curCoords, {
+          lat: loc.latitude,
+          lng: loc.longitude
+        }];
+      }
+      console.log("resumed record page");
+      resumed = true;
+    }
+  });
+
 
   if (application.android) {
     const activity = application.android.startActivity;
@@ -101,6 +128,43 @@ function onNavigatingTo(args) {
 }
 exports.onNavigatingTo = onNavigatingTo;
 
+function startBackgroundRecording() {
+  if (application.android) {
+    var context = utils.ad.getApplicationContext();
+    if (device.sdkVersion >= "26") {
+      var component = new android.content.ComponentName(context, com.oa.location.BackgroundService26.class);
+      var builder = new android.app.job.JobInfo.Builder(jobId, component);
+      builder.setRequiredNetworkType(android.app.job.JobInfo.NETWORK_TYPE_ANY);
+      builder.setOverrideDeadline(0);
+      //builder.setPeriodic(30);
+      const jobScheduler = context.getSystemService(android.content.Context.JOB_SCHEDULER_SERVICE);
+      service = jobScheduler.schedule(builder.build());
+      //console.log(`Job Scheduled: ${jobScheduler.schedule(builder.build())}`);
+    } else {
+      var intent = new android.content.Intent(context, com.oa.location.BackgroundService.class);
+      context.startService(intent);
+    }
+  }
+}
+
+function stopBackgroundRecording() {
+  if (application.android) {
+    var context = utils.ad.getApplicationContext();
+    if (device.sdkVersion >= "26") {
+      const jobScheduler = context.getSystemService(android.content.Context.JOB_SCHEDULER_SERVICE);
+      jobScheduler.cancel(service);
+      console.log("Canceled " + service);
+      service = null;
+      if (jobScheduler.getPendingJob(jobId) !== null) {
+        jobScheduler.cancel(jobId);
+        console.log(`Job Canceled: ${jobId}`);
+      }
+    } else {
+      var intent = new android.content.Intent(context, com.oa.location.BackgroundService.class);
+      context.stopService(intent);
+    }
+  }
+}
 
 exports.onMapLoaded = function (args) {
   var page = args.object.page;
@@ -116,6 +180,10 @@ exports.onMapLoaded = function (args) {
     // this will run when the application is suspended. This will (hopefully) pause the recording
     application.on(application.suspendEvent, args => {
       if (args.android) {
+        // background recording
+        startBackgroundRecording();
+
+
         if (map) {
           m.removeChildren();
           map.destroy();
@@ -124,14 +192,7 @@ exports.onMapLoaded = function (args) {
         console.log("suspended from record page");
       }
     });
-    // when the application is resumed, this will be caused. I'm thinking about doing background recording. We will see.
-    application.on(application.resumeEvent, args => {
-      if (args.android) {
-        //geolocation.clearWatch(watchID);
-        console.log("resumed record page");
-        resumed = true;
-      }
-    });
+
     vm.set("isLoading", false);
     map.animateCamera({
       target: {
@@ -199,7 +260,7 @@ function startRecording(map) {
       if (loc) {
 
         map.trackUser({
-          mode: "FOLLOW_WITH_HEADING", // "NONE" | "FOLLOW" | "FOLLOW_WITH_HEADING" | "FOLLOW_WITH_COURSE"
+          mode: "FOLLOW_WITH_COURSE", // "NONE" | "FOLLOW" | "FOLLOW_WITH_HEADING" | "FOLLOW_WITH_COURSE"
           animated: true
         });
         // console.log(loc);

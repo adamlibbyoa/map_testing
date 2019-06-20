@@ -1,4 +1,5 @@
-<Frame defaultPage="login/login-page"></Frame>
+<!-- <Frame defaultPage="login/login-page"></Frame> -->
+<Frame defaultPage="prelaunch/prelaunch-page"></Frame>
 
 <!-- <Frame defaultPage="home/home-page"></Frame> -->
 

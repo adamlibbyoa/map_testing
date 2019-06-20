@@ -17,6 +17,7 @@ var recordBtn;
 
 var observ;
 var map;
+var rememberLogin = false;
 
 var deviceRotation = {
   x: 0, // roll
@@ -31,10 +32,16 @@ var waypoint;
 
 
 function onNavigatingTo(args) {
+
+
+
+
+
   const page = args.object;
   observ = new Observable();
   observ.set("errorMsg", "");
   observ.set("isLoading", false);
+  observ.set("rememberLogin", rememberLogin);
   if (appSettings.hasKey("userInfo")) {
     var user = JSON.parse(appSettings.getString("userInfo"));
     page.getViewById("emailField").text = user.email;
@@ -87,6 +94,8 @@ exports.emailLoginPressed = function (args) {
     }
   }).then(result => {
     observ.set("isLoading", false);
+    if (rememberLogin)
+      appSettings.setString("userID", result.uid);
 
     appSettings.setString("userInfo", JSON.stringify({
       email: email.text,
@@ -101,4 +110,9 @@ exports.emailLoginPressed = function (args) {
 
 exports.signUpPressed = function (args) {
   frameModule.topmost().navigate("createaccount/userinfo/userinfo-page");
+}
+
+exports.rememberLoginPressed = function (args) {
+  rememberLogin = !rememberLogin;
+  observ.set("rememberLogin", rememberLogin);
 }
