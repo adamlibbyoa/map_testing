@@ -4,12 +4,7 @@ You can use this file to perform app-level initialization, but the primary
 purpose of the file is to pass control to the app’s first module.
 */
 const application = require("tns-core-modules/application");
-const filesystemModule = require("tns-core-modules/file-system");
 const geolocation = require("nativescript-geolocation");
-const documents = filesystemModule.knownFolders.documents();
-const fname = "gpscoords";
-const folder = documents.getFolder("GPSTESTING" || "GPStesting");
-const file = folder.getFile("data.txt" || "gpsdata.txt");
 var firebase = require("nativescript-plugin-firebase");
 var mtomi = 0.00062137;
 var curID = 0;
@@ -42,7 +37,9 @@ application.on(application.uncaughtErrorEvent, (args) => {
 });
 application.on(application.exitEvent, (args) => {
   console.log("closed" + args);
-})
+});
+
+
 
 /** trail structure
 {
@@ -274,38 +271,9 @@ global.loadAllMarkers = () => {
   });
 }
 
-// if (application.android) {
-//   android.app.job.JobService.extend("com.oa.location.BackgroundService26", {
-//     onStartJob() {
-//       console.log("service started");
-//       return true;
-//     },
-//     onStopJob(jobParameters) {
-//       this.jobFinished(jobParameters, false);
-//       return false;
-//     },
-//   });
-// }
-
-//appSettings.remove("userID");
-
 application.run({
   moduleName: "app-root"
 });
-// if its true, navigate to home page
-// var uid = appSettings.getString("userID", "");
-// application.run({
-//   moduleName: (uid.length > 0) ? "home/home-page" : "app-root"
-// });
-
-// if (uid.length > 0) {
-//   console.log(uid);
-//   application.start({
-//     moduleName: "home/home-page"
-//   });
-// } else {
-//   console.log("no user id found");
-// }
 
 /*
 Do not place any code after the application has been started as it will not

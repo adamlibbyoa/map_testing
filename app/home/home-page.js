@@ -25,7 +25,9 @@ var selectedTrail = null;
 var trailInfoPanel;
 var trailHeads = [];
 var trailHeadMarkers = [];
+var uid;
 // var com;
+
 
 var deviceRotation = {
   x: 0, // roll
@@ -53,7 +55,13 @@ exports.onNavigatingFrom = function (args) {
 
 function onNavigatingTo(args) {
   var m = args.object.getViewById("myMap");
-  console.log("navigated to home");
+
+  firebase.getCurrentUser().then(res => {
+    uid = res.uid;
+  }, (err) => {
+    console.log(err);
+  });
+
   // hide the status bar if the device is an android
   if (application.android) {
     const activity = application.android.startActivity;
@@ -76,9 +84,12 @@ function onNavigatingTo(args) {
     if (args.android) {
       //geolocation.clearWatch(watchID);
       console.log("resumed");
-
+      clearNotification();
     }
   });
+
+
+
   const page = args.object;
   trailInfoPanel = page.getViewById("trailinfopanel");
   trailInfoPanel.visibility = "collapsed";
@@ -163,6 +174,48 @@ exports.startBackground = function (args) {
   }
 }
 
+function createNotification() {
+  if (application.android) {
+
+    var randomCode = new java.util.Random().nextInt(); //to be used later to associate the 2 things
+    var intent = new android.content.Intent(application.android.foregroundActivity, com.tns.NativeScriptActivity.class);
+    var pendingIntent = android.app.PendingIntent.getActivity(application.android.foregroundActivity, randomCode, intent, android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    var builder = new android.app.Notification.Builder(application.android.foregroundActivity, "some_id");
+    builder.setDefaults(0);
+    builder.setContentTitle("NativeScript Running");
+    builder.setContentText("This notification cannot be cleared");
+    builder.setContentIntent(pendingIntent);
+    builder.setTicker("Persistent Notification");
+    builder.setSmallIcon(application.android.nativeApp.getApplicationInfo().icon);
+    builder.setPriority(android.app.Notification.PRIORITY_HIGH);
+    builder.setOngoing(true); //this tells the OS that the notification is persistant
+
+
+    var notificationManger = utils.ad.getApplicationContext().getSystemService(android.content.Context.NOTIFICATION_SERVICE);
+    const channel_id = "fucking_work_id";
+    const channel_name = "Fucking Channel Name";
+    const description = "Fucking channel description";
+    const importance = android.app.NotificationManager.IMPORTANCE_HIGH;
+    const mChannel = new android.app.NotificationChannel(channel_id, channel_name, importance);
+    mChannel.setDescription(description);
+    notificationManger.createNotificationChannel(mChannel);
+
+    builder.setChannelId(channel_id);
+
+    var notification = builder.build();
+    notificationManger.notify(randomCode, notification);
+  }
+}
+
+function clearNotification() {
+  if (application.android) {
+    var notificationManger = utils.ad.getApplicationContext().getSystemService(android.content.Context.NOTIFICATION_SERVICE);
+    notificationManger.cancelAll();
+  }
+
+}
+
+
 function onMapLoaded(args) {
   var page = args.object.page;
   // get the map container (not the actual map though). This is where the map is going to be 'spawned' in.
@@ -180,7 +233,7 @@ function onMapLoaded(args) {
 
     application.on(application.suspendEvent, args => {
 
-
+      //createNotification();
 
 
       if (args.android) {

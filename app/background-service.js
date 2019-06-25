@@ -14,7 +14,7 @@ function clearWatch() {
 }
 
 function startWatch() {
-    console.log("starting watch??");
+
     clearWatch();
     watchID = geolocation.watchLocation(
         function (loc) {
@@ -44,6 +44,7 @@ if (application.android) {
                 return android.app.Service.START_STICKY;
             },
             onCreate: function () {
+
                 startWatch();
             },
             onBind: function (intent) {
@@ -61,12 +62,14 @@ if (application.android) {
         android.app.job.JobService.extend("com.oa.location.BackgroundService26", {
             onStartJob() {
                 console.log("service onStartJob");
+                //this.startForeground("testing_id", new android.app.Notification());
                 startWatch();
                 return true;
             },
             onStopJob(jobParams) {
                 console.log("service onStopJob");
                 console.dir(locations);
+                //this.stopForeground(true);
                 global.backgroundLocations = locations;
                 this.jobFinished(jobParams, false);
                 clearWatch();

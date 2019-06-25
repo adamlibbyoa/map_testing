@@ -66,6 +66,7 @@ var service;
 var jobId = 321;
 // 35.610295
 //-97.4613617
+var uid;
 
 
 
@@ -82,6 +83,14 @@ exports.onNavigatingFrom = function (args) {
 
 function onNavigatingTo(args) {
   const page = args.object;
+
+
+  firebase.getCurrentUser().then(res => {
+    uid = res.uid;
+  }, (err) => {
+    console.log(err);
+  });
+
 
   var popup = page.getViewById("trailNotesPopup")
   popup.translateY = 500;
@@ -100,7 +109,8 @@ function onNavigatingTo(args) {
   application.on(application.resumeEvent, args => {
     if (args.android) {
       // cancel the background recording service
-      stopBackgroundRecording();
+      // stopBackgroundRecording();
+      // clearNotification();
 
       // load in the background recorded data so they can be drawn onto the map. 
 
@@ -166,6 +176,53 @@ function stopBackgroundRecording() {
   }
 }
 
+
+function createNotification() {
+  if (application.android) {
+
+    var notificationManger = utils.ad.getApplicationContext().getSystemService(android.content.Context.NOTIFICATION_SERVICE);
+    const channel_id = "fucking_work_id_new";
+    const channel_name = "Fucking Channel Name";
+    const description = "Fucking channel description";
+    const importance = android.app.NotificationManager.IMPORTANCE_HIGH;
+    const mChannel = new android.app.NotificationChannel(channel_id, channel_name, importance);
+    mChannel.setDescription(description);
+    notificationManger.createNotificationChannel(mChannel);
+
+
+    var randomCode = Math.abs(new java.util.Random().nextInt()); //to be used later to associate the 2 things
+    var intent = new android.content.Intent(application.android.foregroundActivity, com.tns.NativeScriptActivity.class);
+    var pendingIntent = android.app.PendingIntent.getActivity(application.android.foregroundActivity, randomCode, intent, android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    var builder = new android.app.Notification.Builder(application.android.foregroundActivity, mChannel.getId());
+    builder.setDefaults(0);
+    builder.setContentTitle("Overland America");
+    builder.setContentText("Background Recording");
+    builder.setContentIntent(pendingIntent);
+    builder.setTicker("Persistent Notification");
+    builder.setSmallIcon(application.android.nativeApp.getApplicationInfo().icon); //utils.ad.getApplicationContext().getApplicationInfo().icon); //application.android.nativeApp.getApplicationInfo().icon);
+    builder.setPriority(android.app.Notification.PRIORITY_HIGH);
+    builder.setOngoing(true); //this tells the OS that the notification is persistant
+    // builder.setColor(0xff0000ff);
+
+
+
+    builder.setChannelId(channel_id);
+
+    var notification = builder.build();
+    notificationManger.notify(randomCode, notification);
+  }
+}
+
+function clearNotification() {
+  if (application.android) {
+    var notificationManger = utils.ad.getApplicationContext().getSystemService(android.content.Context.NOTIFICATION_SERVICE);
+    notificationManger.cancelAll();
+  }
+
+}
+
+
+
 exports.onMapLoaded = function (args) {
   var page = args.object.page;
   var m = page.getViewById("myMap");
@@ -181,7 +238,8 @@ exports.onMapLoaded = function (args) {
     application.on(application.suspendEvent, args => {
       if (args.android) {
         // background recording
-        startBackgroundRecording();
+        //createNotification();
+        //startBackgroundRecording();
 
 
         if (map) {
@@ -260,7 +318,7 @@ function startRecording(map) {
       if (loc) {
 
         map.trackUser({
-          mode: "FOLLOW_WITH_COURSE", // "NONE" | "FOLLOW" | "FOLLOW_WITH_HEADING" | "FOLLOW_WITH_COURSE"
+          mode: "FOLLOW_WITH_HEADING", // "NONE" | "FOLLOW" | "FOLLOW_WITH_HEADING" | "FOLLOW_WITH_COURSE"
           animated: true
         });
         // console.log(loc);

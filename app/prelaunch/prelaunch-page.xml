@@ -2,6 +2,8 @@
     xmlns="http://schemas.nativescript.org/tns.xsd" 
     xmlns:map="nativescript-mapbox">
 
-    <ActivityIndicator loaded="onLoaded" row="0" colSpan="2" width="25%" color="#FF8C28" busy="true" />
-
+    <GridLayout rows="100 50" verticalAlignment="middle">
+        <ActivityIndicator loaded="onLoaded" row="0" colSpan="2" width="25%" color="#FF8C28" busy="true" />
+        <Label row="1" text="Loading..." horizontalAlignment="center" fontSize="24" color="white" />
+    </GridLayout>
 </Page>

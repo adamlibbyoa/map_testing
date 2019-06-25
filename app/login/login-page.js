@@ -33,10 +33,6 @@ var waypoint;
 
 function onNavigatingTo(args) {
 
-
-
-
-
   const page = args.object;
   observ = new Observable();
   observ.set("errorMsg", "");
@@ -94,6 +90,7 @@ exports.emailLoginPressed = function (args) {
     }
   }).then(result => {
     observ.set("isLoading", false);
+    console.dir(result);
     if (rememberLogin)
       appSettings.setString("userID", result.uid);
 
