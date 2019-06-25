@@ -13,13 +13,29 @@ const application = require("tns-core-modules/application");
 var frameModule = require("tns-core-modules/ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
 const imageModule = require("tns-core-modules/ui/image");
+const animationModule = require("tns-core-modules/ui/animation");
+const gestures = require("tns-core-modules/ui/gestures");
+var isCollapsed = false;
 
 function onNavigatingTo(args) {
   const page = args.object;
   observ = new Observable();
   var trail = args.context;
+  if (!trail) {
+    trail = {
+      rating: 3,
+      name: "No Data",
+      duration: "NA",
+      description: "na",
+      difficulty: "1-3",
+      distance: 0
+    }
+  }
 
-  console.log(JSON.stringify(args.context));
+
+
+
+
   // add all the stars to the panel
   var starRatings = page.getViewById("starRating");
   for (var i = 0; i < trail.rating; i++) {
@@ -53,6 +69,179 @@ function onNavigatingTo(args) {
 
 }
 exports.onNavigatingTo = onNavigatingTo;
+
+exports.onLoaded = function (args) {
+  var page = args.object.page;
+
+  var overviewpanel = page.getViewById("overviewpanel");
+  overviewpanel.on(gestures.GestureTypes.pan, function (args) {
+    console.log(Math.round(args.deltaY));
+    if (Math.round(args.deltaY) < -100 && !isCollapsed) {
+      isCollapsed = !isCollapsed;
+      parallaxOn(page);
+      return;
+    }
+    if (Math.round(args.deltaY) > 100 && isCollapsed) {
+      isCollapsed = !isCollapsed;
+      parallaxOff(page);
+      return;
+    }
+
+
+  });
+}
+
+function parallaxOn(page) {
+  var theimage = page.getViewById("theimage");
+  var namepanel = page.getViewById("namepanel");
+  var distdiffpanel = page.getViewById("distdiffpanel");
+  var definitions = new Array();
+  var imgAnim = {
+    target: theimage,
+    translate: {
+      x: 0,
+      y: -250
+    },
+    duration: 500
+  }
+  var nameAnim = {
+    target: namepanel,
+    translate: {
+      x: 0,
+      y: -250
+    },
+    duration: 500
+  }
+
+  var distdiffAnim = {
+    target: distdiffpanel,
+    translate: {
+      x: 0,
+      y: -250
+    },
+    duration: 500
+  }
+  definitions.push(imgAnim);
+  definitions.push(nameAnim);
+  definitions.push(distdiffAnim);
+  var animationSet = new animationModule.Animation(definitions);
+  animationSet.play().then(function () {
+    theimage.visibility = "collapsed";
+    namepanel.visibility = "collapsed";
+    distdiffpanel.visibility = "collapsed";
+  });
+
+
+}
+
+function parallaxOff(page) {
+  var theimage = page.getViewById("theimage");
+  var namepanel = page.getViewById("namepanel");
+  var distdiffpanel = page.getViewById("distdiffpanel");
+  theimage.visibility = "visible";
+  namepanel.visibility = "visible";
+  distdiffpanel.visibility = "visible";
+  var definitions = new Array();
+  var imgAnim = {
+    target: theimage,
+    translate: {
+      x: 0,
+      y: 0
+    },
+    duration: 500
+  }
+  var nameAnim = {
+    target: namepanel,
+    translate: {
+      x: 0,
+      y: 0
+    },
+    duration: 500
+  }
+
+  var distdiffAnim = {
+    target: distdiffpanel,
+    translate: {
+      x: 0,
+      y: 0
+    },
+    duration: 500
+  }
+  definitions.push(imgAnim);
+  definitions.push(nameAnim);
+  definitions.push(distdiffAnim);
+  var animationSet = new animationModule.Animation(definitions);
+  animationSet.play().then(function () {
+
+  });
+
+
+}
+
+exports.onScrolled = function (args) {
+  var scrollView = args.object;
+  console.log(scrollView.verticalOffset);
+  var page = args.object.page;
+  var img = page.getViewById("theimage");
+  var namepanel = page.getViewById("namepanel");
+  var distdiffpanel = page.getViewById("distdiffpanel");
+  var tabpanel = page.getViewById("tabviewpanel");
+
+
+
+  // if (scrollView.verticalOffset > 10) {
+  //   img.visibility = "collapsed";
+  //   distdiffpanel.visibility = "collapsed";
+  //   namepanel.visibility = "collapsed";
+  // }
+  // else {
+  //   img.visibility = "visible";
+  //   distdiffpanel.visibility = "visible";
+  // }
+
+
+
+  // failed animations
+  var definitions = new Array();
+  var imgAnim = {
+    target: img,
+    translate: {
+      x: 0,
+      y: scrollView.verticalOffset * -1
+    }
+  }
+  var nameAnim = {
+    target: namepanel,
+    translate: {
+      x: 0,
+      y: scrollView.verticalOffset * -1
+    }
+  }
+  var tabAnim = {
+    target: tabpanel,
+    translate: {
+      x: 0,
+      y: scrollView.verticalOffset * -1
+    }
+  }
+  var distdiffAnim = {
+    target: distdiffpanel,
+    translate: {
+      x: 0,
+      y: scrollView.verticalOffset * -1
+    }
+  }
+  definitions.push(imgAnim);
+  definitions.push(nameAnim);
+  definitions.push(tabAnim);
+  definitions.push(distdiffAnim);
+  // var animationSet = new animationModule.Animation(definitions);
+  // animationSet.play().then(function () {
+  //   console.log("done");
+  // })
+
+
+}
 
 exports.onVisualsLoaded = function (args) {
   var collectionID = 827743;

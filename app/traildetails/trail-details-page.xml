@@ -1,12 +1,14 @@
-<Page class="page endTrailPage" navigatingTo="onNavigatingTo" 
+<Page class="page endTrailPage" navigatingTo="onNavigatingTo" backgroundColor="#4281A4" 
     xmlns="http://schemas.nativescript.org/tns.xsd" 
     xmlns:map="nativescript-mapbox" 
-    xmlns:FAB="nativescript-floatingactionbutton">
+    xmlns:FAB="nativescript-floatingactionbutton" 
+    xmlns:parallax="nativescript-parallax">
 
-    <StackLayout>
+    <StackLayout loaded="onLoaded">
+        <!-- <ContentView visibility="collapsed"> -->
         <GridLayout rows="auto">
             <!-- Background image, replace src string with a dynamic url -->
-            <Image row="0" src="~/images/tempbackground.png" width="100%" />
+            <Image id="theimage" row="0" src="~/images/tempbackground.png" width="100%" />
             <!-- The action bar thing.  -->
             <GridLayout class="topBackBar" row="0" verticalAlignment="top" rows="60" marginLeft="0">
                 <Image class="backButton" src="res://backbutton" horizontalAlignment="left" tap="onBackPressed" />
@@ -14,7 +16,7 @@
             </GridLayout>
 
             <!-- Trail name and rating -->
-            <GridLayout class="trailNameRatingPanel" verticalAlignment="bottom" rows="* *" columns="auto auto" row="0">
+            <GridLayout id="namepanel" class="trailNameRatingPanel" verticalAlignment="bottom" rows="* *" columns="auto auto" row="0">
                 <Label row="0" colSpan="2" text="{{ trailName }}" horizontalAlignment="left" verticalAlignment="top" class="trailNameLabel" />
                 <GridLayout id="starRating" row="2" col="0" rows="24vh" columns="* * * * *" verticalAlignment="middle" class="trailRatingLayout">
                     <!-- <Image id="1" row="0" col="0" src="res://star_grey" />
@@ -27,19 +29,21 @@
                 <Label row="1" col="1" text="{{ ratingNumber }}" verticalAlignment="middle" class="trailRatingNumber" />
             </GridLayout>
         </GridLayout>
-        <GridLayout rows="auto" height="50" columns="* *">
-            <StackLayout row="0" col="0">
+        <GridLayout id="distdiffpanel" rows="auto" height="50" columns="* *">
+            <StackLayout row="0" col="0" backgroundColor="white">
                 <Label text="{{ distance }}" class="trailDetailsDistance" />
                 <Label text="Distance" textAlignment="center" />
             </StackLayout>
-            <StackLayout row="0" col="1">
+            <StackLayout row="0" col="1" backgroundColor="white">
                 <Label text="{{ difficulty }}" class="trailDetailsDistance" />
                 <Label text="Difficulty" textAlignment="center" />
             </StackLayout>
         </GridLayout>
-        <TabView androidSelectedTabHighlightColor="#FF8C28" tabBackgroundColor="#D9D9D9">
+        <!-- </ContentView> -->
+        <TabView id="tabviewpanel" androidSelectedTabHighlightColor="#FF8C28" tabBackgroundColor="#D9D9D9">
             <TabViewItem title="Overview">
-                <ScrollView>
+                <!-- scroll="onScrolled" -->
+                <ScrollView id="overviewpanel">
                     <StackLayout backgroundColor="#4281A4" padding="12">
                         <Label text="Description:" style="color: white; font-size: 18;" />
                         <TextView editable="false" wordWrap="true" style="color: white; font-size: 12; border-width: 0; border-bottom-width: 1; border-color: rgba(0,0,0,0);" text="{{ description }}" />
