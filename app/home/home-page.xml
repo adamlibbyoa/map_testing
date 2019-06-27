@@ -17,12 +17,17 @@
             <StackLayout colSpan="2" row="0" verticalAlignment="top">
                 <StackLayout orientation="horizontal">
                     <GridLayout rows="40 auto" columns="* 60" style="margin-left: 10; margin-right: 10; margin-top: 25;">
-                        <TextField row="0" col="0" returnKeyType="search" text="" hint="Search..." class="searchBar" />
-                        <Image row="0" col="0" horizontalAlignment="right" width="26" height="26" src="~/icons/search.png" style="margin-right: 4;" />
+                        <TextField id="thesearchbar" row="0" col="0" returnKeyType="search" returnPress="onSearchPressed" text="" hint="Search..." class="searchBar" loaded="onSearchLoaded" />
+                        <Image row="0" col="0" horizontalAlignment="right" width="26" height="26" tap="onSearchPressed" src="~/icons/search.png" style="margin-right: 4;" />
                         <Button row="0" col="1" text="=" class="settingsButton" tap="startBackground" />
                         <Button row="1" colSpan="2" tap="onSearchAreaPressed" visibility="{{ justScrolled }}" text="Search This Area" wordWrap="true" width="150" />
                     </GridLayout>
                 </StackLayout>
+                <ListView id="suggestionBox" itemTap="onSuggestedTapped" class="suggestionList" horizontalAlignment="left" height="auto" items="" style="background-color: white;">
+                    <ListView.itemTemplate>
+                        <Label text="{{ placename }}" class="suggestionItem" />
+                    </ListView.itemTemplate>
+                </ListView>
                 <GridLayout id="trailinfopanel" visibility="visible" rows="* auto auto" columns = "* * *" width="95%" height="110vh" class="trailInfo" tap="onTrailInfoTapped">
                     <Label row="0" colSpan="2" text="{{ selectedTrailName }}" verticalAlignment="bottom" class="trailName" />
                     <StackLayout id="trailinforating" class="trailRating" row="1" col="0" orientation="horizontal">

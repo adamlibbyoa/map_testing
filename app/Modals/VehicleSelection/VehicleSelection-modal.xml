@@ -1,0 +1,19 @@
+<Page xmlns="http://www.nativescript.org/tns.xsd" navigatingTo="onNavigatingTo" shownModally="onShownModally">
+    <StackLayout width="320vw">
+        <Label text="X" horizontalAlignment="left" verticalAlignment="top" />
+        <Label text="Select a vehicle from your garage!" horizontalAlignment="center" />
+        <ListView id="vehiclelist" height="100" items="">
+            <ListView.itemTemplate>
+                <StackLayout orientation="horizontal" backgroundColor="lightgray" height="60" fontSize="24">
+                    <Label text="( )  " />
+                    <Label text="{{ name }}" />
+                </StackLayout>
+            </ListView.itemTemplate>
+        </ListView>
+
+        <GridLayout rows="60" columns="* *">
+            <Button text="Add New Vehicle" col="0" backgroundColor="blue" />
+            <Button text="Lets Go!" col="1" backgroundColor="orange" />
+        </GridLayout>
+    </StackLayout>
+</Page> 

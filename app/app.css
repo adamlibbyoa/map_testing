@@ -24,6 +24,41 @@ page {
     font-size: 18;
 }
 
+.oa-action-bar {
+    height: 40;
+    background-color: #4B87A8;
+}
+
+.oa-action-bar-title {
+    color: white;
+    font-size: 15;
+    text-align: right;
+    font-weight: bold;
+    margin-right: 10;
+}
+
+.backButton {
+    margin-left: 8;
+    width: 24;
+}
+
+.garage-vehicle-list {
+    background-color: white;
+    border-color: white;
+    border-radius: 5%;
+    border-width: 1;
+
+}
+
+.garage-vehicle-list-label {
+    text-align: center;
+    font-size: 18;
+    font-weight: bold;
+    width: 100%;
+    border-color: black;
+    border-bottom-width: 1;
+}
+
 /* Login Page CSS */
 
 .loginPage {
@@ -361,6 +396,20 @@ rgba(255, 140, 40, 0.5)
     border-radius: 5;
 }
 
+.suggestionList {
+    width: 80%;
+    margin-left: 12;
+}
+
+.suggestionItem {
+    text-align: center;
+    background-color: white;
+    color: black;
+    font-size: 18;
+    font-weight: bold;
+
+}
+
 .settingsButton {
     background-color: #FF8C28;
     color: white;
@@ -375,10 +424,6 @@ rgba(255, 140, 40, 0.5)
     background-color: #4281A4;
 }
 
-.backButton {
-    margin-left: 8;
-    width: 40;
-}
 
 .trailNameRatingPanel {
     background-color: rgba(0, 0, 0, 0.5);

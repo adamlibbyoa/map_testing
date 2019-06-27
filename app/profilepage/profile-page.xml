@@ -22,7 +22,7 @@
                 <GridLayout rows="18 170 170" columns="* *" backgroundColor="#595959" height="100%">
                     <Image src="res://my_messages" row="1" col="0" horizontalAlignment="center" verticalAlignment="middle" style="margin-left: 30;" />
                     <Image src="res://analytics" row="1" col="1" horizontalAlignment="center" verticalAlignment="middle" style="margin-right: 30;"/>
-                    <Image src="res://my_garage" row="2" col="0" horizontalAlignment="center" verticalAlignment="middle" style="margin-left: 30;" />
+                    <Image src="res://my_garage" row="2" col="0" horizontalAlignment="center" verticalAlignment="middle" style="margin-left: 30;" tap="goToMyGarage" />
                     <Image src="res://my_trails" row="2" col="1" horizontalAlignment="center" verticalAlignment="middle" style="margin-right: 30;"/>
                 </GridLayout>
             </StackLayout>

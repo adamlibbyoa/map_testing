@@ -12,8 +12,12 @@ const application = require("tns-core-modules/application");
 const imageModule = require("tns-core-modules/ui/image");
 var frameModule = require("tns-core-modules/ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
+const fromObject = require("tns-core-modules/data/observable").fromObject;
 const Accuracy = require("tns-core-modules/ui/enums").Accuracy;
 const utils = require("tns-core-modules/utils/utils");
+const ObservableArray = require("tns-core-modules/data/observable-array").ObservableArray;
+
+
 const accessToken =
   "pk.eyJ1IjoiYWRhbWxpYmJ5b2EiLCJhIjoiY2p1eGg3bG05MG40bzRjandsNTJnZHY3aiJ9.NkE4Wdj4dy3r_w18obRv8g";
 var recordBtn;
@@ -95,6 +99,20 @@ function onNavigatingTo(args) {
   trailInfoPanel.visibility = "collapsed";
   observ = new Observable();
   observ.set("isLoading", true);
+
+  // var temp = [{
+  //     title: "Test one"
+  //   },
+  //   {
+  //     title: "test two"
+  //   }
+  // ];
+  // var obsArray = new ObservableArray();
+  // obsArray.push(temp);
+
+  // var sb = page.getViewById("suggestionBox");
+  // sb.items = obsArray;
+  // sb.refresh();
 
   observ.set("justScrolled", "collapsed");
   page.bindingContext = observ;
@@ -272,15 +290,15 @@ function onMapLoaded(args) {
     .then(loc => {
       // console.log(loc);
       location = loc;
-      map.accessToken =
-        "pk.eyJ1IjoiYWRhbWxpYmJ5b2EiLCJhIjoiY2p1eGg3bG05MG40bzRjandsNTJnZHY3aiJ9.NkE4Wdj4dy3r_w18obRv8g";
+      map.accessToken = "pk.eyJ1Ijoib3ZlcmxhbmRhbWVyaWNhIiwiYSI6ImNqdXljZTVtZzB3ZHozem1mMzdrZG5vbHUifQ.f7z1aKyX2hI71TtdiuK5yQ";
+      //"pk.eyJ1IjoiYWRhbWxpYmJ5b2EiLCJhIjoiY2p1eGg3bG05MG40bzRjandsNTJnZHY3aiJ9.NkE4Wdj4dy3r_w18obRv8g";
       map.latitude = location.latitude;
       map.longitude = location.longitude;
       map.showUserLocation = true;
       map.hideCompass = "false";
       map.zoomLevel = 19;
 
-      map.mapStyle = "satellite_streets"; // satellite_streets | mapbox://styles/mapbox/outdoors-v11
+      map.mapStyle = "mapbox://styles/overlandamerica/cjuydk6c61yym1hmg082g957s"; //"satellite_streets"; // satellite_streets | mapbox://styles/mapbox/outdoors-v11
       m.addChild(map);
 
       page.bindingContext = observ;
@@ -458,7 +476,72 @@ exports.goToRecording = function (args) {
     animated: true
   });
 };
+var currentSuggestedItems;
+var currentSelectedItem = {};
+var justTapped = false;
 
+exports.onSuggestedTapped = function (args) {
+  justTapped = true;
+  currentSelectedItem = currentSuggestedItems[args.index];
+  var page = args.object.page;
+  var sb = page.getViewById("thesearchbar");
+  sb.text = currentSelectedItem.placename;
+  var suggestionBox = page.getViewById("suggestionBox");
+  suggestionBox.items = "";
+}
+
+exports.onSearchPressed = function (args) {
+  var suggestionBox = args.object.page.getViewById("suggestionBox");
+  suggestionBox.items = "";
+  map.setZoomLevel({
+    level: 12,
+    animated: false
+  });
+  map.setCenter({
+    lat: currentSelectedItem.location.lat,
+    lng: currentSelectedItem.location.lng,
+    animated: true
+  });
+
+}
+
+exports.onSearchLoaded = function (args) {
+  var sb = args.object;
+  sb.on("textChange", (data) => {
+    if (data.value.length <= 2) {
+      var suggestionBox = sb.page.getViewById("suggestionBox");
+      suggestionBox.items = "";
+    } else if (justTapped) {
+      justTapped = false;
+    } else {
+      fetch("https://api.mapbox.com/geocoding/v5/mapbox.places/" + data.value + ".json?access_token=" + accessToken).then(result => {
+        return result.json();
+      }).then(data => {
+        var searchItems = [];
+        for (var i = 0; i < data.features.length; i++) {
+          searchItems = [...searchItems, {
+            //sb.page.bindingContext.searchItems.push({
+            placename: data.features[i].place_name,
+            location: {
+              lat: data.features[i].center[1],
+              lng: data.features[i].center[0]
+            }
+            // });
+          }];
+          console.log(data.features[i]);
+        }
+        var items = new ObservableArray();
+        items.push(searchItems);
+        currentSuggestedItems = searchItems;
+
+        var suggestionBox = sb.page.getViewById("suggestionBox");
+        suggestionBox.items = items;
+        suggestionBox.refresh();
+
+      });
+    }
+  });
+}
 
 
 //#region  gps thingy whenever a user clicks, not needed just a learning thing.

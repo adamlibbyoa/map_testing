@@ -1,0 +1,58 @@
+<Page class="page endTrailPage" navigatingTo="onNavigatingTo" 
+    xmlns="http://schemas.nativescript.org/tns.xsd" 
+    xmlns:map="nativescript-mapbox">
+
+    <ActionBar class="oa-action-bar">
+        <GridLayout>
+            <Image class="backButton" src="res://backbutton" horizontalAlignment="left" tap="onBackPressed" />
+            <Label class="oa-action-bar-title" text="My Garage" verticalAlignment="middle" horizontalAlignment="right" />
+        </GridLayout>
+    </ActionBar>
+
+    <GridLayout rows="* auto" columns="*" backgroundColor="#696969">
+        <GridLayout row="0" rows="60 * *" columns="*">
+            <Label row="0" text="Vehicles in your Garage" fontSize="24" color="white" />
+            <ScrollView row="1">
+                <ListView height="180" id="myvehiclelist">
+                    <ListView.itemTemplate>
+                        <Border borderWidth="5" borderColor="#696969">
+                            <GridLayout rows="60 60" columns="* * *" class="garage-vehicle-list">
+                                <Label row="0" col="0" text="{{ year }}" class="garage-vehicle-list-label" horizontalAlignment="center" verticalAlignment="middle" />
+                                <Label row="0" col="1" text="{{ make }}" class="garage-vehicle-list-label" horizontalAlignment="center" verticalAlignment="middle" />
+                                <Label row="0" col="2" text="{{ model }}" class="garage-vehicle-list-label" horizontalAlignment="center" verticalAlignment="middle" />
+                                <Label row="1" col="0" text="{{ liftSize }}" class="garage-vehicle-list-label" horizontalAlignment="center" verticalAlignment="middle" />
+                                <Label row="1" col="1" text="{{ tireSize }}" class="garage-vehicle-list-label" horizontalAlignment="center" verticalAlignment="middle" />
+                                <Label row="1" col="2" text="{{ milesDriven || 'Miles ####' }}" class="garage-vehicle-list-label" horizontalAlignment="center" verticalAlignment="middle" />
+                            </GridLayout>
+                        </Border>
+                    </ListView.itemTemplate>
+                </ListView>
+            </ScrollView>
+            <Button row="2" text="Add New Vehicle" verticalAlignment="bottom" tap="goToAddVehicle" />
+        </GridLayout>
+        <ActivityIndicator width="40%" height="40%" row="0" horizontalAlignment="center" verticalAlignment="middle" color="#FF8C28" busy="{{ isLoading }}" />
+
+
+        <!-- +++++++++ NAVBAR +++++++++++++ -->
+        <Image src="res://navrec_button_background" row="1" colSpan="2" horizontalAlignment="center" verticalAlignment="bottom" width="100%" />
+        <StackLayout row="1" colSpan="2" horizontalAlignment="center" orientation="horizontal" width="100%">
+            <!-- <GridLayout row="0" verticalAlignment="bottom" colSpan="2" columns="* * 90 * *"> -->
+            <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_feed" tap="goToFeed" />
+            <!-- <GridLayout width="80"> -->
+            <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_discover" />
+            <!-- <Image verticalAlignment="bottom" src="~/icons/indicator.png" style="margin-bottom: 60;" /> -->
+            <!-- </GridLayout> -->
+            <!-- <StackLayout backgroundColor="#FBFBFB" tap="goToRecording"> -->
+            <Image src="res://navbar_map" width="90" height="90" verticalAlignment="bottom" tap="goToMap" />
+            <!-- <Label text="Record" horizontalAlignment="center" /> -->
+            <!-- </StackLayout> -->
+            <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_blog" tap="goToBlog" />
+            <Image class="navbarIcon" verticalAlignment="bottom" src="res://navbar_profile" tap="goToProfile" />
+            <!-- </GridLayout> -->
+        </StackLayout>
+
+    </GridLayout>
+
+
+
+</Page>

@@ -138,6 +138,20 @@ exports.onImageUploadSelected = function (args) {
   });
 }
 
+exports.goToMyGarage = function (args) {
+  var navigationEntry = {
+    moduleName: "garagepage/garage-page",
+    animated: true,
+    transition: {
+      name: "fade",
+      duration: 60,
+      curve: "easeIn"
+    }
+  }
+
+  frameModule.topmost().navigate(navigationEntry);
+}
+
 exports.goToMap = function (args) {
   var navigationEntry = {
     moduleName: "home/home-page",
