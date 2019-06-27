@@ -16,6 +16,7 @@ const firebase = require("nativescript-plugin-firebase");
 const connectionModule = require("tns-core-modules/connectivity");
 const fileSystemModule = require("tns-core-modules/file-system");
 const imageSourceModule = require("tns-core-modules/image-source");
+const navBar = require("../navbar");
 var uid;
 
 function onNavigatingTo(args) {
@@ -49,16 +50,17 @@ function onNavigatingTo(args) {
 
 
 
-  // hide the status bar if the device is an android
   if (application.android) {
+    // hide the status bar if the device is an android
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+    // get rid of the ugly actionbar
+    var topmost = frameModule.topmost();
+    topmost.android.showActionBar = false;
   }
 
-  // get rid of the ugly actionbar
-  var topmost = frameModule.topmost();
-  topmost.android.showActionBar = false;
 
   page.bindingContext = observ;
 
@@ -141,6 +143,7 @@ exports.onImageUploadSelected = function (args) {
 exports.goToMyGarage = function (args) {
   var navigationEntry = {
     moduleName: "garagepage/garage-page",
+    clearHistory: true,
     animated: true,
     transition: {
       name: "fade",
@@ -151,60 +154,22 @@ exports.goToMyGarage = function (args) {
 
   frameModule.topmost().navigate(navigationEntry);
 }
-
 exports.goToMap = function (args) {
-  var navigationEntry = {
-    moduleName: "home/home-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToMap(false);
 }
 
 exports.goToFeed = function (args) {
-  var navigationEntry = {
-    moduleName: "feedpage/feed-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToFeed(false);
 }
 
-
 exports.goToDiscover = function (args) {
-  var navigationEntry = {
-    moduleName: "discoverpage/discover-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToDiscover(false);
 }
 
 exports.goToBlog = function (args) {
-  var navigationEntry = {
-    moduleName: "blogpage/blog-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
+  navBar.goToBlog(false);
+}
 
-  frameModule.topmost().navigate(navigationEntry);
+exports.goToProfile = function (args) {
+  navBar.goToProfile(false);
 }

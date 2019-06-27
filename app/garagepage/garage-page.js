@@ -13,6 +13,7 @@ var frameModule = require("tns-core-modules/ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
 const ObservableArray = require("tns-core-modules/data/observable-array").ObservableArray;
 const firebase = require("nativescript-plugin-firebase");
+const navBar = require("../navbar");
 var curUid;
 
 function onNavigatingTo(args) {
@@ -26,13 +27,15 @@ function onNavigatingTo(args) {
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+    // we are showing the action bar on this page, this will eventually be default
+    var topmost = frameModule.topmost();
+    topmost.android.showActionBar = true;
   }
 
   var obsArr = new ObservableArray();
 
   firebase.getCurrentUser().then(user => {
-    var topmost = frameModule.topmost();
-    topmost.android.showActionBar = true;
     var uid = user.uid;
     curUid = uid;
     firebase.query((result) => {
@@ -59,8 +62,6 @@ function onNavigatingTo(args) {
     });
   }).catch(err => console.log(err));
 
-
-
   page.bindingContext = observ;
 
 }
@@ -83,72 +84,21 @@ exports.goToAddVehicle = function (args) {
 }
 
 exports.goToMap = function (args) {
-  var navigationEntry = {
-    moduleName: "home/home-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToMap(false);
 }
 
 exports.goToFeed = function (args) {
-  var navigationEntry = {
-    moduleName: "feedpage/feed-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToFeed(false);
 }
 
-
 exports.goToDiscover = function (args) {
-  var navigationEntry = {
-    moduleName: "discoverpage/discover-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToDiscover(false);
 }
 
 exports.goToBlog = function (args) {
-  var navigationEntry = {
-    moduleName: "blogpage/blog-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToBlog(false);
 }
 
 exports.goToProfile = function (args) {
-  var navigationEntry = {
-    moduleName: "profilepage/profile-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToProfile(false);
 }

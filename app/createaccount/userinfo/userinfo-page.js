@@ -22,22 +22,17 @@ function onNavigatingTo(args) {
   const page = args.object;
   observ = new Observable();
 
-  // hide the status bar if the device is an android
   if (application.android) {
+    // hide the status bar if the device is an android
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
-  }
 
-  // get rid of the ugly actionbar
-  var topmost = frameModule.topmost();
-  if (application.ios)
-  {
-    topmost.ios.showActionBar = false;
-  } else 
-  {
+    // get rid of the ugly actionbar
+    var topmost = frameModule.topmost();
     topmost.android.showActionBar = false;
   }
+
   page.bindingContext = observ;
 
 }
@@ -101,6 +96,7 @@ exports.onNextPressed = function (args) {
       userData = null;
       frameModule.topmost().navigate({
         moduleName: "createaccount/vehicleinfo/vehicleinfo-page",
+        clearHistory: true,
         context: {
           uid: userRecord.uid
         },

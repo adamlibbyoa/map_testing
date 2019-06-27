@@ -84,7 +84,6 @@ exports.onNavigatingFrom = function (args) {
 function onNavigatingTo(args) {
   const page = args.object;
 
-
   firebase.getCurrentUser().then(res => {
     uid = res.uid;
   }, (err) => {
@@ -96,8 +95,7 @@ function onNavigatingTo(args) {
   popup.translateY = 500;
   isShown = false;
 
-  var topmost = frameModule.topmost();
-  topmost.android.showActionBar = false;
+
   vm = new HomeViewModel();
   vm.set("isLoading", true);
   vm.set("elevation", "000m");
@@ -131,9 +129,14 @@ function onNavigatingTo(args) {
 
 
   if (application.android) {
+    // if device is android, run in full screen mode (i.e. get rid of the notification bar thing)
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+    // get rid of the action bar
+    var topmost = frameModule.topmost();
+    topmost.android.showActionBar = false;
   }
 }
 exports.onNavigatingTo = onNavigatingTo;
@@ -396,15 +399,17 @@ function batteryMonitor() {
   //     iosUtils.getter(UIDevice, UIDevice.currentDevice).batteryMonitoringEnabled = true;
   //     vm.set("battery", +(iosUtils.getter(UIDevice, UIDevice.currentDevice).batteryLevel * 100));
   // } else {
-  androidApp.registerBroadcastReceiver(
-    android.content.Intent.ACTION_BATTERY_CHANGED,
-    (context, intent) => {
-      let level = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
-      let scale = intent.getIntExtra(android.os.BatteryManager.EXTRA_SCALE, -1);
-      let percent = (level / scale) * 100.0;
-      vm.set("battery", percent.toFixed(0));
-    }
-  );
+  if (application.android) {
+    androidApp.registerBroadcastReceiver(
+      android.content.Intent.ACTION_BATTERY_CHANGED,
+      (context, intent) => {
+        let level = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
+        let scale = intent.getIntExtra(android.os.BatteryManager.EXTRA_SCALE, -1);
+        let percent = (level / scale) * 100.0;
+        vm.set("battery", percent.toFixed(0));
+      }
+    );
+  }
   //}
 }
 

@@ -16,6 +16,7 @@ const fromObject = require("tns-core-modules/data/observable").fromObject;
 const Accuracy = require("tns-core-modules/ui/enums").Accuracy;
 const utils = require("tns-core-modules/utils/utils");
 const ObservableArray = require("tns-core-modules/data/observable-array").ObservableArray;
+const navBar = require("../navbar");
 
 
 const accessToken =
@@ -48,9 +49,9 @@ var waypoint;
 
 
 exports.onNavigatingFrom = function (args) {
-  console.log("removing home page suspendEvent Listener");
+  //console.log("removing home page suspendEvent Listener");
   application.off(application.suspendEvent);
-  console.log("removing home page resumeEvent Listener");
+  //console.log("removing home page resumeEvent Listener");
   application.off(application.resumeEvent);
   if (map != null) {
     map.destroy();
@@ -66,22 +67,16 @@ function onNavigatingTo(args) {
     console.log(err);
   });
 
-  // hide the status bar if the device is an android
   if (application.android) {
+    // hide the status bar if the device is an android
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+    // get rid of the ugly actionbar
+    var topmost = frameModule.topmost();
+    topmost.android.showActionBar = false;
   }
-
-  // get rid of the ugly actionbar
-  var topmost = frameModule.topmost();
-  topmost.android.showActionBar = false;
-
-  // not sure where to put this, so I'll p ut this here...
-  // this will run when the application is suspended. It basically deletes the map.
-  application.on(application.launchEvent, args => {
-    map = null;
-  });
 
   // when the application is resumed, this will be caused. I'm thinking about doing background recording. We will see.
   application.on(application.resumeEvent, args => {
@@ -100,80 +95,25 @@ function onNavigatingTo(args) {
   observ = new Observable();
   observ.set("isLoading", true);
 
-  // var temp = [{
-  //     title: "Test one"
-  //   },
-  //   {
-  //     title: "test two"
-  //   }
-  // ];
-  // var obsArray = new ObservableArray();
-  // obsArray.push(temp);
-
-  // var sb = page.getViewById("suggestionBox");
-  // sb.items = obsArray;
-  // sb.refresh();
-
   observ.set("justScrolled", "collapsed");
   page.bindingContext = observ;
 }
 exports.onNavigatingTo = onNavigatingTo;
 
 exports.goToFeed = function (args) {
-  map.destroy();
-  var navigationEntry = {
-    moduleName: "feedpage/feed-page",
-    animated: true,
-    // transition: {
-    //   name: "slideRight",
-    //   duration: 60,
-    //   curve: "easeIn"
-    // }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToFeed(true);
 }
 
 exports.goToDiscover = function (args) {
-  map.destroy();
-  var navigationEntry = {
-    moduleName: "discoverpage/discover-page",
-    animated: true,
-    // transition: {
-    //   name: "fade",
-    //   duration: 60,
-    //   curve: "easeIn"
-    // }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToDiscover(true);
 }
-exports.goToBlog = function (args) {
-  var navigationEntry = {
-    moduleName: "blogpage/blog-page",
-    animated: true,
-    // transition: {
-    //   name: "fade",
-    //   duration: 60,
-    //   curve: "easeIn"
-    // }
-  }
 
-  frameModule.topmost().navigate(navigationEntry);
+exports.goToBlog = function (args) {
+  navBar.goToBlog(true);
 }
 
 exports.goToProfile = function (args) {
-  var navigationEntry = {
-    moduleName: "profilepage/profile-page",
-    animated: true,
-    // transition: {
-    //   name: "fade",
-    //   duration: 60,
-    //   curve: "easeIn"
-    // }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToProfile(true);
 }
 
 exports.startBackground = function (args) {
@@ -391,7 +331,7 @@ exports.onTrailInfoTapped = function (args) {
   var navigationEntry = {
     moduleName: "traildetails/trail-details-page",
     context: trailDetails,
-    animated: true
+    animated: false
   }
   frameModule.topmost().navigate(navigationEntry);
   //console.log(JSON.stringify(trailDetails));
@@ -444,20 +384,7 @@ function recenterTap(args) {
         lng: loc.longitude,
         animated: true
       });
-      // this works, just annoying so I commented it out
-      //   map.animateCamera({
-      //     target: {
-      //       lat: loc.latitude,
-      //       lng: loc.longitude
-      //     },
-      //     tilt: 60,
-      //     zoomLevel: 20,
-      //     duration: 2000
-      //   });
 
-      // this is testing stuff, I just threw it into the recenter so I can activate it on a button click
-      //startTrackingAccelerometer();
-      //startTimer();
     });
 }
 exports.recenterTap = recenterTap;

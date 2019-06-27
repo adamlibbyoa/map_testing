@@ -11,6 +11,7 @@ const firebase = require("nativescript-plugin-firebase");
 const appSettings = require("tns-core-modules/application-settings");
 const connectionModule = require("tns-core-modules/connectivity");
 const filesystemModule = require("tns-core-modules/file-system");
+const navBar = require("../navbar");
 
 var observ;
 
@@ -18,25 +19,18 @@ var observ;
 
 function onNavigatingTo(args) {
   var page = args.object;
-  // hide the status bar if the device is an android
+
   if (application.android) {
+    // hide the status bar if the device is an android
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
     // get rid of the ugly actionbar
     var topmost = frameModule.topmost();
-    
-      topmost.android.showActionBar = false;
-    
+    topmost.android.showActionBar = false;
+
   }
-
-
-
-  // if (appSettings.getBoolean("isFirst", true))
-  // {
-  //   observ.set("message", "Loading")
-  // }
-
 
   page.bindingContext = observ;
 
@@ -73,6 +67,7 @@ exports.onLoaded = function (args) {
       offline();
       break;
     default:
+      offline();
       break;
   }
 
@@ -104,6 +99,8 @@ function offline() {
       function (result) {
         if (result.length <= 0) {
           console.log("No data has been saved");
+
+          // replace with query
           firebase.getValue("/userdata").then(result => {
             for (var i in result.value) {
               var user = result.value[i];

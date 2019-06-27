@@ -41,19 +41,18 @@ function onNavigatingTo(args) {
     years.push(i.toString());
   }
 
-  // hide the status bar if the device is an android
   if (application.android) {
+    // hide the status bar if the device is an android
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
-  }
 
-  // get rid of the ugly actionbar
-  var topmost = frameModule.topmost();
-  if (application.android)
-  {
+    // hide the action bar on android
+    var topmost = frameModule.topmost();
     topmost.android.showActionBar = false;
   }
+
+  // load the list of makes
   firebase.getValue("/vehiclelist/-LgPi5NaAey9wS7GUdvT").then(result => {
     for (var i in result.value) {
       dbmakes.push(result.value[i].make);
@@ -69,6 +68,7 @@ function onNavigatingTo(args) {
 }
 exports.onNavigatingTo = onNavigatingTo;
 
+// load the list of models based on selected make
 exports.onMakeChanged = function (args) {
   observ.set("isLoading", true);
   vehicle.make = dbmakes[args.newIndex];
@@ -83,17 +83,19 @@ exports.onMakeChanged = function (args) {
   });
 }
 
+// save the model when its changed
 exports.onModelChanged = function (args) {
   var temp = observ.get("models");
   vehicle.model = temp[args.newIndex];
 }
 
+// save the year 
 exports.onYearChanged = function (args) {
   vehicle.year = years[args.newIndex];
 }
 
-// white - rgba(255, 255, 255, 0.5) 
-// orange - rgba(255, 140, 40, 0.5)
+
+// selection function for the lift sizes
 exports.onLiftSelected = function (args) {
   var page = args.object.page;
   var none = page.getViewById("liftnone");
@@ -136,6 +138,7 @@ exports.onLiftSelected = function (args) {
   }
 }
 
+// tire size selection function
 exports.onTireSelected = function (args) {
   var page = args.object.page;
   var small = page.getViewById("tiresmall");
@@ -178,6 +181,7 @@ exports.onTireSelected = function (args) {
   }
 }
 
+// save function that will add it to the vehicle list and navigate back to the garage page
 exports.onNextPressed = function (args) {
   vehicle.uid = uid;
   navigationEntry = {

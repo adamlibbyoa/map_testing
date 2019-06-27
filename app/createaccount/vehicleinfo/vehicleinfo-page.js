@@ -10,59 +10,7 @@ const firebase = require("nativescript-plugin-firebase");
 const dropdown = require("nativescript-drop-down");
 
 var observ;
-
-var v = [{
-    make: "Jeep",
-    models: [{
-        model_name: "name"
-      },
-      {
-        model_name: "name"
-      }
-    ]
-  },
-  {
-    make: "Chevrolet",
-    models: [{
-        model_name: "name"
-      },
-      {
-        model_name: "name"
-      }
-    ]
-  }
-]
-
-
-var makes = [
-  "Jeep",
-  "Ford",
-  "Chevrolet",
-  "Toyota",
-  "Nissan",
-  "BMW",
-  "Land Rover",
-
-];
-
-var jeepModels = [
-  "Wrangler",
-  "Limited",
-  "Wranger"
-];
-var fordModels = [
-  "Truck",
-  "Bigger Truck",
-  "Meh"
-];
-var chevyModels = [
-  "Camero",
-  "Some truck",
-  "Another Truck",
-  "Bigger Truck"
-]
 var years = []
-
 var dbmakes = [];
 var dbmodels = [];
 
@@ -91,22 +39,17 @@ function onNavigatingTo(args) {
     years.push(i.toString());
   }
 
-  // hide the status bar if the device is an android
   if (application.android) {
+    // hide the status bar if the device is an android
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
-  }
 
-  // get rid of the ugly actionbar
-  var topmost = frameModule.topmost();
-  if (application.ios)
-  {
-    topmost.ios.showActionBar = false;
-  } else 
-  {
+    // get rid of the ugly actionbar
+    var topmost = frameModule.topmost();
     topmost.android.showActionBar = false;
   }
+
   firebase.getValue("/vehiclelist/-LgPi5NaAey9wS7GUdvT").then(result => {
     for (var i in result.value) {
       dbmakes.push(result.value[i].make);
@@ -135,23 +78,6 @@ exports.onMakeChanged = function (args) {
     observ.set("models", dbmodels);
   });
 
-  // var temp = makes[args.newIndex];
-  // switch (temp) {
-  //   case "Jeep":
-  //     observ.set("models", jeepModels);
-  //     observ.set("modelSelectedIndex", 0);
-  //     break;
-  //   case "Ford":
-  //     observ.set("models", fordModels);
-  //     observ.set("modelSelectedIndex", 0);
-  //     break;
-  //   case "Chevy":
-  //     observ.set("models", chevyModels);
-  //     observ.set("modelSelectedIndex", 0);
-  //     break;
-  // }
-
-  // vehicle.year = years[0];
 }
 
 exports.onModelChanged = function (args) {
@@ -163,8 +89,6 @@ exports.onYearChanged = function (args) {
   vehicle.year = years[args.newIndex];
 }
 
-// white - rgba(255, 255, 255, 0.5) 
-// orange - rgba(255, 140, 40, 0.5)
 exports.onLiftSelected = function (args) {
   var page = args.object.page;
   var none = page.getViewById("liftnone");
@@ -254,6 +178,16 @@ exports.onNextPressed = function (args) {
   firebase.push("/vehicles", vehicle).then(res => {
     console.log("Success!");
     vehicle = null;
-    frameModule.topmost().navigate("login/login-page");
+    navigationEntry = {
+      moduleName: "login/login-page",
+      clearHistory: true,
+      animated: true,
+      transition: {
+        name: "fade",
+        duration: 60,
+        curve: "easeIn"
+      }
+    }
+    frameModule.topmost().navigate(navigationEntry);
   }).catch(err => console.log("Error pushing vehicle: " + err));
 }

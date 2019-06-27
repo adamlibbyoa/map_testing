@@ -9,6 +9,7 @@ var frameModule = require("tns-core-modules/ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
 const firebase = require("nativescript-plugin-firebase");
 const appSettings = require("tns-core-modules/application-settings");
+const navBar = require("../navbar");
 
 const accessToken =
   "pk.eyJ1IjoiYWRhbWxpYmJ5b2EiLCJhIjoiY2p1eGg3bG05MG40bzRjandsNTJnZHY3aiJ9.NkE4Wdj4dy3r_w18obRv8g";
@@ -60,14 +61,15 @@ function onNavigatingTo(args) {
     // });
   }
 
-  // hide the status bar if the device is an android
   if (application.android) {
+    // hide the status bar if the device is an android
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
     // get rid of the ugly actionbar
     var topmost = frameModule.topmost();
-        topmost.android.showActionBar = false;
+    topmost.android.showActionBar = false;
   }
 
   page.bindingContext = observ;
@@ -97,7 +99,7 @@ exports.emailLoginPressed = function (args) {
       email: email.text,
       password: pass.text
     }));
-    frameModule.topmost().navigate("home/home-page");
+    navBar.goToMap(false);
   }).catch(error => {
     observ.set("isLoading", false);
     observ.set("errorMsg", "Invalid Email or Password");
@@ -105,7 +107,19 @@ exports.emailLoginPressed = function (args) {
 }
 
 exports.signUpPressed = function (args) {
-  frameModule.topmost().navigate("createaccount/userinfo/userinfo-page");
+
+  var navigationEntry = {
+    moduleName: "createaccount/userinfo/userinfo-page",
+    clearHistory: true,
+    animated: true,
+    transition: {
+      name: "fade",
+      duration: 60,
+      curve: "easeIn"
+    }
+  }
+
+  frameModule.topmost().navigate(navigationEntry);
 }
 
 exports.rememberLoginPressed = function (args) {

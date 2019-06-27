@@ -14,6 +14,7 @@ var frameModule = require("tns-core-modules/ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
 const imageModule = require("tns-core-modules/ui/image");
 const animationModule = require("tns-core-modules/ui/animation");
+const navBar = require("../navbar");
 const gestures = require("tns-core-modules/ui/gestures");
 var isCollapsed = false;
 
@@ -31,10 +32,6 @@ function onNavigatingTo(args) {
       distance: 0
     }
   }
-
-
-
-
 
   // add all the stars to the panel
   var starRatings = page.getViewById("starRating");
@@ -54,16 +51,17 @@ function onNavigatingTo(args) {
   observ.set("difficulty", trail.difficulty);
 
 
-  // hide the status bar if the device is an android
   if (application.android) {
+    // hide the status bar if the device is an android
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+    // get rid of the ugly actionbar
+    var topmost = frameModule.topmost();
+    topmost.android.showActionBar = false;
   }
 
-  // get rid of the ugly actionbar
-  var topmost = frameModule.topmost();
-  topmost.android.showActionBar = false;
 
   page.bindingContext = observ;
 
@@ -266,78 +264,28 @@ exports.onVisualsLoaded = function (args) {
   }
 }
 
+// this will need to be updated once we can go to this page from multiple pages, but for now it just goes back home
 exports.onBackPressed = function (args) {
-  // firebase.sendCrashLog(new java.lang.Exception("test exception"));
-  frameModule.topmost().navigate("home/home-page");
+  navBar.goToMap(false);
+  // // firebase.sendCrashLog(new java.lang.Exception("test exception"));
+  // frameModule.topmost().navigate("home/home-page");
 }
-
 exports.goToMap = function (args) {
-  var navigationEntry = {
-    moduleName: "home/home-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToMap(false);
 }
 
 exports.goToFeed = function (args) {
-  var navigationEntry = {
-    moduleName: "feedpage/feed-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToFeed(false);
 }
 
-
 exports.goToDiscover = function (args) {
-  var navigationEntry = {
-    moduleName: "discoverpage/discover-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToDiscover(false);
 }
 
 exports.goToBlog = function (args) {
-  var navigationEntry = {
-    moduleName: "blogpage/blog-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToBlog(false);
 }
 
 exports.goToProfile = function (args) {
-  var navigationEntry = {
-    moduleName: "profilepage/profile-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToProfile(false);
 }

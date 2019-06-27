@@ -11,6 +11,7 @@ const dialogs = require("tns-core-modules/ui/dialogs");
 const application = require("tns-core-modules/application");
 var frameModule = require("tns-core-modules/ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
+const navBar = require("../navbar");
 
 var difficulty = 0;
 var oneSelected = true;
@@ -74,16 +75,17 @@ function onNavigatingTo(args) {
   stars[3] = page.getViewById("4");
   stars[4] = page.getViewById("5");
 
-  // hide the status bar if the device is an android
   if (application.android) {
+    // hide the status bar if the device is an android
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+    // get rid of the ugly actionbar
+    var topmost = frameModule.topmost();
+    topmost.android.showActionBar = false;
   }
 
-  // get rid of the ugly actionbar
-  var topmost = frameModule.topmost();
-  topmost.android.showActionBar = false;
 
   page.bindingContext = observ;
 
@@ -100,7 +102,7 @@ exports.discardTrail = function (args) {
     res => {
       if (res) {
         global.currentTrail = {};
-        frameModule.topmost().navigate("home/home-page");
+        navBar.goToHome(false);
       }
     }
   )
@@ -152,9 +154,8 @@ exports.goToHome = function (args) {
   }
   global.currentTrail.difficulty = str;
   global.postCurrentTrail();
-  frameModule.topmost().navigate("home/home-page");
+  navBar.goToHome(false);
 }
-
 
 function onDifficultySelected(args) {
   var selectedID = args.object.id;

@@ -11,100 +11,40 @@ const dialogs = require("tns-core-modules/ui/dialogs");
 const application = require("tns-core-modules/application");
 var frameModule = require("tns-core-modules/ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
+const navBar = require("../navbar");
 
 
 function onNavigatingTo(args) {
   const page = args.object;
   observ = new Observable();
 
-  // hide the status bar if the device is an android
   if (application.android) {
+    // hide the status bar if the device is an android
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
-  }
 
-  // get rid of the ugly actionbar
-  var topmost = frameModule.topmost();
-  if (application.ios)
-  {
-    topmost.ios.showActionBar = false;
-  } else 
-  {
+    // get rid of the ugly actionbar
+    var topmost = frameModule.topmost();
     topmost.android.showActionBar = false;
   }
+
   page.bindingContext = observ;
 
 }
 exports.onNavigatingTo = onNavigatingTo;
-
 exports.goToMap = function (args) {
-  var navigationEntry = {
-    moduleName: "home/home-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToMap(false);
 }
 
 exports.goToFeed = function (args) {
-  var navigationEntry = {
-    moduleName: "feedpage/feed-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
-}
-
-
-exports.goToDiscover = function (args) {
-  var navigationEntry = {
-    moduleName: "discoverpage/discover-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToFeed(false);
 }
 
 exports.goToBlog = function (args) {
-  var navigationEntry = {
-    moduleName: "blogpage/blog-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToBlog(false);
 }
 
 exports.goToProfile = function (args) {
-  var navigationEntry = {
-    moduleName: "profilepage/profile-page",
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
-    }
-  }
-
-  frameModule.topmost().navigate(navigationEntry);
+  navBar.goToProfile(false);
 }
