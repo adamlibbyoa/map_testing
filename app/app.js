@@ -16,6 +16,7 @@ global.backgroundLocations = [];
 firebase
   .init({
     //    persist: true
+    iOSEmulatorFlush: true
   })
   .then(
     function () {

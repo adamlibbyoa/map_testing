@@ -60,7 +60,7 @@ exports.onNavigatingFrom = function (args) {
 
 function onNavigatingTo(args) {
   var m = args.object.getViewById("myMap");
-
+  console.log("On the home page");
   firebase.getCurrentUser().then(res => {
     uid = res.uid;
   }, (err) => {
