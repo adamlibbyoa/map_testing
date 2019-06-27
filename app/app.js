@@ -10,7 +10,7 @@ var mtomi = 0.00062137;
 var curID = 0;
 const appSettings = require("tns-core-modules/application-settings");
 
-global.backgroundLocations = []; 
+global.backgroundLocations = [];
 
 
 firebase

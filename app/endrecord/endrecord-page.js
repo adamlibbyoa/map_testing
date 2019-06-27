@@ -101,8 +101,9 @@ exports.discardTrail = function (args) {
   dialogs.confirm("Are you sure you want to discard the recorded trail?").then(
     res => {
       if (res) {
+        console.log("going home");
         global.currentTrail = {};
-        navBar.goToHome(false);
+        navBar.goToMap(false);
       }
     }
   )
@@ -154,7 +155,7 @@ exports.goToHome = function (args) {
   }
   global.currentTrail.difficulty = str;
   global.postCurrentTrail();
-  navBar.goToHome(false);
+  navBar.goToMap(false);
 }
 
 function onDifficultySelected(args) {

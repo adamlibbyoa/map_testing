@@ -3,6 +3,7 @@
 
 <!-- <Frame defaultPage="home/home-page"></Frame> -->
 
+<!-- <Frame defaultPage="Modals/VehicleSelection/VehicleSelection-modal"></Frame> -->
 
 <!-- These are just for testing/designing -->
 
@@ -16,7 +17,6 @@
 <!-- <Frame defaultPage="endrecord/endrecord-page"></Frame> -->
 <!-- <Frame defaultPage="Modals/CampModal/camp-modal"></Frame> -->
 <!-- <Frame defaultPage="garagepage/garage-page"></Frame> -->
-<!-- <Frame defaultPage="Modals/VehicleSelection/VehicleSelection-modal"></Frame> -->
 <!-- <Frame defaultPage="Modals/PoiModal/poi-modal"></Frame> -->
 <!-- <Frame defaultPage="Modals/ConfirmModal/confirm-modal"></Frame> -->
 <!-- <Frame defaultPage="Modals/ObsticalModal/obstical-modal"></Frame> -->

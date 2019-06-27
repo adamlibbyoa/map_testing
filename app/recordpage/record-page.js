@@ -67,6 +67,7 @@ var jobId = 321;
 // 35.610295
 //-97.4613617
 var uid;
+var vid;
 
 
 
@@ -83,13 +84,10 @@ exports.onNavigatingFrom = function (args) {
 
 function onNavigatingTo(args) {
   const page = args.object;
-
-  firebase.getCurrentUser().then(res => {
-    uid = res.uid;
-  }, (err) => {
-    console.log(err);
-  });
-
+  const context = args.context;
+  vid = context.vid;
+  uid = context.uid;
+  console.log(vid);
 
   var popup = page.getViewById("trailNotesPopup")
   popup.translateY = 500;
@@ -502,6 +500,9 @@ function buttonStopWatch(args) {
 
         // set the trail's data. 
         global.setCurrentTrailData(curCoords, dist, curTime, avgSpeed, elevations);
+        global.currentTrail.vid = vid;
+        global.currentTrail.creation_uid = uid;
+
         //global.currentTrailMarkers = markers;
         //console.log(JSON.stringify(markers));
         //global.postTrail(trailName, curCoords, dist);

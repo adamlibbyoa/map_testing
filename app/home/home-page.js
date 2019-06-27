@@ -17,6 +17,7 @@ const Accuracy = require("tns-core-modules/ui/enums").Accuracy;
 const utils = require("tns-core-modules/utils/utils");
 const ObservableArray = require("tns-core-modules/data/observable-array").ObservableArray;
 const navBar = require("../navbar");
+const VehicleSelectionModal = "Modals/VehicleSelection/VehicleSelection-modal";
 
 
 const accessToken =
@@ -30,6 +31,7 @@ var selectedTrail = null;
 var trailInfoPanel;
 var trailHeads = [];
 var trailHeadMarkers = [];
+var myVehicles = [];
 var uid;
 // var com;
 
@@ -63,6 +65,29 @@ function onNavigatingTo(args) {
   console.log("On the home page");
   firebase.getCurrentUser().then(res => {
     uid = res.uid;
+    console.log(uid);
+    firebase.query((result) => {
+      if (!result.error) {
+        myVehicles = [];
+        for (var i in result.value) {
+          // console.log(i + ": " + JSON.stringify(result.value[i]));
+          var v = result.value[i];
+          v.vid = i;
+          myVehicles.push(v);
+        }
+        console.dir(myVehicles);
+      }
+    }, "/vehicles", {
+      singleEvent: true,
+      orderBy: {
+        type: firebase.QueryOrderByType.CHILD,
+        value: "uid"
+      },
+      range: {
+        type: firebase.QueryRangeType.EQUAL_TO,
+        value: uid
+      }
+    });
   }, (err) => {
     console.log(err);
   });
@@ -391,17 +416,49 @@ exports.recenterTap = recenterTap;
 
 
 exports.goToRecording = function (args) {
-  // clear up memory
-  trailHeads = [];
-  trailHeadMarkers = [];
-  map.destroy();
 
-  // navigate to the recording page. 
-  frameModule.topmost().navigate({
-    moduleName: "recordpage/record-page",
-    context: {},
-    animated: true
-  });
+  var mainView = args.object;
+  var context = {
+    vehicles: myVehicles
+  }
+
+  const options = {
+    context: context,
+    closeCallback: (didConfirm, data, addNewVehicle = false) => {
+      if (didConfirm) {
+        console.dir(data);
+        // clear up memory
+        trailHeads = [];
+        trailHeadMarkers = [];
+        map.destroy();
+
+        // navigate to the recording page. 
+        frameModule.topmost().navigate({
+          moduleName: "recordpage/record-page",
+          context: {
+            vid: data.vid,
+            uid: uid
+          },
+          animated: false
+        });
+      } else if (addNewVehicle) {
+        frameModule.topmost().navigate({
+          moduleName: "addvehicle/addvehicle-page",
+          context: {
+            uid: uid
+          },
+          animated: false
+        })
+      } else {
+        console.log("Closed add vehicle")
+      }
+    },
+    fullscreen: false
+  }
+
+  mainView.showModal(VehicleSelectionModal, options);
+
+
 };
 var currentSuggestedItems;
 var currentSelectedItem = {};

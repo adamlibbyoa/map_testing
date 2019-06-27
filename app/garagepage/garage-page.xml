@@ -4,7 +4,7 @@
 
     <ActionBar class="oa-action-bar">
         <GridLayout>
-            <Image class="backButton" src="res://backbutton" horizontalAlignment="left" tap="onBackPressed" />
+            <Image class="backButton" src="res://backbutton" horizontalAlignment="left" tap="goToProfile" />
             <Label class="oa-action-bar-title" text="My Garage" verticalAlignment="middle" horizontalAlignment="right" />
         </GridLayout>
     </ActionBar>

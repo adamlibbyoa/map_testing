@@ -59,6 +59,104 @@ page {
     border-bottom-width: 1;
 }
 
+.vehicle-select-popup {
+    border-radius: 5%;
+    border-width: 2;
+    border-color: white;
+    border-top-color: #FF8C28;
+    border-top-width: 5;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.vehicle-selection-list {
+    background-color: #F1F1F1;
+    width: 100%;
+    height: 60;
+    font-size: 18;
+    color: black;
+    font-weight: bold;
+    text-align: left;
+    min-height: 60;
+}
+
+.vehicle-selection-name {
+    width: 100%;
+    text-align: left;
+    vertical-alignment: middle;
+
+}
+
+.vehicle-selected {
+    margin-left: 30;
+    margin-right: 25;
+    font-size: 10;
+    color: black;
+    text-align: center;
+    width: 18;
+    height: 18;
+    background-color: #FF8C28;
+    border-color: #707070;
+    border-width: 0.2;
+    border-radius: 50%;
+}
+
+.vehicle-not-selected {
+    margin-left: 30;
+    margin-right: 25;
+    font-size: 10;
+    color: black;
+    text-align: center;
+    width: 18;
+    height: 18;
+    background-color: white;
+    border-color: #707070;
+    border-width: 0.2;
+    border-radius: 50%;
+}
+
+.oa-primary-btn {
+    background-color: #FF8C28;
+    color: white;
+    font-weight: bold;
+    font-size: 16;
+    word-wrap: none;
+    padding: 0;
+    border-width: 3;
+    border-radius: 5%;
+    border-color: #FF8C28;
+    width: 125;
+    height: 40;
+}
+
+.oa-primary-btn:disabled {
+    background-color: rgb(165, 165, 165);
+    color: white;
+    font-weight: bold;
+    font-size: 16;
+    word-wrap: none;
+    padding: 0;
+    border-width: 3;
+    border-radius: 5%;
+    border-color: rgb(165, 165, 165);
+    width: 125;
+    height: 40;
+}
+
+.oa-secondary-btn {
+    background-color: #4281A4;
+    color: white;
+    font-weight: bold;
+    font-size: 14;
+    word-wrap: none;
+    padding: 0;
+    border-width: 3;
+    border-radius: 5%;
+    border-color: #4281A4;
+    width: 125;
+    height: 40;
+}
+
 /* Login Page CSS */
 
 .loginPage {

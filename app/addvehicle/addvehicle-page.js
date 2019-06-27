@@ -8,6 +8,7 @@ var frameModule = require("tns-core-modules/ui/frame");
 const Observable = require("tns-core-modules/data/observable").Observable;
 const firebase = require("nativescript-plugin-firebase");
 const dropdown = require("nativescript-drop-down");
+const navBar = require("../navbar");
 
 var observ;
 
@@ -67,6 +68,10 @@ function onNavigatingTo(args) {
 
 }
 exports.onNavigatingTo = onNavigatingTo;
+
+exports.OnBackPressed = function (args) {
+  navBar.goToProfile(false);
+}
 
 // load the list of models based on selected make
 exports.onMakeChanged = function (args) {
