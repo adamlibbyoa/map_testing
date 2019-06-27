@@ -50,8 +50,10 @@ function onNavigatingTo(args) {
 
   // get rid of the ugly actionbar
   var topmost = frameModule.topmost();
-  topmost.android.showActionBar = false;
-
+  if (application.android)
+  {
+    topmost.android.showActionBar = false;
+  }
   firebase.getValue("/vehiclelist/-LgPi5NaAey9wS7GUdvT").then(result => {
     for (var i in result.value) {
       dbmakes.push(result.value[i].make);
@@ -178,9 +180,13 @@ exports.onTireSelected = function (args) {
 
 exports.onNextPressed = function (args) {
   vehicle.uid = uid;
+  navigationEntry = {
+    moduleName: "garagepage/garage-page",
+    clearHistory: true
+  }
   firebase.push("/vehicles", vehicle).then(res => {
     console.log("Success!");
     vehicle = null;
-    frameModule.topmost().navigate("garagepage/garage-page");
+    frameModule.topmost().navigate(navigationEntry);
   }).catch(err => console.log("Error pushing vehicle: " + err));
 }

@@ -31,8 +31,13 @@ function onNavigatingTo(args) {
 
   // get rid of the ugly actionbar
   var topmost = frameModule.topmost();
-  topmost.android.showActionBar = false;
-
+  if (application.ios)
+  {
+    topmost.ios.showActionBar = false;
+  } else 
+  {
+    topmost.android.showActionBar = false;
+  }
   page.bindingContext = observ;
 
 }

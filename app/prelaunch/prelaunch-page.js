@@ -23,6 +23,11 @@ function onNavigatingTo(args) {
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    // get rid of the ugly actionbar
+    var topmost = frameModule.topmost();
+    
+      topmost.android.showActionBar = false;
+    
   }
 
 
@@ -32,9 +37,6 @@ function onNavigatingTo(args) {
   //   observ.set("message", "Loading")
   // }
 
-  // get rid of the ugly actionbar
-  var topmost = frameModule.topmost();
-  topmost.android.showActionBar = false;
 
   page.bindingContext = observ;
 
@@ -87,6 +89,7 @@ function offline() {
   var navigationEntry = {
     moduleName: "",
     animated: true,
+    clearHistory: true,
     transistion: {
       name: "fade",
       duration: 500

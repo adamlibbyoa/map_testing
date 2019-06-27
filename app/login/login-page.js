@@ -65,11 +65,10 @@ function onNavigatingTo(args) {
     const activity = application.android.startActivity;
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    // get rid of the ugly actionbar
+    var topmost = frameModule.topmost();
+        topmost.android.showActionBar = false;
   }
-
-  // get rid of the ugly actionbar
-  var topmost = frameModule.topmost();
-  topmost.android.showActionBar = false;
 
   page.bindingContext = observ;
 

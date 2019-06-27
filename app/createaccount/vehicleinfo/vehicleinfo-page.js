@@ -100,8 +100,13 @@ function onNavigatingTo(args) {
 
   // get rid of the ugly actionbar
   var topmost = frameModule.topmost();
-  topmost.android.showActionBar = false;
-
+  if (application.ios)
+  {
+    topmost.ios.showActionBar = false;
+  } else 
+  {
+    topmost.android.showActionBar = false;
+  }
   firebase.getValue("/vehiclelist/-LgPi5NaAey9wS7GUdvT").then(result => {
     for (var i in result.value) {
       dbmakes.push(result.value[i].make);
