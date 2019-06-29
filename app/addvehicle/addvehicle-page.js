@@ -50,7 +50,7 @@ function onNavigatingTo(args) {
 
     // hide the action bar on android
     var topmost = frameModule.topmost();
-    topmost.android.showActionBar = false;
+    topmost.android.showActionBar = true;
   }
 
   // load the list of makes
@@ -70,7 +70,18 @@ function onNavigatingTo(args) {
 exports.onNavigatingTo = onNavigatingTo;
 
 exports.OnBackPressed = function (args) {
-  navBar.goToProfile(false);
+  var navigationEntry = {
+    moduleName: "garagepage/garage-page",
+    clearHistory: true,
+    animated: true,
+    transition: {
+      name: "fade",
+      duration: 60,
+      curve: "easeIn"
+    }
+  }
+
+  frameModule.topmost().navigate(navigationEntry);
 }
 
 // load the list of models based on selected make

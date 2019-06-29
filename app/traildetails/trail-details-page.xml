@@ -1,8 +1,26 @@
-<Page class="page endTrailPage" navigatingTo="onNavigatingTo" backgroundColor="#4281A4" 
+<Page class="page" navigatingTo="onNavigatingTo" navigatedTo="onLoadedPage" 
     xmlns="http://schemas.nativescript.org/tns.xsd" 
     xmlns:map="nativescript-mapbox" 
     xmlns:FAB="nativescript-floatingactionbutton" 
     xmlns:parallax="nativescript-parallax">
+    <!-- backgroundColor="#4281A4"
+
+<GridLayout class="topBackBar" row="0" verticalAlignment="top" rows="60" marginLeft="0">
+         <Image class="backButton" src="res://backbutton" horizontalAlignment="left" tap="onBackPressed" />
+        <Button text="<" marginLeft="8" style="width: 40vw; height: 40vw; border-radius: 50%; border-color: white; border-width: 2; background-color: #4281A4; color: white;" horizontalAlignment="left" /> 
+</GridLayout>
+
+
+-->
+
+
+    <ActionBar class="oa-action-bar">
+        <GridLayout>
+            <Image class="backButton" src="res://backbutton" horizontalAlignment="left" tap="onBackPressed" />
+            <Label class="oa-action-bar-title" text="Trail Overview" verticalAlignment="middle" horizontalAlignment="right" />
+        </GridLayout>
+    </ActionBar>
+
 
     <StackLayout loaded="onLoaded">
         <!-- <ContentView visibility="collapsed"> -->
@@ -10,10 +28,7 @@
             <!-- Background image, replace src string with a dynamic url -->
             <Image id="theimage" row="0" src="~/images/tempbackground.png" width="100%" />
             <!-- The action bar thing.  -->
-            <GridLayout class="topBackBar" row="0" verticalAlignment="top" rows="60" marginLeft="0">
-                <Image class="backButton" src="res://backbutton" horizontalAlignment="left" tap="onBackPressed" />
-                <!-- <Button text="<" marginLeft="8" style="width: 40vw; height: 40vw; border-radius: 50%; border-color: white; border-width: 2; background-color: #4281A4; color: white;" horizontalAlignment="left" /> -->
-            </GridLayout>
+
 
             <!-- Trail name and rating -->
             <GridLayout id="namepanel" class="trailNameRatingPanel" verticalAlignment="bottom" rows="* *" columns="auto auto" row="0">
@@ -49,7 +64,7 @@
                         <TextView editable="false" wordWrap="true" style="color: white; font-size: 12; border-width: 0; border-bottom-width: 1; border-color: rgba(0,0,0,0);" text="{{ description }}" />
                         <!-- text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nisi lectus, ornare eget maximus eget, pellentesque vel leo. Donec vitae ornare est. Vivamus cursus tortor sit amet est aliquam, quis maximus nisl molestie. Integer suscipit enim vitae tempor pharetra. Aenean id luctus felis, ut hendrerit odio. Nam venenatis viverra quam non cursus..." /> -->
 
-                        <Label text="Tral Notes: " marginTop="24" style="color: white; font-size: 18;" />
+                        <Label text="Trail Notes: " marginTop="24" style="color: white; font-size: 18;" />
                         <StackLayout orientation="horizontal" height="42" marginTop="8">
                             <Image src="res://campsite_icon" marginRight="6" />
                             <Image src="res://camera_poi_icon" marginRight="6" />

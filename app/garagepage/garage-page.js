@@ -14,7 +14,13 @@ const Observable = require("tns-core-modules/data/observable").Observable;
 const ObservableArray = require("tns-core-modules/data/observable-array").ObservableArray;
 const firebase = require("nativescript-plugin-firebase");
 const navBar = require("../navbar");
+let builder = require("tns-core-modules/ui/builder");
+
+
+
+
 var curUid;
+var vehicles = [];
 
 function onNavigatingTo(args) {
   const page = args.object;
@@ -40,11 +46,25 @@ function onNavigatingTo(args) {
     curUid = uid;
     firebase.query((result) => {
       if (!result.error) {
+        vehicles = [];
+        var scrollView = page.getViewById("mainview");
         for (var i in result.value) {
-          console.log(i + ": " + JSON.stringify(result.value[i]));
+          // console.log(i + ": " + JSON.stringify(result.value[i]));
+          var v = result.value[i];
+          v.vid = i;
+          vehicles.push(v);
           obsArr.push(result.value[i]);
+          let vehicleCard = builder.load({
+            path: "~/components/garagecard",
+            name: "garagecard",
+            page: "garage-page" // use this for the css file
+          });
+
+          vehicleCard.vehicle = v;
+          scrollView.addChild(vehicleCard);
         }
-        page.getViewById("myvehiclelist").items = obsArr;
+        //page.getViewById("infolist").items = obsArr;
+        //page.getViewById("myvehiclelist").items = obsArr;
         // get rid of the ugly actionbar
         observ.set("isLoading", false);
 
@@ -61,6 +81,7 @@ function onNavigatingTo(args) {
       }
     });
   }).catch(err => console.log(err));
+
 
   page.bindingContext = observ;
 

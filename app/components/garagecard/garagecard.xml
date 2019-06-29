@@ -1,0 +1,32 @@
+<!-- <Page class="page" backgroundColor="#696969" navigatingTo="onNavigatingTo"> -->
+<StackLayout row="0" class="garage-vehicle-card" loaded="onLoaded" tap="onTap">
+    <Label text="SELECTED VEHICLE" class="selected-vehicle-title" />
+    <ContentView class="card-image-holder">
+        <!-- res://oa_logo_login -->
+        <Image src="res://oa_logo_login" class="card-image" />
+    </ContentView>
+    <GridLayout rows="24 16" columns="auto auto auto" horizontalAlignment="center" marginTop="15">
+        <Label text="{{ make }}" row="0" col="0" class="vehicle-names" />
+        <Label text="{{ model }}" row="0" col="1" class="vehicle-names" />
+        <Label text="{{ year }}" row="0" col="2" class="vehicle-names" />
+        <Label text="Make" row="1" col="0" class="vehicle-titles" />
+        <Label text="Model" row="1" col="1" class="vehicle-titles" />
+        <Label text="Year" row="1" col="2" class="vehicle-titles" />
+    </GridLayout>
+    <Label text="Vehicle Information" class="vehicle-info-title" horizontalAlignment="center" />
+    <!-- Replace with dynamic list later -->
+    <ScrollView marginTop="6" height="115">
+        <ListView id="infolist" items="" itemTemplateSelector="selectItemTemplate">
+            <ListView.itemTemplates>
+                <template key="even">
+                    <Label text="{{ name || 'Coming Soon...' }}" class="vehicle-info-list-even" />
+                </template>
+                <template key="odd">
+                    <Label text="{{ name || 'Coming Soon...' }}" class="vehicle-info-list-odd" />
+                </template>
+            </ListView.itemTemplates>
+        </ListView>
+
+    </ScrollView>
+</StackLayout>
+<!-- </Page> -->

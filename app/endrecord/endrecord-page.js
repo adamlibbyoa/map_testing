@@ -28,7 +28,7 @@ var nineOff = "res://off_910";
 var nineOn = "res://on_910";
 var rating = 0;
 var stars = [];
-
+const allAccessToken = "sk.eyJ1IjoiYWRhbWxpYmJ5b2EiLCJhIjoiY2p4Z2x1ZTgyMDNoaTNvbzVqdG85cnN4ayJ9.MRYMqvwzG5xOPs9qN4keHA";
 const accessToken =
   "pk.eyJ1IjoiYWRhbWxpYmJ5b2EiLCJhIjoiY2p1eGg3bG05MG40bzRjandsNTJnZHY3aiJ9.NkE4Wdj4dy3r_w18obRv8g";
 

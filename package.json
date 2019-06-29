@@ -16,6 +16,7 @@
     "nativescript-drop-down": "^5.0.0",
     "nativescript-floatingactionbutton": "^5.0.3",
     "nativescript-geolocation": "^5.0.0",
+    "nativescript-imagecropper": "^1.0.5",
     "nativescript-mapbox": "^4.4.1",
     "nativescript-mediafilepicker": "^2.0.16",
     "nativescript-parallax": "^1.4.0",

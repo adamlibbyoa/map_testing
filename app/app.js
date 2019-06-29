@@ -271,7 +271,7 @@ global.loadAllMarkers = () => {
       .catch(err => reject(err));
   });
 }
-
+// appSettings.remove("userID"); 
 application.run({
   moduleName: "app-root"
 });

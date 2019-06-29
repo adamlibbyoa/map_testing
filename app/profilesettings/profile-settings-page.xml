@@ -1,0 +1,27 @@
+<Page class="page endTrailPage" navigatingTo="onNavigatingTo" navigatedTo="onNavigated" backgroundColor="#4B87A8" 
+    xmlns="http://schemas.nativescript.org/tns.xsd">
+
+    <ActionBar class="oa-action-bar">
+        <GridLayout>
+            <Image class="backButton" src="res://backbutton" horizontalAlignment="left" tap="goToProfile" />
+            <Label class="oa-action-bar-title" text="My Profile Settings" verticalAlignment="middle" horizontalAlignment="right" />
+        </GridLayout>
+    </ActionBar>
+
+    <GridLayout rows="*" columns="*">
+        <!-- <Label text="Profile page coming soon!" style="font-size: 24;" horizontalAlignment="center" verticalAlignment="middle" /> -->
+        <ContentView row="0">
+            <StackLayout width="60%">
+                <Label text="Photo Preview " class="settings-page-label" verticalAlignment="bottom" />
+                <Image src="{{ profileImageSrc }}" />
+                <Button text="Upload Photo" height="60" tap="onImageUploadSelected" />
+                <Label text="Username: " class="settings-page-label" verticalAlignment="bottom" />
+                <StackLayout>
+                    <TextField id="usernameTB" text="{{ username }}" class="settings-page-textbox" verticalAlignment="top" horizontalAlignment="center" returnPress="onReturnPressed" />
+                    <Label text="{{ usernameError || 'Username must be between 4 and 24 characters, only letters and numbers' }}" class="errorBox" textWrap="true" color="white" textAlign="center" />
+                </StackLayout>
+            </StackLayout>
+        </ContentView>
+
+    </GridLayout>
+</Page>

@@ -4,7 +4,7 @@ a code-behind file. The code-behind is a great place to place your view
 logic, and to set up your page’s data binding.
 */
 
-const HomeViewModel = require("./profile-view-model");
+const HomeViewModel = require("./profile-settings-view-model");
 const geolocation = require("nativescript-geolocation");
 const mapbox = require("nativescript-mapbox");
 const dialogs = require("tns-core-modules/ui/dialogs");
@@ -17,34 +17,19 @@ const connectionModule = require("tns-core-modules/connectivity");
 const fileSystemModule = require("tns-core-modules/file-system");
 const imageSourceModule = require("tns-core-modules/image-source");
 const navBar = require("../navbar");
+var ImageCropper = require("nativescript-imagecropper").ImageCropper;
+
 var uid;
+var currentUsername = "";
 
 function onNavigatingTo(args) {
   const page = args.object;
   observ = new Observable();
 
-
-  // // get username
-  // const documents = fileSystemModule.knownFolders.documents();
-  // const folder = documents.getFolder("userdata");
-  // const file = folder.getFile("data.txt");
-  // file.readText().then(text => {
-  //   var data = JSON.parse(text);
-  //   console.log(JSON.stringify(data));
-  //   observ.set("username", data.first_name + " " + data.last_name);
-  // }, err => console.log(err));
-
   firebase.getCurrentUser().then(res => {
     uid = res.uid;
     loadImage();
     loadUsername();
-    // console.log(res.photoURL);
-    // if (!res.photoURL) {
-    //   observ.set("profileImageSrc", "res://oa_logo_createaccount"); // default image
-    // } else {
-    //   observ.set("profileImageSrc", res.photoURL);
-    //   console.log("loaded from online");
-    // }
   }, (err) => {
     console.log(err);
   });
@@ -57,9 +42,7 @@ function onNavigatingTo(args) {
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-    // get rid of the ugly actionbar
-    var topmost = frameModule.topmost();
-    topmost.android.showActionBar = false;
+
   }
 
 
@@ -68,6 +51,66 @@ function onNavigatingTo(args) {
 }
 exports.onNavigatingTo = onNavigatingTo;
 
+exports.onNavigated = function (args) {
+  if (application.android) {
+    // get rid of the ugly actionbar
+    var topmost = frameModule.topmost();
+    topmost.android.showActionBar = true;
+  }
+}
+
+
+
+exports.onReturnPressed = function (args) {
+  var textbox = args.object;
+  if (isValid(textbox.text)) {
+    console.log("it was valid!");
+    currentUsername = textbox.text;
+    observ.set("usernameError", "Username is valid");
+    //saveUsername();
+  } else {
+    currentUsername = "";
+    observ.set("usernameError", "Invalid Username! Letters and numbers only. 4 to 24 characters");
+    console.log("username error");
+  }
+
+}
+
+function isValid(text = "") {
+  if (text.length < 4) {
+    return false;
+  } else if (text.length > 24) {
+    return false;
+  } else if (!text.match(/^[0-9a-zA-Z]+$/)) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+function saveUsername() {
+
+  const documents = fileSystemModule.knownFolders.documents();
+  const folder = documents.getFolder("userdata");
+  const file = folder.getFile("data.txt");
+  file.readText().then(text => {
+    if (text.length <= 0) {
+      loadUsername();
+    } else {
+      var data = JSON.parse(text);
+      data.username = currentUsername;
+      console.dir(data);
+      file.writeText(JSON.stringify(data)).then(() => {
+        firebase.update("/userdata/" + data.id, data).then(function (fulfilled) {
+          observ.set("usernameError", "Valid Username. Saved to database");
+          navBar.goToProfile(false);
+        }, function (err) {
+          console.log(err);
+        });
+      }, (err) => console.log(err));
+    }
+  });
+}
 
 function loadUsername() {
   // get username
@@ -114,6 +157,7 @@ function loadUsername() {
     } else {
 
       var data = JSON.parse(text);
+
       console.log(JSON.stringify(data));
       observ.set("username", data.username);
     }
@@ -131,6 +175,7 @@ function loadImage() {
   observ.set("isImageLoading", true);
   try {
     observ.set("isImageLoading", false);
+    console.log("set image from file");
 
     observ.set("profileImageSrc", imageSourceModule.fromFile(path));
   } catch (err) {
@@ -155,21 +200,74 @@ function loadImage() {
       }
     );
   }
+
 }
 
-exports.goToSettings = function (args) {
-  var navigationEntry = {
-    moduleName: "profilesettings/profile-settings-page",
-    clearHistory: true,
-    animated: true,
-    transition: {
-      name: "fade",
-      duration: 60,
-      curve: "easeIn"
+exports.onImageUploadSelected = function (args) {
+  var imageOptions = {
+    android: {
+      isCaptureMood: false,
+      isNeedCamera: true,
+      maxNumberFiles: 1,
+      isNeedFolderList: true
+    },
+    ios: {
+      isCaptureMood: false,
+      maxNumberFiles: 1
     }
   }
 
-  frameModule.topmost().navigate(navigationEntry);
+  var mediaPicker = new mPicker.Mediafilepicker();
+  mediaPicker.openImagePicker(imageOptions);
+  mediaPicker.on("getFiles", function (res) {
+    var results = res.object.get("results");
+
+    var imgPath = results[0].file;
+    var image = imageSourceModule.fromFile(imgPath);
+
+    // load image cropper
+    var imageCropper = new ImageCropper();
+    imageCropper.show(image, {
+      width: 400,
+      height: 400,
+      lockSquare: true
+    }).then((args) => {
+      if (args.response != "Success") {
+        console.log("cancelled or error");
+        return;
+      }
+      var croppedImage = args.image;
+      var folderDest = fileSystemModule.knownFolders.documents();
+      var pathDest = fileSystemModule.path.join(folderDest.path, "images/profileimage.png");
+      var saved = croppedImage.saveToFile(pathDest, "png");
+      if (saved) {
+        console.log("File successfuly saved!");
+        observ.set("profileImageSrc", croppedImage);
+      }
+
+      // observ.set("isImageLoading", true);
+      firebase.storage.uploadFile({
+        remoteFullPath: "uploads/images/profiles/" + uid,
+        localFullPath: results[0].file,
+        onProgress: function (status) {
+          console.log("Uploaded Fraction: " + status.fractionCompleted.toString());
+        }
+      }).then(
+        function (uploadedFile) {
+          console.log("File uploaded: " + JSON.stringify(uploadedFile));
+
+        }).catch(err => {
+        console.log(err);
+      });
+    }).catch(err => console.log(err));
+  });
+
+  mediaPicker.on("error", function (err) {
+    console.log(err.object.get("msg"));
+  });
+  mediaPicker.on("cancel", function (res) {
+    console.log(res.object.get("msg"));
+  });
 }
 
 exports.goToMyGarage = function (args) {
@@ -203,5 +301,16 @@ exports.goToBlog = function (args) {
 }
 
 exports.goToProfile = function (args) {
-  navBar.goToProfile(false);
+
+  var textbox = args.object.page.getViewById("usernameTB");
+  if (isValid(textbox.text)) {
+    console.log("it was valid!");
+    currentUsername = textbox.text;
+    observ.set("usernameError", "Username is valid");
+    saveUsername();
+  } else {
+    currentUsername = "";
+    observ.set("usernameError", "Invalid Username! Letters and numbers only. 4 to 24 characters");
+    console.log("username error");
+  }
 }

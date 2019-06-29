@@ -57,9 +57,7 @@ function onNavigatingTo(args) {
     const win = activity.getWindow();
     win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-    // get rid of the ugly actionbar
-    var topmost = frameModule.topmost();
-    topmost.android.showActionBar = false;
+
   }
 
 
@@ -67,6 +65,13 @@ function onNavigatingTo(args) {
 
 }
 exports.onNavigatingTo = onNavigatingTo;
+
+exports.onLoadedPage = function (args) {
+  if (application.android) {
+    var topmost = frameModule.topmost();
+    topmost.android.showActionBar = true;
+  }
+}
 
 exports.onLoaded = function (args) {
   var page = args.object.page;
@@ -76,12 +81,12 @@ exports.onLoaded = function (args) {
     console.log(Math.round(args.deltaY));
     if (Math.round(args.deltaY) < -100 && !isCollapsed) {
       isCollapsed = !isCollapsed;
-      parallaxOn(page);
+      //parallaxOn(page);
       return;
     }
     if (Math.round(args.deltaY) > 100 && isCollapsed) {
       isCollapsed = !isCollapsed;
-      parallaxOff(page);
+      //parallaxOff(page);
       return;
     }
 
